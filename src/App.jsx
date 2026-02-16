@@ -1,17 +1,25 @@
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Header from './components/layout/Header'
+import Home from './pages/Home'
+import About from './pages/About'
+import Admission from './pages/Admission'
+import Blog from './pages/Blog'
+import Contact from './pages/Contact'
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl font-bold text-center text-green-600">
-            Frontend MedSoils
-          </h1>
-          <p className="text-center mt-4 text-gray-700">
-            Aplicación corriendo en el puerto 3017
-          </p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <Header />
+        <main className="pt-20">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/admission" element={<Admission />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   )
