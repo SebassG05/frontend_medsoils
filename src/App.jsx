@@ -9,9 +9,9 @@ import Contact from './pages/Contact'
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-white">
         <Header />
-        <main className="pt-20">
+        <main className="pt-24">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
