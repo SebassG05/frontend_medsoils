@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+/* Footer animations and hover effects */
+@keyframes fadeInUp {
+	0% { opacity: 0; transform: translateY(12px); }
+	100% { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+	animation: fadeInUp 600ms cubic-bezier(.22,.9,.32,1) both;
+}
+
+.footer-item {
+	transition: transform 220ms cubic-bezier(.22,.9,.32,1),
+							box-shadow 220ms cubic-bezier(.22,.9,.32,1),
+							background-color 220ms;
+}
+
+.footer-item:hover {
+	transform: translateY(-6px) scale(1.02);
+	box-shadow: 0 8px 20px rgba(15,23,42,0.12);
+}
+
+.footer-wrapper {
+	overflow: visible;
+}
