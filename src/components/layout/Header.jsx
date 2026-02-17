@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
+import Login from '../Login'
+import SignUp from './SignUp'
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false)
   const location = useLocation()
   const { scrollY } = useScroll()
   
@@ -86,6 +90,7 @@ const Header = () => {
   const isActive = (path) => location.pathname === path
 
   return (
+    <>
     <motion.header
       style={{
         backgroundColor: headerBackground,
@@ -180,6 +185,7 @@ const Header = () => {
             className="hidden lg:block"
           >
             <motion.button
+              onClick={() => setIsLoginOpen(true)}
               whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(251, 146, 60, 0.4)" }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
@@ -275,6 +281,10 @@ const Header = () => {
                 className="mb-8"
               >
                 <motion.button 
+                  onClick={() => {
+                    setIsLoginOpen(true)
+                    setIsMobileMenuOpen(false)
+                  }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.2 }}
@@ -289,6 +299,104 @@ const Header = () => {
         </AnimatePresence>
       </nav>
     </motion.header>
+
+    {/* Login Modal - Outside Header */}
+    <AnimatePresence>
+      {isLoginOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full relative"
+          >
+            {/* Close Button */}
+            <motion.button
+              onClick={() => setIsLoginOpen(false)}
+              whileHover={{ rotate: 90 }}
+              transition={{ duration: 0.2 }}
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Close login modal"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </motion.button>
+
+            {/* Login Component */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+            >
+              <Login 
+                onClose={() => setIsLoginOpen(false)}
+                onSignUpClick={() => {
+                  setIsLoginOpen(false)
+                  setIsSignUpOpen(true)
+                }}
+              />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+    {/* SignUp Modal - Outside Header */}
+    <AnimatePresence>
+      {isSignUpOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full relative"
+          >
+            {/* Close Button */}
+            <motion.button
+              onClick={() => setIsSignUpOpen(false)}
+              whileHover={{ rotate: 90 }}
+              transition={{ duration: 0.2 }}
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 transition-colors z-10"
+              aria-label="Close signup modal"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </motion.button>
+
+            {/* SignUp Component */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+            >
+              <SignUp 
+                onClose={() => setIsSignUpOpen(false)}
+                onLoginClick={() => {
+                  setIsSignUpOpen(false)
+                  setIsLoginOpen(true)
+                }}
+              />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+  </>
   )
 }
 
