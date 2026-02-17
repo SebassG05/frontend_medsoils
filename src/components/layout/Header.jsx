@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const location = useLocation()
+  const { scrollY } = useScroll()
+  
+  const logoUrl = "https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp"
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -15,6 +18,18 @@ const Header = () => {
     { name: 'Blog', path: '/blog' },
     { name: 'Contact', path: '/contact' },
   ]
+
+  const headerBackground = useTransform(
+    scrollY,
+    [0, 100],
+    ['rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.98)']
+  )
+
+  const headerShadow = useTransform(
+    scrollY,
+    [0, 100],
+    ['0px 0px 0px rgba(0,0,0,0)', '0px 4px 20px rgba(0,0,0,0.08)']
+  )
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,164 +40,250 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isMobileMenuOpen])
+
+  const menuVariants = {
+    closed: {
+      opacity: 0,
+      x: "100%",
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    },
+    open: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  }
+
+  const itemVariants = {
+    closed: { x: 30, opacity: 0 },
+    open: (i) => ({
+      x: 0,
+      opacity: 1,
+      transition: {
+        delay: 0.1 + (i * 0.08),
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    })
+  }
+
   const isActive = (path) => location.pathname === path
 
   return (
     <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-lg'
-          : 'bg-white/80 backdrop-blur-sm'
-      }`}
+      style={{
+        backgroundColor: headerBackground,
+        boxShadow: headerShadow,
+      }}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ 
+        duration: 0.8, 
+        ease: [0.6, 0.05, 0.01, 0.9],
+        opacity: { duration: 0.6 }
+      }}
+      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-gray-100/50"
     >
-      <nav className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      {/* Animated gradient line */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+        className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400 to-transparent origin-center transform translate-y-1 sm:translate-y-2"
+      />
+
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-24 sm:h-28 lg:h-24">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center"
-            >
-              <div className="relative">
-                {/* Sol estilizado */}
-                <div className="w-12 h-12 relative">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0"
-                  >
-                    {[...Array(8)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute top-1/2 left-1/2 w-0.5 h-5 bg-gradient-to-t from-amber-400 to-yellow-500"
-                        style={{
-                          transform: `rotate(${i * 45}deg) translateY(-50%)`,
-                          transformOrigin: 'center 6px',
-                        }}
-                      />
-                    ))}
-                  </motion.div>
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full shadow-lg" />
-                </div>
-                {/* Ondas de tierra */}
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex flex-col space-y-0.5">
-                  <div className="w-10 h-0.5 bg-gradient-to-r from-green-600 via-green-500 to-green-600 rounded-full" />
-                  <div className="w-8 h-0.5 bg-gradient-to-r from-green-700 via-green-600 to-green-700 rounded-full mx-auto" />
-                  <div className="w-6 h-0.5 bg-gradient-to-r from-green-800 via-green-700 to-green-800 rounded-full mx-auto" />
-                </div>
-              </div>
-              <div className="ml-3">
-                <h1 className="text-xl font-bold text-gray-800 tracking-tight">
-                  MEDSOILS
-                </h1>
-                <p className="text-xs text-gray-600 font-medium tracking-wider">
-                  CHALLENGE
-                </p>
-              </div>
-            </motion.div>
-          </Link>
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Link to="/" className="block">
+              <motion.img 
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.3 }}
+                src={logoUrl} 
+                alt="MedSoils Challenge" 
+                className="h-20 sm:h-24 lg:h-20 w-auto object-contain mt-1 sm:mt-2 lg:mt-0"
+              />
+            </Link>
+          </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="hidden lg:flex items-center space-x-12"
+          >
             {navItems.map((item, index) => (
               <motion.div
                 key={item.path}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: 0.5 + (index * 0.1),
+                  ease: "easeOut"
+                }}
               >
                 <Link
                   to={item.path}
-                  className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                  className="relative group"
+                >
+                  <span className={`text-base font-medium tracking-wide transition-colors duration-300 ${
                     isActive(item.path)
                       ? 'text-orange-500'
-                      : 'text-gray-700 hover:text-orange-500'
-                  }`}
-                >
-                  {item.name}
+                      : 'text-gray-700 hover:text-orange-400'
+                  }`}>
+                    {item.name}
+                  </span>
+                  
+                  {/* Underline animation */}
+                  <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-300 group-hover:w-full" />
+                  
                   {isActive(item.path) && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-400 to-red-500"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    <motion.span
+                      layoutId="activeIndicator"
+                      className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-400 to-orange-600"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     />
                   )}
                 </Link>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* CTA Button */}
-          <div className="hidden lg:block">
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="hidden lg:block"
+          >
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-2.5 bg-gradient-to-r from-teal-400 to-cyan-400 text-white text-sm font-semibold rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
+              whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(251, 146, 60, 0.4)" }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              className="cursor-pointer relative overflow-hidden px-8 py-3.5 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-sm font-semibold rounded-full shadow-lg shadow-orange-500/30 group"
             >
-              Enroll now
+              <span className="relative z-10">LOGIN</span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: 0 }}
+                transition={{ duration: 0.3 }}
+              />
             </motion.button>
-          </div>
+          </motion.div>
 
           {/* Mobile Menu Button */}
-          <button
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="lg:hidden relative p-2 rounded-xl hover:bg-gray-100/80 transition-colors duration-200"
             aria-label="Toggle menu"
           >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6 text-gray-700" />
-            ) : (
-              <Menu className="w-6 h-6 text-gray-700" />
-            )}
-          </button>
+            <motion.div
+              animate={isMobileMenuOpen ? "open" : "closed"}
+              className="w-6 h-6"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6 text-gray-700" />
+              ) : (
+                <Menu className="w-6 h-6 text-gray-700" />
+              )}
+            </motion.div>
+          </motion.button>
         </div>
 
         {/* Mobile Navigation */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden overflow-hidden"
+              initial={{ opacity: 0, height: 0, y: -20 }}
+              animate={{ opacity: 1, height: 'calc(100vh - 6rem)', y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -20 }}
+              transition={{ 
+                duration: 0.5, 
+                ease: [0.22, 1, 0.36, 1],
+                height: { duration: 0.4 },
+                opacity: { duration: 0.3 }
+              }}
+              className="lg:hidden overflow-hidden border-t border-gray-100/60 backdrop-blur-sm bg-white"
             >
-              <div className="py-4 space-y-1">
+            <div className="flex flex-col h-full justify-between py-6 px-2">
+              {/* Navigation Items */}
+              <div className="space-y-2">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.path}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    initial={{ opacity: 0, x: -30, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: -30, scale: 0.95 }}
+                    transition={{ 
+                      delay: index * 0.08,
+                      duration: 0.4,
+                      ease: [0.22, 1, 0.36, 1]
+                    }}
                   >
                     <Link
                       to={item.path}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                      className={`block px-5 py-4 rounded-2xl text-base font-medium transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] ${
                         isActive(item.path)
-                          ? 'bg-orange-50 text-orange-500'
-                          : 'text-gray-700 hover:bg-gray-50'
+                          ? 'bg-gradient-to-r from-orange-50 to-orange-50/50 text-orange-500 shadow-lg shadow-orange-100/50 border border-orange-100'
+                          : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-50/50 hover:shadow-md hover:shadow-gray-100/30'
                       }`}
                     >
                       {item.name}
                     </Link>
                   </motion.div>
                 ))}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navItems.length * 0.05 }}
-                  className="pt-2"
-                >
-                  <button className="w-full px-4 py-3 bg-gradient-to-r from-teal-400 to-cyan-400 text-white text-sm font-semibold rounded-lg shadow-lg">
-                    Enroll now
-                  </button>
-                </motion.div>
               </div>
+              
+              {/* Login Button at Bottom */}
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.95 }}
+                transition={{ 
+                  delay: navItems.length * 0.08,
+                  duration: 0.4,
+                  ease: [0.22, 1, 0.36, 1] 
+                }}
+                className="mb-8"
+              >
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                  className="cursor-pointer w-full px-5 py-4 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-base font-semibold rounded-2xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300"
+                >
+                  LOGIN
+                </motion.button>
+              </motion.div>
+            </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -192,3 +293,4 @@ const Header = () => {
 }
 
 export default Header
+
