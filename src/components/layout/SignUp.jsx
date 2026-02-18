@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff } from 'lucide-react'
+import { GoogleLogin } from '@react-oauth/google'
 import { registerUser } from '../../services/authService'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
 const SignUp = ({ onClose, onLoginClick }) => {
   const [fullName, setFullName] = useState('')
@@ -15,17 +18,42 @@ const SignUp = ({ onClose, onLoginClick }) => {
   const [apiError, setApiError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setIsLoading(true)
+      setApiError('')
+      const { credential } = credentialResponse
+      const response = await fetch(`${API_URL}/auth/google/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: credential }),
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Google sign-up failed')
+      localStorage.setItem('accessToken', data.data.accessToken)
+      localStorage.setItem('refreshToken', data.data.refreshToken)
+      localStorage.setItem('user', JSON.stringify(data.data.user))
+      window.dispatchEvent(new Event('storage'))
+      onClose?.()
+    } catch (error) {
+      setApiError(error.message || 'Google sign-up failed')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleGoogleError = () => {
+    setApiError('Google sign-up failed. Please try again.')
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setPasswordError('');
     setApiError('');
     setSuccessMessage('');
     
-    console.log('📝 Iniciando registro con:', { fullName, email });
-    
-    // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
-      setPasswordError('Las contraseñas no coinciden');
+      setPasswordError('Passwords do not match');
       return;
     }
     
@@ -38,19 +66,17 @@ const SignUp = ({ onClose, onLoginClick }) => {
         confirmPassword,
       });
       
-      console.log('✅ Registro exitoso:', res);
-      setSuccessMessage(res.message || 'Usuario registrado exitosamente');
-      
-      // Limpiar formulario solo después de éxito
-      setTimeout(() => {
-        setFullName('');
-        setEmail('');
-        setPassword('');
-        setConfirmPassword('');
-      }, 2000);
+      if (res.data?.user) {
+        localStorage.setItem('user', JSON.stringify(res.data.user))
+        window.dispatchEvent(new Event('storage'))
+      }
+      setFullName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      onClose?.();
     } catch (error) {
-      console.error('❌ Error en registro:', error);
-      setApiError(error.message || 'Error al registrar usuario');
+      setApiError(error.message || 'Failed to create account');
     } finally {
       setIsLoading(false);
     }
@@ -204,6 +230,34 @@ const SignUp = ({ onClose, onLoginClick }) => {
         >
           {isLoading ? 'Creating Account...' : 'Sign Up'}
         </motion.button>
+
+        {/* Divider */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.55 }}
+          className="relative flex items-center gap-4 my-2"
+        >
+          <div className="flex-1 h-px bg-gray-300"></div>
+          <span className="text-gray-500 text-sm font-medium">Or sign up with</span>
+          <div className="flex-1 h-px bg-gray-300"></div>
+        </motion.div>
+
+        {/* Google Sign Up Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="flex justify-center"
+        >
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            theme="outline"
+            size="large"
+            text="signup_with"
+          />
+        </motion.div>
       </form>
 
       {/* Login Link */}
