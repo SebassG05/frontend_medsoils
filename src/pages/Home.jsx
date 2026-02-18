@@ -6,6 +6,7 @@ import { ArrowRight, GraduationCap, Globe, Microscope, Sprout, Lightbulb } from 
 import Footer from '../components/layout/Footer'
 import ScrollToTop from '../components/ui/ScrollToTop'
 import BlogCarousel from '../components/home/BlogCarousel'
+import SoilQuizBanner from '../components/home/SoilQuizBanner'
 
 const Home = () => {
   const [activeCard, setActiveCard] = useState(0)
@@ -324,6 +325,9 @@ const Home = () => {
           <BlogCarousel />
         </motion.div>
       </section>
+
+      {/* Sección Quiz de suelos */}
+      <SoilQuizBanner />
 
       {/* Raya decorativa */}
       <motion.div
