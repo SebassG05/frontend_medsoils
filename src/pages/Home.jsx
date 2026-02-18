@@ -7,6 +7,7 @@ import Footer from '../components/layout/Footer'
 import ScrollToTop from '../components/ui/ScrollToTop'
 import BlogCarousel from '../components/home/BlogCarousel'
 import SoilQuizBanner from '../components/home/SoilQuizBanner'
+import IussEndorsement from '../components/home/IussEndorsement'
 
 const Home = () => {
   const [activeCard, setActiveCard] = useState(0)
@@ -328,6 +329,9 @@ const Home = () => {
 
       {/* Sección Quiz de suelos */}
       <SoilQuizBanner />
+
+      {/* Sección IUSS Endorsement */}
+      <IussEndorsement />
 
       {/* Raya decorativa */}
       <motion.div
