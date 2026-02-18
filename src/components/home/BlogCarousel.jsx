@@ -196,7 +196,7 @@ const BlogCarousel = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={prevSlide}
-            className="w-12 h-12 rounded-full bg-white border-2 border-gray-200 hover:border-orange-500 flex items-center justify-center transition-colors group"
+            className="cursor-pointer w-12 h-12 rounded-full bg-white border-2 border-gray-200 hover:border-orange-500 flex items-center justify-center transition-colors group"
             aria-label="Previous blogs"
           >
             <ChevronLeft className="w-5 h-5 text-gray-600 group-hover:text-orange-500" />
@@ -205,7 +205,7 @@ const BlogCarousel = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={nextSlide}
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
+            className="cursor-pointer w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
             aria-label="Next blogs"
           >
             <ChevronRight className="w-5 h-5 text-white" />
