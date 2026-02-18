@@ -237,17 +237,16 @@ const Header = () => {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="hidden lg:block"
           >
-            <AnimatePresence mode="wait">
-              {user ? (
-                <motion.div
-                  key="user-menu"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                  className="relative"
-                  ref={userMenuRef}
-                >
+            <div ref={userMenuRef} className="relative">
+              <AnimatePresence mode="wait">
+                {user ? (
+                  <motion.div
+                    key="user-menu"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                  >
                   <motion.button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     whileHover={{ scale: 1.05 }}
@@ -327,7 +326,8 @@ const Header = () => {
                   />
                 </motion.button>
               )}
-            </AnimatePresence>
+              </AnimatePresence>
+            </div>
           </motion.div>
 
           {/* Mobile Menu Button */}
