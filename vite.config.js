@@ -8,7 +8,7 @@ export default defineConfig({
     port: 3017,
     proxy: {
       '/api': {
-        target: 'http://localhost:3017', // Puerto backend Express
+        target: 'http://localhost:5116', // Puerto backend Express
         changeOrigin: true,
       },
     },

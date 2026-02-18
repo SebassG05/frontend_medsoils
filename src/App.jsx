@@ -6,6 +6,8 @@ import About from './pages/About'
 import Admission from './pages/Admission'
 import Blog from './pages/Blog'
 import Contact from './pages/Contact'
+import Settings from './pages/Settings'
+import ResetPassword from './pages/ResetPassword'
 
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE'
@@ -22,6 +24,8 @@ function App() {
               <Route path="/admission" element={<Admission />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
           </main>
         </div>
