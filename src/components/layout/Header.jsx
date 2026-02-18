@@ -1,15 +1,20 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown, LogOut, Settings } from 'lucide-react'
 import Login from './Login'
 import SignUp from './SignUp'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isSignUpOpen, setIsSignUpOpen] = useState(false)
+  const [user, setUser] = useState(null)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const userMenuRef = useRef(null)
   const location = useLocation()
   const { scrollY } = useScroll()
   
@@ -36,12 +41,35 @@ const Header = () => {
   )
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Leer usuario de localStorage al montar y al cambiar storage
+  useEffect(() => {
+    const loadUser = () => {
+      const stored = localStorage.getItem('user')
+      if (stored) {
+        try { setUser(JSON.parse(stored)) } catch { setUser(null) }
+      } else {
+        setUser(null)
+      }
+    }
+    loadUser()
+    window.addEventListener('storage', loadUser)
+    return () => window.removeEventListener('storage', loadUser)
+  }, [])
+
+  // Cerrar dropdown al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setIsUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   useEffect(() => {
@@ -88,6 +116,30 @@ const Header = () => {
   }
 
   const isActive = (path) => location.pathname === path
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('accessToken')
+      if (token) {
+        await fetch(`${API_URL}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+      }
+    } catch (e) {
+      // Si falla el backend igual limpiamos localmente
+    } finally {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+      setUser(null)
+      setIsUserMenuOpen(false)
+    }
+  }
 
   return (
     <>
@@ -177,28 +229,103 @@ const Header = () => {
             ))}
           </motion.div>
 
-          {/* CTA Button */}
+          {/* CTA Button / User Menu */}
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
             className="hidden lg:block"
           >
-            <motion.button
-              onClick={() => setIsLoginOpen(true)}
-              whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(251, 146, 60, 0.4)" }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              className="cursor-pointer relative overflow-hidden px-8 py-3.5 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-sm font-semibold rounded-full shadow-lg shadow-orange-500/30 group"
-            >
-              <span className="relative z-10">LOGIN</span>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: 0 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.button>
+            <AnimatePresence mode="wait">
+              {user ? (
+                <motion.div
+                  key="user-menu"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                  className="relative"
+                  ref={userMenuRef}
+                >
+                  <motion.button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                    className="cursor-pointer flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-sm font-semibold rounded-full shadow-lg shadow-orange-500/30"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-white/30 flex items-center justify-center text-xs font-bold">
+                      {user.name?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                    <span>{user.name?.split(' ')[0] || 'Usuario'}</span>
+                    <motion.div
+                      animate={{ rotate: isUserMenuOpen ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </motion.div>
+                  </motion.button>
+
+                  <AnimatePresence>
+                    {isUserMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 4, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.97 }}
+                        transition={{ duration: 0.06, ease: 'easeOut' }}
+                        className="absolute right-0 mt-4 w-60 bg-white rounded-2xl shadow-2xl border-2 border-orange-400 overflow-hidden z-50"
+                      >
+                        <div className="px-4 py-4 bg-gradient-to-br from-orange-50 to-white border-b border-gray-100 flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-bold text-base shadow">
+                            {user.name?.charAt(0).toUpperCase() || 'U'}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                            <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                          </div>
+                        </div>
+                        <motion.button
+                          whileHover={{ backgroundColor: '#fff7ed' }}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition-colors cursor-pointer"
+                        >
+                          <Settings className="w-4 h-4 text-orange-400" />
+                          Ajustes
+                        </motion.button>
+                        <div className="h-px bg-gray-100 mx-4" />
+                        <motion.button
+                          whileHover={{ backgroundColor: '#fff1f2' }}
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 transition-colors cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Cerrar sesión
+                        </motion.button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ) : (
+                <motion.button
+                  key="login-btn"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setIsLoginOpen(true)}
+                  whileHover={{ scale: 1.05, boxShadow: '0 10px 25px -5px rgba(251, 146, 60, 0.4)' }}
+                  whileTap={{ scale: 0.98 }}
+                  className="cursor-pointer relative overflow-hidden px-8 py-3.5 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-sm font-semibold rounded-full shadow-lg shadow-orange-500/30 group"
+                >
+                  <span className="relative z-10">LOGIN</span>
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600"
+                    initial={{ x: '-100%' }}
+                    whileHover={{ x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </motion.button>
+              )}
+            </AnimatePresence>
           </motion.div>
 
           {/* Mobile Menu Button */}
@@ -273,25 +400,39 @@ const Header = () => {
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 30, scale: 0.95 }}
-                transition={{ 
-                  delay: navItems.length * 0.08,
-                  duration: 0.4,
-                  ease: [0.22, 1, 0.36, 1] 
-                }}
+                transition={{ delay: navItems.length * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 className="mb-8"
               >
-                <motion.button 
-                  onClick={() => {
-                    setIsLoginOpen(true)
-                    setIsMobileMenuOpen(false)
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
-                  className="cursor-pointer w-full px-5 py-4 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-base font-semibold rounded-2xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300"
-                >
-                  LOGIN
-                </motion.button>
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 px-5 py-3 bg-orange-50 rounded-2xl border border-orange-100">
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                        {user.name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => { handleLogout(); setIsMobileMenuOpen(false) }}
+                      className="w-full flex items-center justify-center gap-2 px-5 py-4 bg-red-50 text-red-500 text-base font-semibold rounded-2xl border border-red-100 cursor-pointer"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      Cerrar sesión
+                    </button>
+                  </div>
+                ) : (
+                  <motion.button
+                    onClick={() => { setIsLoginOpen(true); setIsMobileMenuOpen(false) }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                    className="cursor-pointer w-full px-5 py-4 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-base font-semibold rounded-2xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300"
+                  >
+                    LOGIN
+                  </motion.button>
+                )}
               </motion.div>
             </div>
             </motion.div>

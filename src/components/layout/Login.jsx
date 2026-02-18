@@ -22,24 +22,15 @@ const Login = ({ onClose, onSignUpClick }) => {
         setIsLoading(true)
         setError('')
         setSuccessMessage('')
-        
-        console.log('📝 Iniciando login con:', { email })
-        
         try {
             const res = await loginUser({ email, password })
             
-            console.log('✅ Login exitoso:', res)
-            setSuccessMessage(res.message || 'Login exitoso')
-            
-            // Limpiar formulario
-            setTimeout(() => {
-                setEmail('')
-                setPassword('')
-                // onClose?.()
-            }, 1500)
+            setEmail('')
+            setPassword('')
+            onClose?.()
+            window.dispatchEvent(new Event('storage'))
         } catch (error) {
-            console.error('❌ Error en login:', error)
-            setError(error.message || 'Error al iniciar sesión')
+            setError(error.message || 'Failed to sign in')
         } finally {
             setIsLoading(false)
         }
@@ -49,7 +40,6 @@ const Login = ({ onClose, onSignUpClick }) => {
         try {
             setIsLoading(true)
             setError('')
-            console.log('Google login successful')
             const { credential } = credentialResponse
             
             // Enviar token al backend
@@ -77,20 +67,18 @@ const Login = ({ onClose, onSignUpClick }) => {
               localStorage.setItem('accessToken', data.data.accessToken)
               localStorage.setItem('refreshToken', data.data.refreshToken)
               localStorage.setItem('user', JSON.stringify(data.data.user))
+              window.dispatchEvent(new Event('storage'))
               setIsLoading(false)
-              // onClose?.()
-              console.log('Login successful')
+              onClose?.()
             }
         } catch (error) {
             setIsLoading(false)
-            console.error('Google login error:', error)
-            setError(error.message || 'Google login failed')
+            setError(error.message || 'Google sign-in failed')
         }
     }
 
     const handleGoogleError = () => {
-        console.error('Google login failed')
-        setError('Google login failed. Please try again.')
+        setError('Google sign-in failed. Please try again.')
     }
 
     const handleTwoFactorSubmit = async (e) => {
@@ -117,12 +105,11 @@ const Login = ({ onClose, onSignUpClick }) => {
         // 2FA verification successful
         localStorage.setItem('accessToken', data.data.accessToken)
         localStorage.setItem('refreshToken', data.data.refreshToken)
+        window.dispatchEvent(new Event('storage'))
         setIsLoading(false)
-        // onClose?.()
-        console.log('2FA verification successful')
+        onClose?.()
       } catch (error) {
         setIsLoading(false)
-        console.error('2FA verification error:', error)
         setError(error.message || '2FA verification failed')
       }
     }
