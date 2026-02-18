@@ -8,6 +8,7 @@ import ScrollToTop from '../components/ui/ScrollToTop'
 import BlogCarousel from '../components/home/BlogCarousel'
 import SoilQuizBanner from '../components/home/SoilQuizBanner'
 import IussEndorsement from '../components/home/IussEndorsement'
+import FieldResearch from '../components/home/FieldResearch'
 
 const Home = () => {
   const [activeCard, setActiveCard] = useState(0)
@@ -332,6 +333,9 @@ const Home = () => {
 
       {/* Sección IUSS Endorsement */}
       <IussEndorsement />
+
+      {/* Sección Field Research */}
+      <FieldResearch />
 
       {/* Raya decorativa */}
       <motion.div
