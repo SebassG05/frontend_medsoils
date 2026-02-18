@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff } from 'lucide-react'
 import { GoogleLogin } from '@react-oauth/google'
+import { loginUser } from '../../services/authService'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
@@ -14,23 +15,33 @@ const Login = ({ onClose, onSignUpClick }) => {
   const [twoFactorToken, setTwoFactorToken] = useState('')
   const [accessToken, setAccessToken] = useState(null)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsLoading(true)
         setError('')
+        setSuccessMessage('')
+        
+        console.log('📝 Iniciando login con:', { email })
+        
         try {
-        // Aquí iría la lógica de autenticación con contraseña
-        console.log('Login attempt:', { email, password })
-        // Simular proceso de login
-        setTimeout(() => {
-            setIsLoading(false)
-            // onClose?.()
-        }, 1000)
+            const res = await loginUser({ email, password })
+            
+            console.log('✅ Login exitoso:', res)
+            setSuccessMessage(res.message || 'Login exitoso')
+            
+            // Limpiar formulario
+            setTimeout(() => {
+                setEmail('')
+                setPassword('')
+                // onClose?.()
+            }, 1500)
         } catch (error) {
-        setIsLoading(false)
-        console.error('Login error:', error)
-        setError('Login failed')
+            console.error('❌ Error en login:', error)
+            setError(error.message || 'Error al iniciar sesión')
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -186,6 +197,16 @@ const Login = ({ onClose, onSignUpClick }) => {
                 className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm"
               >
                 {error}
+              </motion.div>
+            )}
+            
+            {successMessage && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg text-sm"
+              >
+                {successMessage}
               </motion.div>
             )}
             

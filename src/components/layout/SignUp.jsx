@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff } from 'lucide-react'
+import { registerUser } from '../../services/authService'
 
 const SignUp = ({ onClose, onLoginClick }) => {
   const [fullName, setFullName] = useState('')
@@ -11,28 +12,49 @@ const SignUp = ({ onClose, onLoginClick }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [passwordError, setPasswordError] = useState('')
+  const [apiError, setApiError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setPasswordError('')
+    e.preventDefault();
+    setPasswordError('');
+    setApiError('');
+    setSuccessMessage('');
+    
+    console.log('📝 Iniciando registro con:', { fullName, email });
     
     // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
-      setPasswordError('Las contraseñas no coinciden')
-      return
+      setPasswordError('Las contraseñas no coinciden');
+      return;
     }
-
-    setIsLoading(true)
+    
+    setIsLoading(true);
     try {
-      console.log('SignUp attempt:', { fullName, email, password, confirmPassword })
+      const res = await registerUser({
+        name: fullName,
+        email,
+        password,
+        confirmPassword,
+      });
+      
+      console.log('✅ Registro exitoso:', res);
+      setSuccessMessage(res.message || 'Usuario registrado exitosamente');
+      
+      // Limpiar formulario solo después de éxito
       setTimeout(() => {
-        setIsLoading(false)
-      }, 1000)
+        setFullName('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+      }, 2000);
     } catch (error) {
-      setIsLoading(false)
-      console.error('SignUp error:', error)
+      console.error('❌ Error en registro:', error);
+      setApiError(error.message || 'Error al registrar usuario');
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <motion.div
@@ -44,6 +66,16 @@ const SignUp = ({ onClose, onLoginClick }) => {
       <p className="text-gray-600 text-center mb-6">Join us today and get started</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {apiError && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-sm text-center">
+            {apiError}
+          </motion.p>
+        )}
+        {successMessage && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-green-600 text-sm text-center">
+            {successMessage}
+          </motion.p>
+        )}
         {/* Full Name Field */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
