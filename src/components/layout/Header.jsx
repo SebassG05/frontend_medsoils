@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { Menu, X, ChevronDown, LogOut, Settings } from 'lucide-react'
 import Login from './Login'
@@ -16,6 +16,7 @@ const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const userMenuRef = useRef(null)
   const location = useLocation()
+  const navigate = useNavigate()
   const { scrollY } = useScroll()
   
   const logoUrl = "https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp"
@@ -273,7 +274,7 @@ const Header = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.06, ease: 'easeOut' }}
-                        className="absolute right-0 mt-4 w-60 bg-white rounded-2xl shadow-2xl border-2 border-orange-400 overflow-hidden z-50"
+                        className="absolute left-1/2 -translate-x-1/2 mt-4 w-70 bg-white rounded-2xl shadow-2xl border-2 border-orange-400 overflow-hidden z-50"
                       >
                         <div className="px-4 py-4 bg-gradient-to-br from-orange-50 to-white border-b border-gray-100 flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-bold text-base shadow">
@@ -286,6 +287,7 @@ const Header = () => {
                         </div>
                         <motion.button
                           whileHover={{ backgroundColor: '#fff7ed' }}
+                          onClick={() => { setIsUserMenuOpen(false); navigate('/settings') }}
                           className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition-colors cursor-pointer"
                         >
                           <Settings className="w-4 h-4 text-orange-400" />
