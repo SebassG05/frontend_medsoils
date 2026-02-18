@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 export async function registerUser({ name, email, password, confirmPassword }) {
   try {
     console.log('🔄 Enviando petición de registro a:', `${API_URL.replace(/\/$/, '')}/auth/register`);
-    console.log('📦 Datos:', { name, email });
+    console.log('📦 Datos completos:', { name, email, password: '***', confirmPassword: '***', passwordLength: password?.length, confirmPasswordLength: confirmPassword?.length });
     
     const response = await fetch(`${API_URL.replace(/\/$/, '')}/auth/register`, {
       method: 'POST',
@@ -15,10 +15,15 @@ export async function registerUser({ name, email, password, confirmPassword }) {
     });
     
     const data = await response.json();
-    console.log('📥 Respuesta del servidor:', { status: response.status, data });
+    console.log('📥 Respuesta del servidor:', { status: response.status, data: JSON.stringify(data) });
     
     if (!response.ok) {
-      const errorMessage = data.message || data.errors?.[0]?.msg || 'Error al registrar usuario';
+      // Si hay errores de validación, mostrarlos todos
+      if (data.errors && Array.isArray(data.errors)) {
+        const errorMessages = data.errors.map(err => `${err.field}: ${err.message}`).join(', ');
+        throw new Error(errorMessages);
+      }
+      const errorMessage = data.message || 'Error al registrar usuario';
       throw new Error(errorMessage);
     }
     
