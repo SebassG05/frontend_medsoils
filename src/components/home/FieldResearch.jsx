@@ -13,7 +13,7 @@ const itemVariants = {
 }
 
 const imageVariants = {
-  hidden: { opacity: 0, x: 30 },
+  hidden: { opacity: 0, x: -30 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: 'easeOut' } },
 }
 
@@ -22,8 +22,8 @@ const FieldResearch = () => {
 <section className="relative bg-gradient-to-b from-white to-gray-50 py-8 md:py-16 overflow-hidden">
 
       {/* Decoración fondo */}
-      <div className="absolute top-1/2 right-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-cyan-50 rounded-full blur-3xl opacity-30 -translate-x-1/2 translate-y-1/2 pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-72 h-72 bg-cyan-50 rounded-full blur-3xl opacity-30 translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
       <motion.div
         className="container mx-auto px-4 max-w-6xl relative z-10"
@@ -34,8 +34,29 @@ const FieldResearch = () => {
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-          {/* Texto izquierda */}
-          <div className="flex flex-col gap-6 order-2 lg:order-1">
+          {/* Imagen izquierda */}
+          <motion.div
+            variants={imageVariants}
+            className="order-1 flex justify-center lg:justify-start"
+          >
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+              className="relative group max-w-md w-full"
+            >
+              {/* Resplandor naranja */}
+              <div className="absolute -inset-1 bg-gradient-to-br from-orange-400 via-orange-300 to-transparent rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300 pointer-events-none" />
+              <img
+                src="https://res.cloudinary.com/dktr2wcto/image/upload/v1771414397/PXL_20250116_100504904_h79t0q.jpg"
+                alt="Field research — MEDSOILS CHALLENGE"
+                className="relative w-full rounded-3xl shadow-2xl object-cover h-80 md:h-96"
+                loading="lazy"
+              />
+            </motion.div>
+          </motion.div>
+
+          {/* Texto derecha */}
+          <div className="flex flex-col gap-6 order-2">
             <motion.p
               variants={itemVariants}
               className="text-sm font-semibold text-orange-500 uppercase tracking-widest"
@@ -47,11 +68,7 @@ const FieldResearch = () => {
               variants={itemVariants}
               className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
             >
-              <span className="text-orange-500">Hands-on</span>
-              <br />
-              Research in the
-              <br />
-              Mediterranean
+              <span className="text-orange-500">Hands-on</span> Research in the Mediterranean
             </motion.h2>
 
             <motion.p
@@ -75,27 +92,6 @@ const FieldResearch = () => {
               </motion.div>
             </motion.div>
           </div>
-
-          {/* Imagen derecha */}
-          <motion.div
-            variants={imageVariants}
-            className="order-1 lg:order-2 flex justify-center lg:justify-end"
-          >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
-              className="relative group max-w-md w-full"
-            >
-              {/* Resplandor naranja */}
-              <div className="absolute -inset-1 bg-gradient-to-br from-orange-400 via-orange-300 to-transparent rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300 pointer-events-none" />
-              <img
-                src="https://res.cloudinary.com/dktr2wcto/image/upload/v1771414397/PXL_20250116_100504904_h79t0q.jpg"
-                alt="Field research — MEDSOILS CHALLENGE"
-                className="relative w-full rounded-3xl shadow-2xl object-cover h-80 md:h-96"
-                loading="lazy"
-              />
-            </motion.div>
-          </motion.div>
 
         </div>
       </motion.div>
