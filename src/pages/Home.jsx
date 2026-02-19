@@ -1,5 +1,5 @@
 import React from "react"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, GraduationCap, Globe, Microscope, Sprout, Lightbulb } from 'lucide-react'
@@ -13,6 +13,8 @@ import FieldResearch from '../components/home/FieldResearch'
 const Home = () => {
   const [activeCard, setActiveCard] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
+  const borderRectRef = useRef(null)
+  const [perimeter, setPerimeter] = useState(3200)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -21,6 +23,18 @@ const Home = () => {
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
+    const measure = () => {
+      if (borderRectRef.current) {
+        const len = borderRectRef.current.getTotalLength()
+        if (len > 0) setPerimeter(len)
+      }
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
   }, [])
 
   const containerVariants = {
@@ -333,6 +347,92 @@ const Home = () => {
 
       {/* Sección IUSS Endorsement */}
       <IussEndorsement />
+
+      {/* Sección Blog CTA */}
+      <section className="relative bg-white py-12 sm:py-16 md:py-24 overflow-hidden">
+        {/* Inner glow — animated orange radial pulse */}
+        <motion.div
+          animate={{ opacity: [0.55, 1, 0.55], scale: [1, 1.15, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 75% 65% at 50% 50%, rgba(251,146,60,0.85) 0%, rgba(251,146,60,0.4) 45%, rgba(251,146,60,0.1) 70%, transparent 100%)',
+          }}
+        />
+        {/* Travelling border line — measured perimeter for seamless loop */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ overflow: 'hidden' }}>
+          <motion.rect
+            ref={borderRectRef}
+            x="16" y="12"
+            width="calc(100% - 32px)" height="calc(100% - 24px)"
+            fill="none"
+            stroke="rgba(251,146,60,0.95)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            rx="16"
+            strokeDasharray={`480 ${perimeter - 480}`}
+            animate={{ strokeDashoffset: [0, -perimeter] }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
+          />
+        </svg>
+        {/* Decorative blobs */}
+        <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100 rounded-full blur-3xl opacity-30 -mr-32 md:-mr-48 -mt-32 md:-mt-48"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 md:w-72 md:h-72 bg-cyan-50 rounded-full blur-3xl opacity-20 -ml-24 md:-ml-36 -mb-24 md:-mb-36"></div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-100px' }}
+          variants={containerVariants}
+          className="container mx-auto px-6 sm:px-8 max-w-2xl md:max-w-4xl relative z-10 text-center"
+        >
+          {/* Badge */}
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-3 sm:px-4 py-1.5 mb-5 sm:mb-6">
+            <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
+            <span className="text-xs font-semibold text-orange-500 uppercase tracking-widest">Latest updates</span>
+          </motion.div>
+
+          <motion.h2 variants={itemVariants} className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-5 leading-tight">
+            Stay up to date with<br />
+            <span className="text-orange-500">our Blog</span>
+          </motion.h2>
+
+          <motion.p variants={itemVariants} className="text-gray-500 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-sm sm:max-w-xl mx-auto">
+            Research findings, field reports and insights from the MedSoils community — straight from our scientists and partners.
+          </motion.p>
+
+          {/* Stats row */}
+          <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 mb-8 sm:mb-10">
+            {[
+              { value: '40+', label: 'Articles published' },
+              { value: '12', label: 'Expert authors' },
+              { value: '4', label: 'Countries covered' },
+            ].map((stat) => (
+              <div key={stat.label} className="flex flex-col items-center min-w-[80px]">
+                <span className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-500">{stat.value}</span>
+                <span className="text-xs text-gray-400 mt-0.5 uppercase tracking-wide text-center">{stat.label}</span>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* CTA button */}
+          <motion.div variants={itemVariants} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="relative inline-block">
+            <motion.span
+              animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute inset-0 rounded-full bg-orange-400 blur-xl -z-10"
+            />
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white font-semibold text-sm px-8 sm:px-10 py-3.5 sm:py-4 rounded-full shadow-md shadow-orange-200 hover:shadow-lg hover:shadow-orange-300 transition-all duration-300"
+            >
+              Read all articles
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
+        </motion.div>
+      </section>
 
       {/* Sección Field Research */}
       <FieldResearch />

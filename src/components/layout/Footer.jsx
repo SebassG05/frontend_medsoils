@@ -20,9 +20,9 @@ const Footer = () => {
             <motion.img 
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3 }}
-              src="https://res.cloudinary.com/dktr2wcto/image/upload/v1771245191/cropped-LOGO_PRUEBA_urasd9.webp" 
+              src="https://res.cloudinary.com/dktr2wcto/image/upload/v1771418407/cropped-LOGO_PRUEBA_bjjula.webp" 
               alt="medsoils Challenge"
-              className="h-14 sm:h-16 w-auto"
+              className="h-7 sm:h-8 w-auto object-contain"
             />
             <p className="text-center text-sm sm:text-base leading-relaxed text-gray-600 font-[Nunito Sans]">
               Join <span className="text-orange-500 font-semibold">International Specialization Course</span> designed to enhance the skills of future <span className="text-orange-500 font-semibold">soil scientists</span>, preparing them to address the challenges of climate change in the Mediterranean.
