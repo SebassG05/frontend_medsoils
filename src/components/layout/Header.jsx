@@ -62,6 +62,18 @@ const Header = () => {
     return () => window.removeEventListener('storage', loadUser)
   }, [])
 
+  // Escuchar eventos globales para abrir modales desde otras páginas
+  useEffect(() => {
+    const openLogin  = () => setIsLoginOpen(true)
+    const openSignUp = () => setIsSignUpOpen(true)
+    window.addEventListener('medsoil:open-login',   openLogin)
+    window.addEventListener('medsoil:open-signup', openSignUp)
+    return () => {
+      window.removeEventListener('medsoil:open-login',   openLogin)
+      window.removeEventListener('medsoil:open-signup', openSignUp)
+    }
+  }, [])
+
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (e) => {
