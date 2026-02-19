@@ -14,7 +14,9 @@ const Home = () => {
   const [activeCard, setActiveCard] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const borderRectRef = useRef(null)
+  const blogCardRef = useRef(null)
   const [perimeter, setPerimeter] = useState(3200)
+  const [cardSize, setCardSize] = useState({ w: 1200, h: 320 })
 
   useEffect(() => {
     const checkMobile = () => {
@@ -23,6 +25,16 @@ const Home = () => {
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
+    if (!blogCardRef.current) return
+    const ro = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect
+      setCardSize({ w: Math.round(width), h: Math.round(height) })
+    })
+    ro.observe(blogCardRef.current)
+    return () => ro.disconnect()
   }, [])
 
   useEffect(() => {
@@ -35,7 +47,7 @@ const Home = () => {
     measure()
     window.addEventListener('resize', measure)
     return () => window.removeEventListener('resize', measure)
-  }, [])
+  }, [cardSize])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -349,87 +361,112 @@ const Home = () => {
       <IussEndorsement />
 
       {/* Sección Blog CTA */}
-      <section className="relative bg-white py-12 sm:py-16 md:py-24 overflow-hidden">
-        {/* Inner glow — static orange radial */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse 55% 55% at 50% 50%, rgba(251,146,60,0.75) 0%, rgba(251,146,60,0.35) 45%, rgba(251,146,60,0.08) 70%, transparent 100%)',
-          }}
-        />
-        {/* Travelling border line — measured perimeter for seamless loop */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ overflow: 'hidden' }}>
-          <motion.rect
-            ref={borderRectRef}
-            x="16" y="12"
-            width="calc(100% - 32px)" height="calc(100% - 24px)"
-            fill="none"
-            stroke="rgba(251,146,60,0.95)"
-            strokeWidth="2"
-            strokeLinecap="round"
-            rx="16"
-            strokeDasharray={`480 ${perimeter - 480}`}
-            animate={{ strokeDashoffset: [0, -perimeter] }}
-            transition={{ duration: 18, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
-          />
-        </svg>
-        {/* Decorative blobs */}
-        <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-orange-100 rounded-full blur-3xl opacity-30 -mr-32 md:-mr-48 -mt-32 md:-mt-48"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 md:w-72 md:h-72 bg-cyan-50 rounded-full blur-3xl opacity-20 -ml-24 md:-ml-36 -mb-24 md:-mb-36"></div>
-
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={containerVariants}
-          className="container mx-auto px-6 sm:px-8 max-w-2xl md:max-w-4xl relative z-10 text-center"
-        >
-          {/* Badge */}
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-3 sm:px-4 py-1.5 mb-5 sm:mb-6">
-            <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
-            <span className="text-xs font-semibold text-orange-500 uppercase tracking-widest">Latest updates</span>
-          </motion.div> 
-
-          <motion.h2 variants={itemVariants} className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-5 leading-tight">
-            Stay up to date with<br />
-            <span className="text-orange-500">our Blog</span>
-          </motion.h2>
-
-          <motion.p variants={itemVariants} className="text-gray-500 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-sm sm:max-w-xl mx-auto">
-            Research findings, field reports and insights from the MedSoils community — straight from our scientists and partners.
-          </motion.p>
-
-          {/* Stats row */}
-          <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 mb-8 sm:mb-10">
-            {[
-              { value: '40+', label: 'Articles published' },
-              { value: '12', label: 'Expert authors' },
-              { value: '4', label: 'Countries covered' },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center min-w-[80px]">
-                <span className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-500">{stat.value}</span>
-                <span className="text-xs text-gray-400 mt-0.5 uppercase tracking-wide text-center">{stat.label}</span>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* CTA button */}
-          <motion.div variants={itemVariants} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="relative inline-block">
-            <motion.span
-              animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute inset-0 rounded-full bg-orange-400 blur-xl -z-10"
+      <section className="relative bg-white py-12 sm:py-16 md:py-24 flex items-center justify-center">
+        <div className="relative w-full max-w-6xl mx-auto px-6 sm:px-8">
+          <div ref={blogCardRef} className="relative rounded-2xl overflow-hidden">
+            {/* Dotted subtle background pattern */}
+            <div
+              className="absolute inset-0 pointer-events-none rounded-2xl opacity-[0.035]"
+              style={{
+                backgroundImage: 'radial-gradient(circle, #f97316 1px, transparent 1px)',
+                backgroundSize: '28px 28px',
+              }}
             />
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white font-semibold text-sm px-8 sm:px-10 py-3.5 sm:py-4 rounded-full shadow-md shadow-orange-200 hover:shadow-lg hover:shadow-orange-300 transition-all duration-300"
+            {/* Inner glow — animated orange radial pulse */}
+            <motion.div
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute inset-0 pointer-events-none rounded-2xl"
+              style={{
+                background:
+                  'radial-gradient(ellipse 55% 70% at 50% 50%, rgba(251,146,60,0.12) 0%, rgba(251,146,60,0.05) 50%, transparent 80%)',
+              }}
+            />
+
+            {/* Travelling border line — using real pixel dimensions */}
+            <svg
+              className="absolute inset-0 pointer-events-none"
+              width={cardSize.w}
+              height={cardSize.h}
+              style={{ overflow: 'visible' }}
             >
-              Read all articles
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </motion.div>
-        </motion.div>
+              <defs>
+                <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="rgba(251,146,60,0.3)" />
+                  <stop offset="40%" stopColor="rgba(251,146,60,0.9)" />
+                  <stop offset="100%" stopColor="rgba(251,146,60,0.3)" />
+                </linearGradient>
+              </defs>
+              <motion.rect
+                ref={borderRectRef}
+                x="1" y="1"
+                width={cardSize.w - 2}
+                height={cardSize.h - 2}
+                fill="none"
+                stroke="url(#orangeGradient)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                rx="16"
+                strokeDasharray={`320 ${perimeter - 320}`}
+                animate={{ strokeDashoffset: [0, -perimeter] }}
+                transition={{ duration: 14, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
+              />
+            </svg>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-100px' }}
+              variants={containerVariants}
+              className="relative z-10 text-center py-8 sm:py-10 md:py-12 px-8 sm:px-16 md:px-20"
+            >
+              {/* Badge */}
+              <motion.div variants={itemVariants} className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-orange-200/50 rounded-full px-4 py-2 mb-6 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
+                <span className="text-xs font-semibold text-orange-600 uppercase tracking-widest">Latest updates</span>
+              </motion.div>
+
+              <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-5 leading-tight">
+                Stay up to date with<br />
+                <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">our Blog</span>
+              </motion.h2>
+
+              <motion.p variants={itemVariants} className="text-gray-600 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+                Research findings, field reports and insights from the MedSoils community — straight from our scientists and partners.
+              </motion.p>
+
+              {/* Stats row */}
+              <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-8 md:gap-16 mb-10">
+                {[
+                  { value: '40+', label: 'Articles published' },
+                  { value: '12', label: 'Expert authors' },
+                  { value: '4', label: 'Countries covered' },
+                ].map((stat) => (
+                  <div key={stat.label} className="flex flex-col items-center min-w-[100px]">
+                    <span className="text-3xl md:text-4xl font-bold bg-gradient-to-br from-orange-500 to-orange-600 bg-clip-text text-transparent">{stat.value}</span>
+                    <span className="text-xs text-gray-500 mt-1 uppercase tracking-wider text-center font-medium">{stat.label}</span>
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* CTA button */}
+              <motion.div variants={itemVariants} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.98 }} className="relative inline-block">
+                <motion.span
+                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute inset-0 rounded-full bg-orange-300 blur-2xl"
+                />
+                <Link
+                  to="/blog"
+                  className="relative inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold text-sm px-10 py-4 rounded-full shadow-lg shadow-orange-200/50 hover:shadow-xl hover:shadow-orange-300/50 transition-all duration-300"
+                >
+                  Read all articles
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Sección Field Research */}
