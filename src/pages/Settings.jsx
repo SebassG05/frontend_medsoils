@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { KeyRound, ChevronRight, CheckCircle2 } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
 const Settings = () => {
+  const navigate = useNavigate()
   const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -24,7 +26,7 @@ const Settings = () => {
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'Something went wrong')
       setSent(true)
-      setTimeout(() => setSent(false), 4000)
+      setTimeout(() => navigate('/'), 2000)
     } catch (err) {
       setError(err.message)
     } finally {
