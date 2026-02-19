@@ -105,7 +105,8 @@ const SoilQuizBanner = () => {
           <motion.div variants={itemVariants}>
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
               <Link
-                to="/quiz"
+                to="/try"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-10 py-4 rounded-full font-semibold text-base shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-shadow group"
               >
                 Try it now
