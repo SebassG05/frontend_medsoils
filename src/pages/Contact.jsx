@@ -255,7 +255,7 @@ const Contact = () => {
           </span>
           <h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 mb-4">
             Contact{' '}
-            <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+            <span className="text-orange-500">
               Us
             </span>
           </h1>
