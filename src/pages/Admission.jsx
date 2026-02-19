@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion'
+import Footer from '../components/layout/Footer'
 
 const Admission = () => {
   return (
+    <>
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -19,6 +21,8 @@ const Admission = () => {
         </div>
       </div>
     </motion.div>
+    <Footer />
+    </>
   )
 }
 

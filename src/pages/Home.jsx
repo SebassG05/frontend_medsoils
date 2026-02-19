@@ -350,14 +350,12 @@ const Home = () => {
 
       {/* Sección Blog CTA */}
       <section className="relative bg-white py-12 sm:py-16 md:py-24 overflow-hidden">
-        {/* Inner glow — animated orange radial pulse */}
-        <motion.div
-          animate={{ opacity: [0.55, 1, 0.55], scale: [1, 1.15, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        {/* Inner glow — static orange radial */}
+        <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 75% 65% at 50% 50%, rgba(251,146,60,0.85) 0%, rgba(251,146,60,0.4) 45%, rgba(251,146,60,0.1) 70%, transparent 100%)',
+              'radial-gradient(ellipse 55% 55% at 50% 50%, rgba(251,146,60,0.75) 0%, rgba(251,146,60,0.35) 45%, rgba(251,146,60,0.08) 70%, transparent 100%)',
           }}
         />
         {/* Travelling border line — measured perimeter for seamless loop */}
@@ -391,7 +389,7 @@ const Home = () => {
           <motion.div variants={itemVariants} className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-3 sm:px-4 py-1.5 mb-5 sm:mb-6">
             <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
             <span className="text-xs font-semibold text-orange-500 uppercase tracking-widest">Latest updates</span>
-          </motion.div>
+          </motion.div> 
 
           <motion.h2 variants={itemVariants} className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-5 leading-tight">
             Stay up to date with<br />
