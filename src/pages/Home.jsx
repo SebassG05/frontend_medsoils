@@ -397,20 +397,23 @@ const Home = () => {
                   <stop offset="100%" stopColor="rgba(251,146,60,0.3)" />
                 </linearGradient>
               </defs>
-              <motion.rect
-                ref={borderRectRef}
-                x="1" y="1"
-                width={cardSize.w - 2}
-                height={cardSize.h - 2}
-                fill="none"
-                stroke="url(#orangeGradient)"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                rx="16"
-                strokeDasharray={`320 ${perimeter - 320}`}
-                animate={{ strokeDashoffset: [0, -perimeter] }}
-                transition={{ duration: 14, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
-              />
+              {[0, 0.25, 0.5, 0.75].map((offset, i) => (
+                <motion.rect
+                  key={i}
+                  ref={i === 0 ? borderRectRef : undefined}
+                  x="1" y="1"
+                  width={cardSize.w - 2}
+                  height={cardSize.h - 2}
+                  fill="none"
+                  stroke="url(#orangeGradient)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  rx="16"
+                  strokeDasharray={`${perimeter * 0.08} ${perimeter * 0.92}`}
+                  animate={{ strokeDashoffset: [-offset * perimeter, -(offset + 1) * perimeter] }}
+                  transition={{ duration: 14, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
+                />
+              ))}
             </svg>
 
             <motion.div
