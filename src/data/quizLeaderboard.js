@@ -52,12 +52,15 @@ function getToken() {
  * Save (or conditionally improve) the current user's result.
  * Server only updates when the new attempt is strictly better.
  *
- * @param {{ score: number, totalTime: number }} result
+ * @param {{ score: number, totalTime: number, alias?: string }} result
  * @returns {Promise<{ rank: number|null, saved: boolean }>}
  */
-export async function saveResult({ score, totalTime }) {
+export async function saveResult({ score, totalTime, alias }) {
   const token = getToken()
   if (!token) throw new Error('Not authenticated')
+
+  const body = { score, totalTime }
+  if (alias && alias.trim().length > 0) body.alias = alias.trim().toUpperCase()
 
   const res = await fetch(`${API_URL}/quiz/result`, {
     method: 'POST',
@@ -65,7 +68,7 @@ export async function saveResult({ score, totalTime }) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ score, totalTime }),
+    body: JSON.stringify(body),
   })
 
   const json = await res.json()
@@ -93,10 +96,47 @@ export async function getLeaderboard(limit = 5) {
   return data
 }
 
+/**
+ * Get the authenticated user's own quiz result (or null if none).
+ * @returns {Promise<object|null>}
+ */
+export async function getMyResult() {
+  const token = getToken()
+  if (!token) return null
+
+  const res = await fetch(`${API_URL}/quiz/result/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+
+  const json = await res.json()
+  if (!res.ok) return null
+  return json.data ?? null
+}
+
 /** Format seconds as "Xs" or "Xm Ys" */
 export function formatTime(seconds) {
   if (seconds < 60) return `${Math.round(seconds)}s`
   const m = Math.floor(seconds / 60)
   const s = Math.round(seconds % 60)
   return `${m}m ${s}s`
+}
+
+/**
+ * Delete the authenticated user's quiz result.
+ * @returns {Promise<{ deleted: boolean }>}
+ */
+export async function deleteResult() {
+  const token = getToken()
+  if (!token) throw new Error('Not authenticated')
+
+  const res = await fetch(`${API_URL}/quiz/result`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.message || 'Failed to delete result')
+
+  bustCache()
+  return { deleted: json.data.deleted }
 }

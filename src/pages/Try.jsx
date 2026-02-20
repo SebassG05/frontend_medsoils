@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion'
-import { ArrowLeft, ArrowRight, RotateCcw, CheckCircle2, XCircle, Trophy, Leaf, BookOpen, Clock, Lock, LogIn, UserPlus, Medal } from 'lucide-react'
+import { ArrowLeft, ArrowRight, RotateCcw, CheckCircle2, XCircle, Trophy, Leaf, BookOpen, Clock, Lock, LogIn, UserPlus, Medal, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { buildSession, QUESTIONS_PER_SESSION } from '../data/quizQuestions'
-import { saveResult, getLeaderboard, formatTime } from '../data/quizLeaderboard'
+import { saveResult, getLeaderboard, formatTime, deleteResult, getMyResult } from '../data/quizLeaderboard'
 
 const TIMER_DURATION = 15 // seconds per question
 
@@ -131,10 +131,12 @@ const LeaderboardRow = ({ entry, index, currentUser }) => {
   )
 }
 
-const Leaderboard = ({ currentUser, refreshKey }) => {
+const Leaderboard = ({ currentUser, refreshKey, onDelete }) => {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
   const [error,   setError  ] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -186,6 +188,56 @@ const Leaderboard = ({ currentUser, refreshKey }) => {
             {entries.map((e, i) => (
               <LeaderboardRow key={e._id ?? i} entry={e} index={i} currentUser={currentUser} />
             ))}
+          </div>
+        )}
+
+        {/* Delete my record */}
+        {onDelete && currentUser && (
+          <div className="mt-5 pt-4 border-t border-gray-100 flex justify-center">
+            {!confirmDelete ? (
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setConfirmDelete(true)}
+                className="cursor-pointer inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-500 transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Delete my record
+              </motion.button>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center gap-2"
+              >
+                <p className="text-xs text-gray-500 font-medium">Are you sure? This cannot be undone.</p>
+                <div className="flex gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    onClick={async () => {
+                      setDeleting(true)
+                      await onDelete()
+                      setDeleting(false)
+                      setConfirmDelete(false)
+                    }}
+                    disabled={deleting}
+                    className="cursor-pointer inline-flex items-center gap-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm disabled:opacity-60 transition-colors"
+                  >
+                    {deleting
+                      ? <span className="w-3 h-3 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                      : <Trash2 className="w-3 h-3" />}
+                    Yes, delete it
+                  </motion.button>
+                  <button
+                    onClick={() => setConfirmDelete(false)}
+                    className="cursor-pointer text-xs text-gray-400 hover:text-gray-600 border border-gray-200 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </motion.div>
+            )}
           </div>
         )}
       </div>
@@ -292,21 +344,38 @@ const Try = () => {
     return () => window.removeEventListener('storage', sync)
   }, [])
 
-  const [session, setSession]   = useState([])
-  const [phase, setPhase]       = useState('start')   // 'start' | 'quiz' | 'result'
-  const [current, setCurrent]   = useState(0)
-  const [selected, setSelected] = useState(null)      // chosen option string
-  const [revealed, setRevealed] = useState(false)     // show correct/wrong colours
-  const [answers, setAnswers]   = useState([])        // { correct: bool, timeout?: bool }[]
-  const [rank, setRank]         = useState(null)      // leaderboard rank after quiz
-  const [lbKey, setLbKey]       = useState(0)         // bump to refresh Leaderboard
-  const timerProgress           = useMotionValue(1)   // 1 = full, 0 = empty
-  const animCtrlRef             = useRef(null)
-  const quizStartRef            = useRef(null)        // timestamp when quiz began
+  const [session, setSession]     = useState([])
+  const [phase, setPhase]         = useState('start')   // 'start' | 'quiz' | 'result'
+  const [current, setCurrent]     = useState(0)
+  const [selected, setSelected]   = useState(null)      // chosen option string
+  const [revealed, setRevealed]   = useState(false)     // show correct/wrong colours
+  const [answers, setAnswers]     = useState([])        // { correct: bool, timeout?: bool }[]
+  const [rank, setRank]           = useState(null)      // leaderboard rank after quiz
+  const [lbKey, setLbKey]         = useState(0)         // bump to refresh Leaderboard
+  const [hasRecord, setHasRecord] = useState(false)     // whether user has a leaderboard entry
+  const [alias, setAlias]         = useState('')        // user 3-char tag for leaderboard
+  const [chars, setChars]         = useState(['', '', '']) // individual letter boxes
+  const [scoreSaved, setScoreSaved] = useState(false)   // whether score has been submitted
+  const [saving, setSaving]       = useState(false)     // loading state for save button
+  const [anonChoice, setAnonChoice] = useState(null)   // null | 'yes' | 'no'
+  const pendingTimeRef            = useRef(null)        // total quiz time, set on result
+  const timerProgress             = useMotionValue(1)   // 1 = full, 0 = empty
+  const animCtrlRef               = useRef(null)
+  const quizStartRef              = useRef(null)        // timestamp when quiz began
+  const boxRef0                   = useRef(null)
+  const boxRef1                   = useRef(null)
+  const boxRef2                   = useRef(null)
+  const boxRefs                   = [boxRef0, boxRef1, boxRef2]
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
+
+  // ── Check if user already has a record on mount / user change ────
+  useEffect(() => {
+    if (!user) { setHasRecord(false); return }
+    getMyResult().then((r) => setHasRecord(!!r)).catch(() => setHasRecord(false))
+  }, [user])
 
   // ── Timer ───────────────────────────────────────────────────
   useEffect(() => {
@@ -341,6 +410,11 @@ const Try = () => {
     setRevealed(false)
     setAnswers([])
     setRank(null)
+    setAlias('')
+    setChars(['', '', ''])
+    setScoreSaved(false)
+    setAnonChoice(null)
+    pendingTimeRef.current = null
     quizStartRef.current = Date.now()
     setPhase('quiz')
   }, [])
@@ -367,19 +441,63 @@ const Try = () => {
   const score  = answers.filter((a) => a.correct).length
   const result = getResult(score, QUESTIONS_PER_SESSION)
 
-  // ── Save result when quiz ends ─────────────────────────────
+  // ── Capture total time when quiz ends ────────────────────────────────────
   useEffect(() => {
-    if (phase !== 'result' || !user || !quizStartRef.current) return
-    const totalTime = (Date.now() - quizStartRef.current) / 1000
-    quizStartRef.current = null // prevent double-save on re-render
-    saveResult({ score, totalTime })
-      .then(({ rank, saved }) => {
-        setRank(rank)
-        if (saved) setLbKey((k) => k + 1) // only refresh lb when saved
-      })
-      .catch(console.error)
+    if (phase !== 'result' || !quizStartRef.current) return
+    pendingTimeRef.current = (Date.now() - quizStartRef.current) / 1000
+    quizStartRef.current = null
+    setAlias('')
+    setChars(['', '', ''])
+    setScoreSaved(false)
+    setAnonChoice(null)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
+
+  // ── Auto-save with real name when user chooses NOT to be anonymous ────────
+  useEffect(() => {
+    if (anonChoice !== 'no' || scoreSaved || saving) return
+    handleSaveScore()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anonChoice])
+
+  // ── Manual save triggered by the alias form ────────────────
+  const handleSaveScore = useCallback(async () => {
+    if (!user || pendingTimeRef.current === null || saving) return
+    const finalAlias = chars.join('')
+    setSaving(true)
+    try {
+      const { rank: r } = await saveResult({
+        score,
+        totalTime: pendingTimeRef.current,
+        alias: finalAlias.length === 3 ? finalAlias : undefined,
+      })
+      setRank(r)
+      setScoreSaved(true)
+      setHasRecord(true)
+      setLbKey((k) => k + 1) // always refresh so the new name/alias appears
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setSaving(false)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chars, score, saving, user])
+
+  // ── Delete record ─────────────────────────────────────────────
+  const handleDeleteRecord = useCallback(async () => {
+    try {
+      await deleteResult()
+      setRank(null)
+      setHasRecord(false)
+      setScoreSaved(false)
+      setAnonChoice(null)
+      setChars(['', '', ''])
+      setAlias('')
+      setLbKey((k) => k + 1)
+    } catch (e) {
+      console.error(e)
+    }
+  }, [])
 
   // ── Guard: show auth gate if not logged in ────────────────
   if (!user) return <AuthGate />
@@ -431,7 +549,7 @@ const Try = () => {
         </motion.div>
 
         {/* Leaderboard */}
-        <Leaderboard currentUser={user?.name} refreshKey={lbKey} />
+        <Leaderboard currentUser={user?.name} refreshKey={lbKey} onDelete={hasRecord ? handleDeleteRecord : undefined} />
       </Shell>
     )
   }
@@ -519,6 +637,159 @@ const Try = () => {
               ))}
             </div>
 
+            {/* ── Leaderboard save flow ────────────────────────────── */}
+            <div className="mb-8">
+              {scoreSaved ? (
+
+                /* ── Step 3: confirmation ──────────────────────────────── */
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center gap-2"
+                >
+                  <div className="inline-flex items-center gap-2 text-sm font-semibold text-green-700 bg-green-50 border border-green-200 px-5 py-2.5 rounded-full shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    Score saved as{' '}
+                    <span className="tracking-widest font-extrabold">
+                      {chars.join('') || user?.name?.split(' ')[0]}
+                    </span>
+                  </div>
+                  {rank && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      You are currently <strong className="text-gray-600">#{rank}</strong> on the leaderboard
+                    </p>
+                  )}
+                </motion.div>
+
+              ) : anonChoice === null ? (
+
+                /* ── Step 1: ask if user wants to be anonymous ─────────── */
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mx-auto max-w-sm bg-gray-50 border border-gray-100 rounded-2xl px-6 py-5 flex flex-col items-center gap-4 shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                    <Trophy className="w-5 h-5 text-orange-500" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-bold text-gray-800 mb-0.5">Save to Leaderboard</p>
+                    <p className="text-xs text-gray-400">How do you want to appear?</p>
+                  </div>
+                  <div className="flex flex-col gap-2.5 w-full">
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -3, boxShadow: '0 8px 24px rgba(251,146,60,0.18)' }}
+                      whileTap={{ scale: 0.97, y: 0 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      onClick={() => {
+                        setAnonChoice('yes')
+                        setTimeout(() => boxRef0.current?.focus(), 50)
+                      }}
+                      className="cursor-pointer w-full flex items-center justify-center border-2 border-orange-300 text-orange-600 font-semibold text-sm px-5 py-3 rounded-xl hover:bg-orange-50 transition-colors"
+                    >
+                      Anonymous tag
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -3, boxShadow: '0 8px 24px rgba(234,88,12,0.28)' }}
+                      whileTap={{ scale: 0.97, y: 0 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      onClick={() => setAnonChoice('no')}
+                      disabled={saving}
+                      className="cursor-pointer w-full flex items-center justify-center bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold text-sm px-5 py-3 rounded-xl shadow-md shadow-orange-200/60 disabled:opacity-60"
+                    >
+                      {saving
+                        ? <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                        : 'Use my name'}
+                    </motion.button>
+                  </div>
+                </motion.div>
+
+              ) : (
+
+                /* ── Step 2: alias input ────────────────────────────────── */
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mx-auto max-w-sm bg-gray-50 border border-gray-100 rounded-2xl px-6 py-5 flex flex-col items-center gap-5 shadow-sm"
+                >
+                  {/* Header */}
+                  <div className="text-center">
+                    <p className="text-sm font-bold text-gray-800 mb-0.5">Choose your tag</p>
+                    <p className="text-xs text-gray-400">3 letters or numbers — this is how you'll appear on the leaderboard</p>
+                  </div>
+
+                  {/* 3 Letter boxes */}
+                  <div className="flex items-center justify-center gap-3">
+                    {[0, 1, 2].map((i) => (
+                      <input
+                        key={i}
+                        ref={boxRefs[i]}
+                        type="text"
+                        inputMode="text"
+                        maxLength={1}
+                        value={chars[i]}
+                        placeholder={['A', 'B', 'C'][i]}
+                        onChange={(e) => {
+                          const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(-1)
+                          const next = [...chars]
+                          next[i] = v
+                          setChars(next)
+                          setAlias(next.join(''))
+                          if (v && i < 2) boxRefs[i + 1].current?.focus()
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Backspace' && !chars[i] && i > 0) {
+                            boxRefs[i - 1].current?.focus()
+                          }
+                          if (e.key === 'Enter' && chars.join('').length === 3) handleSaveScore()
+                        }}
+                        className={`w-14 h-14 text-center text-2xl font-extrabold tracking-widest rounded-xl border-2 outline-none uppercase transition-all ${
+                          chars[i]
+                            ? 'border-orange-400 bg-orange-50 text-orange-600 shadow-md shadow-orange-100'
+                            : 'border-gray-200 bg-white text-gray-800 focus:border-orange-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Progress dots */}
+                  <div className="flex gap-1.5">
+                    {[0, 1, 2].map((i) => (
+                      <span
+                        key={i}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          chars[i] ? 'bg-orange-400' : 'bg-gray-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Action row */}
+                  <div className="flex flex-col items-center gap-2 w-full">
+                    <motion.button
+                      whileHover={{ scale: 1.03, y: -1 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={handleSaveScore}
+                      disabled={saving || chars.join('').length !== 3}
+                      className="cursor-pointer w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold text-sm py-3 rounded-xl shadow-md shadow-orange-200/60 disabled:opacity-50 transition-opacity"
+                    >
+                      {saving
+                        ? <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                        : <Trophy className="w-4 h-4" />}
+                      Save to leaderboard
+                    </motion.button>
+                    <button
+                      onClick={() => { setAnonChoice(null); setChars(['', '', '']); setAlias('') }}
+                      className="cursor-pointer flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <ArrowLeft className="w-3 h-3" /> Back
+                    </button>
+                  </div>
+                </motion.div>
+
+              )}
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <motion.button
                 whileHover={{ scale: 1.04, y: -2 }}
@@ -540,7 +811,7 @@ const Try = () => {
         </motion.div>
 
         {/* Leaderboard */}
-        <Leaderboard currentUser={user?.name} refreshKey={lbKey} />
+        <Leaderboard currentUser={alias || user?.name} refreshKey={lbKey} onDelete={hasRecord ? handleDeleteRecord : undefined} />
       </Shell>
     )
   }
