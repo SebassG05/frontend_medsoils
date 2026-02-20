@@ -68,6 +68,7 @@ const COUNTRIES = [
 const ENQUIRY_TYPES = [
   { value: 'General enquiry', label: 'General enquiry' },
   { value: 'Application / Admission', label: 'Application / Admission' },
+  { value: 'Enrollment', label: 'Enrollment' },
   { value: 'Scholarships', label: 'Scholarships' },
   { value: 'Academic partnership', label: 'Academic partnership' },
   { value: 'Media / Press', label: 'Media / Press' },

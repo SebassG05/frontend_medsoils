@@ -1,6 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import Header from './components/layout/Header'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname])
+  return null
+}
 import Home from './pages/Home'
 import About from './pages/About'
 import Admission from './pages/Admission'
@@ -16,6 +25,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <Router>
+        <ScrollToTop />
         <div className="min-h-screen bg-white">
           <Header />
           <main className="pt-24">
