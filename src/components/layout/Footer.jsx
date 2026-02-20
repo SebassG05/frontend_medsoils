@@ -1,8 +1,42 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 
 const Footer = () => {
+  const [user, setUser] = useState(null)
+  const loginFromFooter = React.useRef(false)
+
+  useEffect(() => {
+    const loadUser = () => {
+      const stored = localStorage.getItem('user')
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          setUser(prev => {
+            // If user just logged in and it was triggered from footer, scroll to top
+            if (!prev && parsed && loginFromFooter.current) {
+              loginFromFooter.current = false
+              setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 300)
+            }
+            return parsed
+          })
+        } catch { setUser(null) }
+      } else {
+        setUser(null)
+      }
+    }
+    loadUser()
+    window.addEventListener('storage', loadUser)
+    return () => window.removeEventListener('storage', loadUser)
+  }, [])
+
+  const handleLoginClick = (e) => {
+    e.preventDefault()
+    loginFromFooter.current = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.dispatchEvent(new Event('medsoil:open-login'))
+  }
+
   return (
     <footer className="bg-white border-t border-gray-100/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
@@ -108,12 +142,14 @@ const Footer = () => {
                   About the programm
                 </a>
               </li>
-              <li>
-                <a href="#" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
-                  <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Login
-                </a>
-              </li>
+              {!user && (
+                <li>
+                  <a href="#" onClick={handleLoginClick} className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
+                    <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
+                    Login
+                  </a>
+                </li>
+              )}
             </ul>
           </motion.div>
 
