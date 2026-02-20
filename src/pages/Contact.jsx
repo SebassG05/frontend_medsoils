@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, User, Mail, MessageSquare, MapPin, Phone, Clock, CheckCircle, Globe, Tag, FileText } from 'lucide-react'
 import Select from 'react-select'
@@ -68,7 +68,6 @@ const COUNTRIES = [
 const ENQUIRY_TYPES = [
   { value: 'General enquiry', label: 'General enquiry' },
   { value: 'Application / Admission', label: 'Application / Admission' },
-  { value: 'Enrollment', label: 'Enrollment' },
   { value: 'Scholarships', label: 'Scholarships' },
   { value: 'Academic partnership', label: 'Academic partnership' },
   { value: 'Media / Press', label: 'Media / Press' },
@@ -134,7 +133,8 @@ const InputField = ({ id, label, icon: Icon, type = 'text', placeholder, value, 
 
 const Contact = () => {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '', country: null, enquiryType: null, enquiryOther: '' })
+  const { state } = useLocation()
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '', country: null, enquiryType: state?.enquiryType ?? null, enquiryOther: '' })
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)

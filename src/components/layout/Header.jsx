@@ -74,6 +74,12 @@ const Header = () => {
     }
   }, [])
 
+  // Close login modal and notify listeners
+  const closeLoginModal = () => {
+    setIsLoginOpen(false)
+    window.dispatchEvent(new Event('medsoil:login-closed'))
+  }
+
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -151,6 +157,7 @@ const Header = () => {
       localStorage.removeItem('refreshToken')
       setUser(null)
       setIsUserMenuOpen(false)
+      window.dispatchEvent(new Event('storage'))
     }
   }
 
@@ -475,7 +482,7 @@ const Header = () => {
           >
             {/* Close Button */}
             <motion.button
-              onClick={() => setIsLoginOpen(false)}
+              onClick={closeLoginModal}
               whileHover={{ rotate: 90 }}
               transition={{ duration: 0.2 }}
               className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -491,9 +498,9 @@ const Header = () => {
               transition={{ delay: 0.1, duration: 0.3 }}
             >
               <Login 
-                onClose={() => setIsLoginOpen(false)}
+                onClose={closeLoginModal}
                 onSignUpClick={() => {
-                  setIsLoginOpen(false)
+                  closeLoginModal()
                   setIsSignUpOpen(true)
                 }}
               />
