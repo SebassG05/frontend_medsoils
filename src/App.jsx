@@ -18,9 +18,10 @@ import Contact from './pages/Contact'
 import Settings from './pages/Settings'
 import ResetPassword from './pages/ResetPassword'
 import Try from './pages/Try'
+import AboutProgram from './pages/AboutProgram'
 
 function App() {
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE'
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
@@ -38,6 +39,8 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/try" element={<Try />} />
+              <Route path="/about-program" element={<AboutProgram />} />
+              <Route path="*" element={<Home />} />
             </Routes>
           </main>
         </div>

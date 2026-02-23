@@ -470,7 +470,7 @@ const Header = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/50 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -478,7 +478,7 @@ const Header = () => {
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full relative"
+            className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl p-5 sm:p-8 max-w-md w-full relative max-h-[92vh] overflow-y-auto"
           >
             {/* Close Button */}
             <motion.button
@@ -518,7 +518,7 @@ const Header = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/50 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -526,7 +526,7 @@ const Header = () => {
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full relative"
+            className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 max-w-md w-full relative max-h-[92vh] overflow-y-auto"
           >
             {/* Close Button */}
             <motion.button
