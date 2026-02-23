@@ -186,62 +186,18 @@ const Contact = () => {
 
   return (
     <>
-    <div className="min-h-screen bg-white py-20 px-4 relative overflow-hidden">
-      {/* Blob background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Cyan blob 1 — back: large triangular/shield shape */}
-        <svg
-          className="absolute -top-16 -right-16 w-[820px] h-[820px] opacity-[0.22]"
-          viewBox="0 0 800 800"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill="#7dd3d8"
-            d="M680,60
-               C740,110 770,210 760,330
-               C750,450 690,560 590,630
-               C490,700 360,720 250,680
-               C140,640 70,540 50,410
-               C30,280 90,150 200,90
-               C280,50 370,30 470,40
-               C570,50 640,30 680,60Z"
-          />
-        </svg>
-        {/* Cyan blob 2 — front: rounder, tighter, slightly more opaque */}
-        <svg
-          className="absolute -top-24 right-0 w-[600px] h-[600px] opacity-[0.30]"
-          viewBox="0 0 600 600"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill="#a5f3fc"
-            d="M570,90
-               C615,155 620,270 585,375
-               C550,480 470,560 370,588
-               C270,615 160,580 100,500
-               C40,420 45,300 80,200
-               C115,100 210,38 330,28
-               C450,18 530,30 570,90Z"
-          />
-        </svg>
-        {/* Cyan blob 3 — bottom-left accent */}
-        <svg
-          className="absolute -bottom-24 -left-24 w-[480px] h-[480px] opacity-[0.14]"
-          viewBox="0 0 480 480"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill="#67e8f9"
-            d="M420,80
-               C460,140 460,240 420,320
-               C380,400 290,450 200,440
-               C110,430 40,360 20,270
-               C0,180 50,80 140,40
-               C200,15 280,10 350,30
-               C400,45 400,50 420,80Z"
-          />
-        </svg>
-      </div>
+    <div
+      className="min-h-screen py-20 px-4 relative overflow-hidden"
+      style={{
+        backgroundImage: 'url(https://res.cloudinary.com/dktr2wcto/image/upload/v1771832033/1_knigij.png)',
+        backgroundSize: '100%',
+        backgroundPosition: 'top right',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-white/40" />
+      {/* ─────────────────────────────────────────────────────────────── */}
 
       <motion.div
         variants={containerVariants}

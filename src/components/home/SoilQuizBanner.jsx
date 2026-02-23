@@ -29,8 +29,8 @@ const SoilQuizBanner = () => {
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,0 L0,0 Z" fill="#fff7ed" opacity="0.5"/>
-        <path d="M0,55 C360,10 720,80 1080,30 C1260,10 1380,50 1440,55 L1440,0 L0,0 Z" fill="#ffedd5" opacity="0.3"/>
+        <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,0 L0,0 Z" fill="#c8f1f4" opacity="0.5"/>
+        <path d="M0,55 C360,10 720,80 1080,30 C1260,10 1380,50 1440,55 L1440,0 L0,0 Z" fill="#dcf6f8" opacity="0.3"/>
       </svg>
 
       {/* Onda horizontal inferior */}
@@ -40,12 +40,12 @@ const SoilQuizBanner = () => {
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M0,40 C240,0 480,80 720,40 C960,0 1200,80 1440,40 L1440,80 L0,80 Z" fill="#fff7ed" opacity="0.5"/>
-        <path d="M0,25 C360,70 720,10 1080,50 C1260,70 1380,30 1440,25 L1440,80 L0,80 Z" fill="#ffedd5" opacity="0.3"/>
+        <path d="M0,40 C240,0 480,80 720,40 C960,0 1200,80 1440,40 L1440,80 L0,80 Z" fill="#c8f1f4" opacity="0.5"/>
+        <path d="M0,25 C360,70 720,10 1080,50 C1260,70 1380,30 1440,25 L1440,80 L0,80 Z" fill="#dcf6f8" opacity="0.3"/>
       </svg>
 
       {/* Mancha central difusa muy suave */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-orange-100 rounded-full blur-[100px] opacity-50 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-sky-100 rounded-full blur-[100px] opacity-50 pointer-events-none" />
 
       {/* Contenido */}
       <motion.div
