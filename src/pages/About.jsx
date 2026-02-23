@@ -82,12 +82,51 @@ const About = () => {
 
         {/* ── INTRODUCTION ─────────────────────────────────────────────── */}
         <motion.section
-          className="relative bg-orange-50 py-16 px-6 overflow-hidden"
+          className="relative py-20 px-6 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #fff7ed 0%, #fff3e0 40%, #fef9f0 70%, #ffffff 100%)',
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
         >
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
+          {/* ── Decorative blobs ── */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full opacity-30"
+            style={{
+              background: 'radial-gradient(circle, #fb923c 0%, transparent 70%)',
+              filter: 'blur(60px)',
+            }}
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-20 -right-20 w-80 h-80 rounded-full opacity-20"
+            style={{
+              background: 'radial-gradient(circle, #f97316 0%, transparent 70%)',
+              filter: 'blur(50px)',
+            }}
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10"
+            style={{
+              background: 'radial-gradient(circle, #fdba74 0%, transparent 65%)',
+              filter: 'blur(80px)',
+            }}
+          />
+
+          {/* ── Dot grid ── */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-[0.035]"
+            style={{
+              backgroundImage: 'radial-gradient(circle, #92400e 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
+            }}
+          />
+
+          <div className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
             {/* Image — slide in from left */}
             <motion.div
               className="flex-shrink-0 order-2 md:order-1 w-[200px] sm:w-[260px] md:w-[360px] mx-auto md:mx-0"
@@ -260,6 +299,15 @@ const About = () => {
           </div>
         </section>
       </div>
+
+      {/* ── Footer accent line ── */}
+      <div
+        aria-hidden="true"
+        className="h-[3px] w-full"
+        style={{
+          background: 'linear-gradient(90deg, transparent 0%, #f97316 30%, #fb923c 60%, transparent 100%)',
+        }}
+      />
 
       <Footer />
     </>
