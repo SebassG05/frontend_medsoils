@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import Footer from '../components/layout/Footer'
 
+const ease = [0.16, 1, 0.3, 1]
+
 const Flag = ({ code, alt }) => (
   <motion.img
     src={`https://flagcdn.com/w40/${code}.png`}
@@ -81,215 +83,278 @@ const About = () => {
       <div className="min-h-screen bg-white overflow-hidden">
 
         {/* ── INTRODUCTION ─────────────────────────────────────────────── */}
-        <motion.section
-          className="relative py-20 px-6 overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, #fff7ed 0%, #fff3e0 40%, #fef9f0 70%, #ffffff 100%)',
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
+        <section
+          className="relative overflow-hidden"
+          style={{ background: 'linear-gradient(160deg, #ffffff 0%, #f8fafc 60%, #ffffff 100%)' }}
         >
-          {/* ── Decorative blobs ── */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full opacity-30"
-            style={{
-              background: 'radial-gradient(circle, #fb923c 0%, transparent 70%)',
-              filter: 'blur(60px)',
-            }}
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -bottom-20 -right-20 w-80 h-80 rounded-full opacity-20"
-            style={{
-              background: 'radial-gradient(circle, #f97316 0%, transparent 70%)',
-              filter: 'blur(50px)',
-            }}
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10"
-            style={{
-              background: 'radial-gradient(circle, #fdba74 0%, transparent 65%)',
-              filter: 'blur(80px)',
-            }}
-          />
+          {/* Orange orb top-right */}
+          <div className="absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 65%)' }} />
 
-          {/* ── Dot grid ── */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage: 'radial-gradient(circle, #92400e 1px, transparent 1px)',
-              backgroundSize: '28px 28px',
-            }}
-          />
+          {/* Cyan orb bottom-left */}
+          <div className="absolute -bottom-32 -left-32 w-[550px] h-[550px] rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(14,165,233,0.05) 0%, transparent 65%)' }} />
 
-          <div className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
-            {/* Image — slide in from left */}
+          {/* Dot pattern — top-left */}
+          <motion.svg className="absolute top-10 left-10 pointer-events-none" width="130" height="130" viewBox="0 0 130 130"
+            initial={{ opacity: 0 }} animate={{ opacity: 0.15 }} transition={{ duration: 1, delay: 0.4 }}>
+            {Array.from({ length: 5 }).map((_, row) => Array.from({ length: 5 }).map((_, col) => (
+              <circle key={`${row}-${col}`} cx={col * 26 + 13} cy={row * 26 + 13} r="2" fill="#f97316" />
+            )))}
+          </motion.svg>
+
+          {/* Dot pattern — bottom-right */}
+          <motion.svg className="absolute bottom-10 right-10 pointer-events-none" width="130" height="130" viewBox="0 0 130 130"
+            initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} transition={{ duration: 1, delay: 0.6 }}>
+            {Array.from({ length: 5 }).map((_, row) => Array.from({ length: 5 }).map((_, col) => (
+              <circle key={`${row}-${col}`} cx={col * 26 + 13} cy={row * 26 + 13} r="2" fill="#0ea5e9" />
+            )))}
+          </motion.svg>
+
+          {/* Thin orange accent line — top, draws L→R */}
+          <motion.div className="absolute top-0 left-0 right-0 h-[3px] bg-orange-500 origin-left"
+            initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
+            transition={{ duration: 1.1, ease, delay: 0.15 }} />
+
+          {/* Content */}
+          <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 flex flex-col lg:flex-row items-center gap-14 lg:gap-20">
+
+            {/* ── LEFT: Image ── */}
             <motion.div
-              className="flex-shrink-0 order-2 md:order-1 w-[200px] sm:w-[260px] md:w-[360px] mx-auto md:mx-0"
-              variants={fadeLeft}
-              custom={0}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              whileHover={{ scale: 1.02, rotate: 1 }}
-              transition={{ type: 'spring', stiffness: 200 }}
+              className="flex-shrink-0 w-[220px] sm:w-[260px] lg:w-[300px] relative mt-10"
+              initial={{ opacity: 0, x: -48, filter: 'blur(6px)' }}
+              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.9, ease, delay: 0.3 }}
             >
+              {/* Angled accent block behind */}
+              <div
+                className="absolute inset-0 rounded-3xl pointer-events-none"
+                style={{
+                  background: 'linear-gradient(135deg, #dcf6f8 0%, #edfcfd 100%)',
+                  transform: 'rotate(4deg) scale(1.04)',
+                  zIndex: 0,
+                }}
+              />
+              {/* Second layer — orange tint, opposite angle */}
+              <div
+                className="absolute inset-0 rounded-3xl pointer-events-none"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(249,115,22,0.12) 0%, transparent 60%)',
+                  transform: 'rotate(-3deg) scale(1.02)',
+                  zIndex: 0,
+                }}
+              />
+
+              {/* Image */}
               <img
                 src="https://res.cloudinary.com/dktr2wcto/image/upload/v1771502757/suelo2_qif9y9.webp"
                 alt="Soil layers cross section"
-                className="w-full rounded-2xl shadow-xl object-cover"
+                className="relative w-full rounded-2xl shadow-2xl object-cover"
+                style={{ zIndex: 1, paddingTop: '15%' }}
               />
+
+              {/* Vertical orange bar left edge */}
+              <div className="absolute -left-3 top-8 bottom-8 w-1 bg-orange-500 rounded-full" style={{ zIndex: 2 }} />
             </motion.div>
 
-            {/* Text — slide in from right */}
-            <motion.div
-              className="flex-1 order-1 md:order-2"
-              variants={fadeRight}
-              custom={0.15}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-            >
-              <motion.p
-                className="text-sm font-bold tracking-widest text-orange-500 uppercase mb-3"
-                initial={{ opacity: 0, letterSpacing: '0.05em' }}
-                whileInView={{ opacity: 1, letterSpacing: '0.15em' }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                MEDSOILS – CHALLENGE
-              </motion.p>
+            {/* ── RIGHT: Text ── */}
+            <div className="flex-1 min-w-0 pt-6 lg:pt-0">
+
+              {/* Badge */}
+              <motion.div className="inline-flex items-center gap-2 mb-8"
+                initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.65, ease, delay: 0.4 }}>
+                <span className="h-px w-8 bg-orange-500" />
+                <span className="text-[11px] font-bold tracking-[0.22em] text-orange-500 uppercase">Medsoils – Challenge</span>
+              </motion.div>
+
+              {/* Title */}
               <motion.h2
-                className="text-3xl font-bold text-gray-800 mb-5"
-                variants={fadeUp}
-                custom={0.25}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
+                className="text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold text-gray-900 leading-[1.05] mb-5"
+                initial={{ opacity: 0, y: 28, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.85, ease, delay: 0.5 }}
               >
-                Introduction
+                Intro<span className="text-orange-500">duction</span>
               </motion.h2>
+
+              {/* Underline bars */}
+              <motion.div className="flex items-center gap-3 mb-8" style={{ transformOrigin: 'left center' }}
+                initial={{ opacity: 0, scaleX: 0 }} animate={{ opacity: 1, scaleX: 1 }}
+                transition={{ duration: 0.55, ease, delay: 0.65 }}>
+                <div className="h-[3px] w-12 bg-orange-500 rounded-full" />
+                <div className="h-[3px] w-4 bg-orange-200 rounded-full" />
+              </motion.div>
+
+              {/* Description */}
               <motion.p
-                className="text-gray-700 leading-relaxed text-justify"
-                variants={fadeUp}
-                custom={0.35}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
+                className="text-gray-600 leading-relaxed text-[18px] max-w-xl text-justify"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease, delay: 0.75 }}
               >
-                The <strong className="text-orange-500">MEDSOILS CHALLENGE</strong> project arises from the urgent need to address
-                the complex and interconnected challenges that soils face in the <strong className="text-orange-500">Mediterranean region</strong>,
+                The <strong className="text-gray-900">MEDSOILS CHALLENGE</strong> project arises from the urgent need to address
+                the complex and interconnected challenges that soils face in the{' '}
+                <strong className="text-orange-500">Mediterranean region</strong>,
                 exacerbated by climate change. This project aims to develop a new generation of soil
                 experts equipped with interdisciplinary training and an integrated approach to designing
                 and implementing innovative and sustainable long-term solutions.
               </motion.p>
-            </motion.div>
+
+            </div>
           </div>
-        </motion.section>
+        </section>
 
         {/* ── MOBILITY ─────────────────────────────────────────────────── */}
-        <section className="py-16 px-6 bg-white">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <section className="relative py-24 px-6 overflow-hidden bg-white">
 
-            {/* Left column */}
-            <motion.div
-              variants={fadeLeft}
-              custom={0}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              <h2 className="text-2xl font-bold text-gray-800 mb-5 leading-snug">
-                <span className="text-orange-500">Mobility:</span> learning through experience across four countries
-              </h2>
-              <p className="text-gray-600 leading-relaxed mb-4 text-justify">
-                One of the most enriching aspects of the <strong className="text-orange-500">MEDSOILS CHALLENGE Master</strong> is its international
-                mobility pathway, allowing students to{' '}
-                <strong>experience soil science in real-life contexts</strong> across four different
-                European countries.
-              </p>
-              <p className="text-gray-600 leading-relaxed text-justify">
-                Throughout the academic year, students will take part in{' '}
-                <strong className="text-orange-500">four short-term mobility stays</strong>, each lasting approximately{' '}
-                <strong>5 to 7 days</strong>. These on-site periods are carefully scheduled between{' '}
-                <strong>January and June 2027</strong>, providing a perfect complement to the online
-                components of the programme.
-              </p>
+          {/* Orb top-right */}
+          <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 65%)' }} />
+
+          {/* Orb bottom-left */}
+          <div className="absolute -bottom-24 -left-24 w-[500px] h-[500px] rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(14,165,233,0.05) 0%, transparent 65%)' }} />
+
+          {/* Dot pattern top-right */}
+          <motion.svg className="absolute top-10 right-10 pointer-events-none" width="120" height="120" viewBox="0 0 120 120"
+            initial={{ opacity: 0 }} whileInView={{ opacity: 0.13 }} transition={{ duration: 0.8, delay: 0.3 }} viewport={{ once: true }}>
+            {Array.from({ length: 4 }).map((_, r) => Array.from({ length: 4 }).map((_, c) => (
+              <circle key={`${r}-${c}`} cx={c * 30 + 15} cy={r * 30 + 15} r="2" fill="#f97316" />
+            )))}
+          </motion.svg>
+
+          <div className="max-w-6xl mx-auto relative z-10">
+
+            {/* Badge + title */}
+            <motion.div className="inline-flex items-center gap-2 mb-8"
+              initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease }} viewport={{ once: true }}>
+              <span className="h-px w-8 bg-orange-500" />
+              <span className="text-[11px] font-bold tracking-[0.22em] text-orange-500 uppercase">International Experience</span>
             </motion.div>
 
-            {/* Right column — each paragraph staggers in */}
-            <div className="space-y-5">
-              {[
-                <>The journey begins in <strong className="inline-flex items-center gap-1 text-orange-500">Turkey <Flag code="tr" alt="Turkey" /></strong> (January 2027), where students will engage in <strong>hands-on fieldwork</strong>, including erosion assessments, sampling techniques and data collection in rural settings.</>,
-                <>The second mobility takes place in <strong className="inline-flex items-center gap-1 text-orange-500">Spain <Flag code="es" alt="Spain" /></strong> (February 2027), focusing on <strong>agro-environmental indicators and land evaluation</strong>. Here, participants will visit farms, take part in soil lab analyses and work alongside local experts and stakeholders.</>,
-                <>In March, the group moves to <strong className="inline-flex items-center gap-1 text-orange-500">Slovenia <Flag code="si" alt="Slovenia" /></strong>, where attention shifts to <strong>soil governance, policy development and sustainable management practices</strong>. This stay includes seminars with policymakers, local organisations and applied case studies.</>,
-                <>Finally, in <strong className="inline-flex items-center gap-1 text-orange-500">Italy <Flag code="it" alt="Italy" /></strong> (June 2027), students will attend the programme's closing conference, defend their final group projects, and participate in innovation-focused workshops hosted by the Università della Tuscia.</>,
-              ].map((text, i) => (
-                <motion.p
-                  key={i}
-                  className="text-gray-600 leading-relaxed text-justify"
-                  variants={fadeRight}
-                  custom={i * 0.12}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
-                >
-                  {text}
-                </motion.p>
-              ))}
+            <motion.h2
+              className="text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-gray-900 leading-[1.08] mb-5"
+              initial={{ opacity: 0, y: 28, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.85, ease, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              Mobility: <span className="text-orange-500">learning</span> through experience
+            </motion.h2>
+
+            <motion.div className="flex items-center gap-3 mb-12" style={{ transformOrigin: 'left center' }}
+              initial={{ opacity: 0, scaleX: 0 }} whileInView={{ opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.55, ease, delay: 0.25 }} viewport={{ once: true }}>
+              <div className="h-[3px] w-12 bg-orange-500 rounded-full" />
+              <div className="h-[3px] w-4 bg-orange-200 rounded-full" />
+            </motion.div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+
+              {/* Left column */}
+              <motion.div
+                initial={{ opacity: 0, x: -32 }} whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.75, ease, delay: 0.15 }} viewport={{ once: true, amount: 0.2 }}>
+                <p className="text-gray-600 leading-relaxed mb-5 text-[17px] text-justify">
+                  One of the most enriching aspects of the <strong className="text-gray-900">MEDSOILS CHALLENGE Master</strong> is its international
+                  mobility pathway, allowing students to{' '}
+                  <strong className="text-gray-900">experience soil science in real-life contexts</strong> across four different
+                  European countries.
+                </p>
+                <p className="text-gray-600 leading-relaxed text-[17px] text-justify">
+                  Throughout the academic year, students will take part in{' '}
+                  <strong className="text-orange-500">four short-term mobility stays</strong>, each lasting approximately{' '}
+                  <strong className="text-gray-900">5 to 7 days</strong>. These on-site periods are carefully scheduled between{' '}
+                  <strong className="text-gray-900">January and June 2027</strong>, providing a perfect complement to the online
+                  components of the programme.
+                </p>
+              </motion.div>
+
+              {/* Right column — staggered paragraphs */}
+              <div className="space-y-5">
+                {[
+                  <>The journey begins in <strong className="inline-flex items-center gap-1 text-orange-500">Turkey <Flag code="tr" alt="Turkey" /></strong> (January 2027), where students will engage in <strong className="text-gray-900">hands-on fieldwork</strong>, including erosion assessments, sampling techniques and data collection in rural settings.</>,
+                  <>The second mobility takes place in <strong className="inline-flex items-center gap-1 text-orange-500">Spain <Flag code="es" alt="Spain" /></strong> (February 2027), focusing on <strong className="text-gray-900">agro-environmental indicators and land evaluation</strong>. Participants visit farms, conduct soil lab analyses and work alongside local experts.</>,
+                  <>In March, the group moves to <strong className="inline-flex items-center gap-1 text-orange-500">Slovenia <Flag code="si" alt="Slovenia" /></strong>, where attention shifts to <strong className="text-gray-900">soil governance, policy development and sustainable management practices</strong>, including seminars with policymakers and applied case studies.</>,
+                  <>Finally, in <strong className="inline-flex items-center gap-1 text-orange-500">Italy <Flag code="it" alt="Italy" /></strong> (June 2027), students attend the closing conference, defend their final group projects, and participate in innovation-focused workshops hosted by the Università della Tuscia.</>,
+                ].map((text, i) => (
+                  <motion.p key={i} className="text-gray-600 leading-relaxed text-[17px] text-justify"
+                    initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease, delay: i * 0.1 }}
+                    viewport={{ once: true, amount: 0.2 }}>
+                    {text}
+                  </motion.p>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
         {/* ── MOBILITY TABLE ───────────────────────────────────────────── */}
-        <section className="pb-20 px-6 bg-white">
-          <div className="max-w-4xl mx-auto">
+        <section className="relative pb-28 pt-4 px-6 overflow-hidden bg-white">
+
+          {/* Subtle bottom orb */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse, rgba(249,115,22,0.05) 0%, transparent 70%)' }} />
+
+          <div className="max-w-6xl mx-auto relative z-10">
+
+            <motion.div className="inline-flex items-center gap-2 mb-6"
+              initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease }} viewport={{ once: true }}>
+              <span className="h-px w-8 bg-orange-500" />
+              <span className="text-[11px] font-bold tracking-[0.22em] text-orange-500 uppercase">Schedule</span>
+            </motion.div>
+
             <motion.h3
-              className="text-2xl font-bold text-center text-gray-800 mb-8"
-              variants={fadeUp}
-              custom={0}
-              initial="hidden"
-              whileInView="visible"
+              className="text-3xl md:text-4xl lg:text-[2.8rem] font-extrabold text-gray-900 mb-3"
+              initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.75, ease, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              Face<span className="text-orange-500">-</span>to<span className="text-orange-500">-</span>Face Mobility Weeks{' '}
-              <span className="text-orange-500 font-semibold">(16 ECTS)</span>
+              Face-to-Face <span className="text-orange-500">Mobility Weeks</span>{' '}
+              <span className="text-gray-400 font-semibold text-[1.6rem]">(16 ECTS)</span>
             </motion.h3>
+
+            <motion.div className="flex items-center gap-3 mb-10" style={{ transformOrigin: 'left center' }}
+              initial={{ opacity: 0, scaleX: 0 }} whileInView={{ opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.5, ease, delay: 0.25 }} viewport={{ once: true }}>
+              <div className="h-[3px] w-12 bg-orange-500 rounded-full" />
+              <div className="h-[3px] w-4 bg-orange-200 rounded-full" />
+            </motion.div>
 
             <motion.div
               className="rounded-2xl overflow-hidden shadow-xl border border-gray-100"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
+              transition={{ duration: 0.6, ease, delay: 0.15 }}
             >
               {/* Table head */}
-              <div className="grid grid-cols-3 bg-gradient-to-r from-orange-400 to-orange-600 text-white text-sm font-bold uppercase tracking-wider">
+              <div className="grid grid-cols-3 text-white text-sm font-bold uppercase tracking-wider"
+                style={{ background: 'linear-gradient(90deg, #ea580c 0%, #f97316 50%, #fb923c 100%)' }}>
                 <div className="px-6 py-4">Where</div>
                 <div className="px-6 py-4">When</div>
                 <div className="px-6 py-4">Notes</div>
               </div>
 
-              {/* Table body */}
               {mobilityRows.map((row, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: i * 0.1, ease: 'easeOut' }}
+                  transition={{ duration: 0.45, delay: 0.2 + i * 0.1, ease: 'easeOut' }}
                   whileHover={{ backgroundColor: 'rgba(255,237,213,0.5)', x: 4 }}
                   className={`grid grid-cols-3 text-sm border-t border-gray-100 transition-colors duration-150 ${
                     i % 2 === 0 ? 'bg-white' : 'bg-gray-50/60'
                   }`}
                 >
                   <div className="px-6 py-4 font-semibold text-gray-800 flex items-center gap-2">
-                    {row.flag}
-                    {row.place}
+                    {row.flag}{row.place}
                   </div>
                   <div className="px-6 py-4 text-gray-600">{row.when}</div>
                   <div className="px-6 py-4 text-gray-500">{row.notes}</div>
