@@ -71,6 +71,7 @@ const Footer = () => {
               <motion.img
                 src="https://cdn-icons-png.flaticon.com/512/20/20673.png"
                 alt="Facebook"
+                onClick={() => window.open("https://www.facebook.com/MedsoilChallenge/", "_blank")}
                 className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer hover:opacity-80"
                 whileHover={{ scale: 1.2, rotate: 10 }}
                 transition={{ duration: 0.3 }}
@@ -90,8 +91,9 @@ const Footer = () => {
                 transition={{ duration: 0.3 }}
               />
               <motion.img
-                src="https://pngimg.com/d/youtube_button_PNG27.png"
+                src="https://res.cloudinary.com/dktr2wcto/image/upload/v1771847203/4401412_jloto0.png"
                 alt="YouTube"
+                onClick={()=>{window.open('https://www.linkedin.com/company/medsoil-challenge-master?trk=public_post_feed-actor-name')}}
                 className="w-7 h-7 sm:w-8 sm:h-8 cursor-pointer hover:opacity-80"
                 whileHover={{ scale: 1.2, rotate: 10 }}
                 transition={{ duration: 0.3 }}
@@ -137,10 +139,10 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
+                <Link to="/about-program" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
                   <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  About the programm
-                </a>
+                  About the program
+                </Link>
               </li>
               {!user && (
                 <li>
