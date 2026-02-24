@@ -20,6 +20,7 @@ import Settings from './pages/Settings'
 import ResetPassword from './pages/ResetPassword'
 import Try from './pages/Try'
 import AboutProgram from './pages/AboutProgram'
+import LoginPage from './pages/LoginPage'
 
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
@@ -42,7 +43,9 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/try" element={<Try />} />
               <Route path="/about-program" element={<AboutProgram />} />
+              <Route path="/login" element={<LoginPage />} />
               <Route path="*" element={<Home />} />
+              
             </Routes>
           </main>
         </div>

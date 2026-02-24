@@ -1,6 +1,6 @@
 ﻿import { useState, useRef, useCallback, useReducer } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import ImageExt from '@tiptap/extension-image'
 import LinkExt from '@tiptap/extension-link'
@@ -18,19 +18,100 @@ import {
 } from 'lucide-react'
 
 /* ═══════════════  custom Video node  ═══════════════ */
+
+/** Normalize any video URL into an embeddable src + kind */
+function toEmbedUrl(raw) {
+  const url = raw.trim()
+  // YouTube watch  https://www.youtube.com/watch?v=ID
+  const ytWatch = url.match(/[?&]v=([\w-]{11})/)
+  if (ytWatch) return { src: `https://www.youtube.com/embed/${ytWatch[1]}`, kind: 'iframe' }
+  // YouTube short   https://youtu.be/ID
+  const ytShort = url.match(/youtu\.be\/([\w-]{11})/)
+  if (ytShort) return { src: `https://www.youtube.com/embed/${ytShort[1]}`, kind: 'iframe' }
+  // YouTube embed already
+  if (url.includes('youtube.com/embed/')) return { src: url, kind: 'iframe' }
+  // Vimeo             https://vimeo.com/ID
+  const vimeo = url.match(/vimeo\.com\/(\d+)/)
+  if (vimeo) return { src: `https://player.vimeo.com/video/${vimeo[1]}`, kind: 'iframe' }
+  // Direct video file
+  if (/\.(mp4|webm|ogg|mov)([?#]|$)/i.test(url)) return { src: url, kind: 'video' }
+  // Unknown — try iframe (handles most platforms)
+  return { src: url, kind: 'iframe' }
+}
+
+/* ─── React NodeView — shows a visual preview inside the editor ─── */
+function VideoPreview({ node, deleteNode }) {
+  const { src, kind } = node.attrs
+  const isYT  = src && src.includes('youtube.com/embed/')
+  const thumb = isYT ? `https://img.youtube.com/vi/${src.split('/embed/')[1]?.split('?')[0]}/hqdefault.jpg` : null
+
+  return (
+    <NodeViewWrapper>
+      <div
+        contentEditable={false}
+        style={{ position:'relative', margin:'0.75rem 0', borderRadius:12, overflow:'hidden',
+                 background:'#0f0f0f', aspectRatio:'16/9', width:'100%', cursor:'default' }}
+      >
+        {thumb
+          ? <img src={thumb} alt="video" style={{ width:'100%', height:'100%', objectFit:'cover', opacity:0.85 }} />
+          : <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center',
+                          background:'linear-gradient(135deg,#1a1a2e,#16213e)', minHeight:180 }}>
+              <span style={{ color:'#fff', fontSize:13, opacity:0.7 }}>{src || 'video'}</span>
+            </div>
+        }
+        {/* play icon overlay */}
+        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:56, height:56, borderRadius:'50%', background:'rgba(255,255,255,0.9)',
+                        display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 20px rgba(0,0,0,.4)' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f97316"><polygon points="5,3 19,12 5,21" /></svg>
+          </div>
+        </div>
+        {/* label */}
+        <div style={{ position:'absolute', bottom:8, left:10, background:'rgba(0,0,0,.55)',
+                      color:'#fff', fontSize:11, borderRadius:6, padding:'2px 8px' }}>
+          {kind === 'video' ? '🎬 Video' : '▶ Embedded video'}
+        </div>
+        {/* delete */}
+        <button
+          type="button"
+          onClick={deleteNode}
+          style={{ position:'absolute', top:8, right:8, background:'rgba(0,0,0,.55)', border:'none',
+                   color:'#fff', borderRadius:'50%', width:26, height:26, cursor:'pointer',
+                   display:'flex', alignItems:'center', justifyContent:'center', fontSize:14 }}
+        >×</button>
+      </div>
+    </NodeViewWrapper>
+  )
+}
+
 const VideoNode = Node.create({
   name: 'video',
   group: 'block',
   atom: true,
   addAttributes() {
-    return { src: { default: null } }
+    return {
+      src:  { default: null },
+      kind: { default: 'iframe' },   // 'iframe' | 'video'
+    }
   },
-  parseHTML() { return [{ tag: 'video[src]' }] },
+  parseHTML() { return [{ tag: 'iframe[src]' }, { tag: 'video[src]' }] },
   renderHTML({ HTMLAttributes }) {
-    return ['video', mergeAttributes(HTMLAttributes, {
-      controls: true,
-      style: 'width:100%;max-width:100%;border-radius:12px;margin:0.75rem 0;display:block',
+    const { kind, ...rest } = HTMLAttributes
+    if (kind === 'video') {
+      return ['video', mergeAttributes(rest, {
+        controls: true,
+        style: 'width:100%;max-width:100%;border-radius:12px;margin:0.75rem 0;display:block',
+      })]
+    }
+    return ['iframe', mergeAttributes(rest, {
+      frameborder: '0',
+      allowfullscreen: 'true',
+      allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+      style: 'width:100%;aspect-ratio:16/9;border-radius:12px;margin:0.75rem 0;display:block',
     })]
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(VideoPreview)
   },
 })
 
@@ -278,8 +359,9 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
   /* ─── insert video URL ─── */
   function insertVideoUrl() {
     if (!videoUrl.trim() || !editor) return
+    const { src, kind } = toEmbedUrl(videoUrl)
     editor.chain().focus().insertContent({
-      type: 'video', attrs: { src: videoUrl.trim() },
+      type: 'video', attrs: { src, kind },
     }).run()
     setVideoUrl('')
     setShowVideoInput(false)
@@ -632,6 +714,7 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
             .blog-preview-content hr { border:none;border-top:2px solid #e5e7eb;margin:2rem 0; }
             .blog-preview-content img { border-radius:12px;max-width:100%;margin:1.25rem auto;display:block;box-shadow:0 4px 24px rgba(0,0,0,.1); }
             .blog-preview-content video { border-radius:12px;max-width:100%;margin:1rem auto;display:block; }
+            .blog-preview-content iframe { border-radius:12px;width:100%;aspect-ratio:16/9;margin:1rem auto;display:block;border:none; }
           `}</style>
         </div>
       )}
@@ -658,7 +741,7 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
             value={videoUrl}
             onChange={e => setVideoUrl(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), insertVideoUrl())}
-            placeholder="Paste a video URL (YouTube embed, mp4 link…)"
+            placeholder="Paste a YouTube, Vimeo, or direct .mp4 URL…"
             className="flex-1 text-sm outline-none bg-transparent text-gray-700 placeholder-gray-400"
           />
           <button type="button" onClick={insertVideoUrl}

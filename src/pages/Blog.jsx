@@ -12,9 +12,17 @@ import { fetchBlogs, createBlog } from '../services/blogService'
 /* ─── auth guard ─── */
 function useCurrentUser() {
   const [user, setUser] = useState(null)
+
+  function sync() {
+    try { setUser(JSON.parse(localStorage.getItem('user'))) } catch { setUser(null) }
+  }
+
   useEffect(() => {
-    try { setUser(JSON.parse(localStorage.getItem('user'))) } catch { /* */ }
+    sync()
+    window.addEventListener('storage', sync)
+    return () => window.removeEventListener('storage', sync)
   }, [])
+
   return user
 }
 
@@ -54,9 +62,9 @@ function SkeletonCard({ big }) {
 }
 
 /* ─── post card ─── */
-function PostCard({ post, onClick, featured }) {
+function PostCard({ post, onClick, wide }) {
   const coverSrc = post.bannerImage || post.coverImage || firstImage(post.content)
-  const excerpt  = stripHtml(post.excerpt || post.content).slice(0, featured ? 240 : 130)
+  const excerpt  = stripHtml(post.excerpt || post.content).slice(0, wide ? 220 : 120)
   const mins     = readTime(post.content || post.excerpt || '')
 
   return (
@@ -65,22 +73,24 @@ function PostCard({ post, onClick, featured }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
-      whileHover={{ y: -5 }}
+      whileHover={{ y: -4 }}
       transition={{ duration: 0.3 }}
       onClick={onClick}
-      className={`cursor-pointer group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col ${featured ? 'md:flex-row' : ''}`}
+      className={`cursor-pointer group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden flex ${
+        wide ? 'flex-row h-56' : 'flex-col h-full'
+      }`}
     >
-      {/* cover — only shown when there's a real image */}
+      {/* cover */}
       {coverSrc && (
         <div className={`overflow-hidden bg-gray-100 shrink-0 ${
-          featured ? 'md:w-1/2 h-56 md:h-auto' : 'h-44'
+          wide ? 'w-80 h-full' : 'h-44 w-full'
         }`}>
           <img src={coverSrc} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={e => { e.currentTarget.parentElement.style.display = 'none' }} />
         </div>
       )}
 
       {/* body */}
-      <div className={`flex flex-col flex-1 ${featured ? 'p-8' : 'p-5'}`}>
+      <div className={`flex flex-col flex-1 ${wide ? 'p-7' : 'p-5'}`}>
         {/* tags */}
         {post.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-3">
@@ -92,13 +102,17 @@ function PostCard({ post, onClick, featured }) {
           </div>
         )}
 
-        <h3 className={`font-bold text-gray-800 leading-snug group-hover:text-orange-600 transition-colors ${featured ? 'text-2xl mb-3' : 'text-base mb-2 line-clamp-2'}`}>
+        <h3 className={`font-bold text-gray-800 leading-snug group-hover:text-orange-600 transition-colors ${
+          wide ? 'text-2xl mb-3' : 'text-base mb-2 line-clamp-2'
+        }`}>
           {post.title}
         </h3>
 
         {excerpt && (
-          <p className={`text-gray-500 leading-relaxed ${featured ? 'text-sm mb-4' : 'text-xs line-clamp-2 mb-3'}`}>
-            {excerpt}{excerpt.length >= (featured ? 240 : 130) ? '…' : ''}
+          <p className={`text-gray-500 leading-relaxed ${
+            wide ? 'text-sm mb-4 line-clamp-3' : 'text-xs line-clamp-2 mb-3'
+          }`}>
+            {excerpt}{excerpt.length >= (wide ? 220 : 120) ? '…' : ''}
           </p>
         )}
 
@@ -213,34 +227,11 @@ export default function Blog() {
       setPage(1)
       await loadPosts()
       setTimeout(() => setSuccessMsg(''), 4000)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } finally {
       setLoadingCreate(false)
     }
   }
-
-  /* ─── not logged in ─── */
-  if (!user) {
-    return (
-      <>
-        <div className="min-h-[70vh] flex items-center justify-center px-4">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-lg">
-            <div className="w-20 h-20 bg-orange-50 border-2 border-orange-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <BookOpen size={36} className="text-orange-400" />
-            </div>
-            <h1 className="text-4xl font-bold text-gray-800 mb-3">MedSoils Blog</h1>
-            <p className="text-gray-500 mb-8 leading-relaxed">Sign in to read and publish articles about soil science and environmental sustainability.</p>
-            <button onClick={() => navigate('/')} className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition shadow-lg shadow-orange-100">
-              Sign in to continue
-            </button>
-          </motion.div>
-        </div>
-        <Footer />
-      </>
-    )
-  }
-
-  const featured   = visible[0]
-  const rest       = visible.slice(1)
 
   return (
     <>
@@ -368,6 +359,8 @@ export default function Blog() {
           )}
         </AnimatePresence>
 
+        {/* ── toolbar + editor: only for logged-in users ── */}
+        {user && (<>
         {/* ── toolbar: tags + write button ── */}
         <div className="flex items-center gap-3 mb-8 flex-wrap">
           {/* tag pills */}
@@ -414,9 +407,35 @@ export default function Blog() {
             </motion.div>
           )}
         </AnimatePresence>
+        </>)} {/* end user-only toolbar */}
 
         {/* ── content ── */}
-        {loadingList ? (
+        {!user ? (
+          /* ─── not logged in: lock box ─── */
+          <motion.div
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-center py-20"
+          >
+            <div className="bg-white border border-orange-100 rounded-3xl shadow-xl shadow-orange-50 px-10 py-12 max-w-md w-full text-center">
+              <div className="w-16 h-16 bg-orange-50 border-2 border-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Members only</h2>
+              <p className="text-gray-500 text-sm leading-relaxed mb-7">
+                Sign in or create an account to read and publish articles in the MedSoils community.
+              </p>
+              <button
+                onClick={() => navigate('/login')}
+                className="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold rounded-xl transition shadow-lg shadow-orange-100"
+              >
+                Sign in / Register
+              </button>
+            </div>
+          </motion.div>
+        ) : loadingList ? (
           <div className="space-y-6">
             <SkeletonCard big />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -442,16 +461,16 @@ export default function Blog() {
           </motion.div>
         ) : (
           <AnimatePresence mode="popLayout">
-            {/* featured */}
-            {featured && !search && !activeTag && (
-              <motion.div key={featured._id} layout className="mb-8">
-                <PostCard post={featured} featured onClick={() => navigate(`/blog/${featured._id}`)} />
+            {/* first post — full-width horizontal */}
+            {visible[0] && (
+              <motion.div key={visible[0]._id} layout className="mb-6">
+                <PostCard post={visible[0]} wide onClick={() => navigate(`/blog/${visible[0]._id}`)} />
               </motion.div>
             )}
 
-            {/* grid */}
+            {/* rest — uniform grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(search || activeTag ? visible : rest).map((post, i) => (
+              {visible.slice(1).map((post, i) => (
                 <motion.div key={post._id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                   <PostCard post={post} onClick={() => navigate(`/blog/${post._id}`)} />
                 </motion.div>
