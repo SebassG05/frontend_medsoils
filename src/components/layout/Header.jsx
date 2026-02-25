@@ -17,6 +17,7 @@ const Header = () => {
   const userMenuRef = useRef(null)
   const location = useLocation()
   const navigate = useNavigate()
+  const isLoginRoute = location.pathname === '/login'
   const { scrollY } = useScroll()
   
   const logoUrl = "https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp"
@@ -103,6 +104,13 @@ const Header = () => {
     }
   }, [isMobileMenuOpen])
 
+  useEffect(() => {
+    if (isLoginRoute) {
+      setIsLoginOpen(false)
+      setIsSignUpOpen(false)
+    }
+  }, [isLoginRoute])
+
   const menuVariants = {
     closed: {
       opacity: 0,
@@ -159,6 +167,7 @@ const Header = () => {
       setUser(null)
       setIsUserMenuOpen(false)
       window.dispatchEvent(new Event('storage'))
+      navigate('/')
     }
   }
 
@@ -250,7 +259,8 @@ const Header = () => {
             ))}
           </motion.div>
 
-          {/* CTA Button / User Menu */}
+          {/* CTA Button / User Menu (hidden on Login page) */}
+          {!isLoginRoute && (
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -349,6 +359,7 @@ const Header = () => {
               </AnimatePresence>
             </div>
           </motion.div>
+          )}
 
           {/* Mobile Menu Button */}
           <motion.button
@@ -445,6 +456,7 @@ const Header = () => {
                     </button>
                   </div>
                 ) : (
+                  !isLoginRoute ? (
                   <motion.button
                     onClick={() => { setIsLoginOpen(true); setIsMobileMenuOpen(false) }}
                     whileHover={{ scale: 1.02 }}
@@ -454,6 +466,7 @@ const Header = () => {
                   >
                     LOGIN
                   </motion.button>
+                  ) : null
                 )}
               </motion.div>
             </div>

@@ -41,30 +41,30 @@ export default function LoginPage() {
         {/* logo */}
         <div className="relative z-10">
           <button onClick={() => navigate('/')} className="inline-flex items-center gap-2.5 group">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm ring-1 ring-white/30 group-hover:bg-white/30 transition">
-              <Leaf size={20} className="text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm ring-1 ring-white/30 group-hover:bg-white/30 transition">
+              <Leaf size={22} className="text-white" />
             </div>
-            <span className="text-white font-extrabold text-2xl tracking-tight">MedSoils</span>
+            <span className="text-white font-extrabold text-3xl tracking-tight">MedSoils</span>
           </button>
         </div>
 
         {/* headline + perks */}
         <div className="relative z-10 space-y-8">
           <div>
-            <h2 className="text-4xl font-extrabold text-white leading-tight mb-3">
+            <h2 className="text-5xl font-extrabold text-white leading-tight mb-4">
               Advancing soil<br />science together.
             </h2>
-            <p className="text-orange-100 text-sm leading-relaxed max-w-xs">
+            <p className="text-orange-100 text-lg leading-relaxed max-w-md">
               The platform built for the MEDSOILS Challenge community — researchers, educators and students.
             </p>
           </div>
           <ul className="space-y-3.5">
             {PERKS.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0 backdrop-blur-sm ring-1 ring-white/20">
-                  <Icon size={15} className="text-white" />
+              <li key={text} className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center shrink-0 backdrop-blur-sm ring-1 ring-white/20">
+                  <Icon size={18} className="text-white" />
                 </div>
-                <span className="text-white/90 text-sm">{text}</span>
+                <span className="text-white/95 text-base">{text}</span>
               </li>
             ))}
           </ul>
