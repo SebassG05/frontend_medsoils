@@ -456,6 +456,7 @@ function PdfAdminCard({ onCreated, onToast }) {
 export default function Resources() {
   const user = useCurrentUser()
   const isSuperadmin = user?.role === 'superadmin'
+  const navigate = useNavigate()
 
   const [resources,      setResources]      = useState([])
   const [loading,        setLoading]        = useState(true)
@@ -647,7 +648,32 @@ export default function Resources() {
 
       {/* ── Grid ── */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[40vh]">
-        {loading ? (
+        {!user ? (
+          /* ─── not logged in: lock box ─── */
+          <motion.div
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-center py-20"
+          >
+            <div className="bg-white border border-orange-100 rounded-3xl shadow-xl shadow-orange-50 px-10 py-12 max-w-md w-full text-center">
+              <div className="w-16 h-16 bg-orange-50 border-2 border-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Members only</h2>
+              <p className="text-gray-500 text-sm leading-relaxed mb-7">
+                Sign in or create an account to access videos, documents and other materials in the MedSoils knowledge hub.
+              </p>
+              <button
+                onClick={() => navigate('/login')}
+                className="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold rounded-xl transition shadow-lg shadow-orange-100"
+              >
+                Sign in / Register
+              </button>
+            </div>
+          </motion.div>
+        ) : loading ? (
           <div className="flex items-center justify-center py-20 text-gray-400 gap-3">
             <Loader2 size={28} className="animate-spin text-orange-400" />
             <span>Loading resources…</span>
