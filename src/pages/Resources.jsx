@@ -84,12 +84,6 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
   const rawMeta  = resource.duration || resource.pages || resource.count || ''
   const meta     = formatMeta(resource.type, rawMeta)
 
-  // For blob: or localhost URLs use direct iframe; for external public URLs use Google Docs Viewer
-  const isLocal = url => url.startsWith('blob:') || url.startsWith('data:') || /^https?:\/\/(localhost|127\.0\.0\.1)/.test(url)
-  const pdfEmbedUrl = resource.type === 'pdf' && resource.url
-    ? (isLocal(resource.url) ? resource.url : `https://docs.google.com/gview?url=${encodeURIComponent(resource.url)}&embedded=true`)
-    : null
-
   return (
     <motion.article
       variants={fadeUp}
@@ -118,19 +112,22 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
           </>
-        ) : pdfEmbedUrl ? (
-          <>
-            {/* live PDF preview — pointer-events off so it's purely visual */}
-            <iframe
-              src={pdfEmbedUrl}
-              title={resource.title}
-              className="absolute inset-0 w-full h-full border-0 scale-[1.02]"
-              style={{ pointerEvents: 'none' }}
-              loading="lazy"
-            />
-            {/* subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-amber-50/80 via-transparent to-transparent" />
-          </>
+        ) : resource.type === 'pdf' ? (
+          /* ─ Static PDF document preview ─ */
+          <div className="w-full h-full bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center">
+            <div className="w-24 bg-white rounded-xl shadow-md p-3 flex flex-col gap-1.5 transform -rotate-2 group-hover:rotate-0 transition-transform duration-300">
+              <div className="flex items-center gap-1.5 mb-1">
+                <div className="w-5 h-5 rounded bg-amber-100 flex items-center justify-center shrink-0">
+                  <FileText size={11} className="text-amber-500" />
+                </div>
+                <div className="h-1.5 bg-gray-200 rounded-full flex-1" />
+              </div>
+              {[100, 80, 90, 70, 85].map((w, i) => (
+                <div key={i} className="h-1 rounded-full bg-gray-100" style={{ width: `${w}%` }} />
+              ))}
+              <div className="h-1 rounded-full bg-amber-100 mt-0.5" style={{ width: '60%' }} />
+            </div>
+          </div>
         ) : (
           <div className={`w-full h-full ${bg} flex items-center justify-center`}>
             <Icon size={48} className={`${text} opacity-60`} strokeWidth={1.2} />
