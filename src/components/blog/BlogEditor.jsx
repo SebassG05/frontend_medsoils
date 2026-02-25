@@ -14,6 +14,7 @@ import {
   Heading2, Heading3, Link as LinkIcon, Code, List, ListOrdered,
   Quote, AlignLeft, AlignCenter, AlignRight, Undo, Redo,
   Minus, ImagePlus, Film, X, Tag, FileText, FileCode, Copy, Check, ArrowRight,
+  ExternalLink,
   CheckCircle2, AlertCircle, Loader2, Upload, Eye, EyeOff,
 } from 'lucide-react'
 
@@ -389,7 +390,10 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
     setError('')
     if (!title.trim()) { setError('Please add a title.'); return }
     const html = editor?.getHTML() || ''
-    if (!html || html === '<p></p>') { setError('Please write some content.'); return }
+    // consider empty if just blank paragraphs and no real content
+    const isEmpty = !html
+      || html.replace(/<p>\s*<\/p>/gi, '').replace(/<br\s*\/?>/gi, '').trim() === ''
+    if (isEmpty) { setError('Please write some content.'); return }
     if (isEditing) { handleSubmit(e); return }  // edit mode → save directly
     setShowConfirm(true)
   }
@@ -658,7 +662,7 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
           </div>
           <div className="flex-1 text-left">
             <p className="text-white font-bold text-sm leading-none mb-1">Import from AI  <span className="ml-1.5 text-[10px] font-semibold bg-white/20 text-white/90 rounded-full px-2 py-0.5">RECOMMENDED</span></p>
-            <p className="text-violet-100 text-xs leading-snug">Copy the AI prompt → paste result → publish. The fastest way to write a great post.</p>
+            <p className="text-violet-100 text-sm leading-snug mb-3">How to use: copy the prompt, open an AI (ChatGPT or Gemini), generate HTML, then paste it into the editor.</p>
           </div>
           <div className="flex items-center gap-1 text-white/70 group-hover:text-white group-hover:gap-2 transition-all text-xs font-semibold shrink-0">
             Open <ArrowRight size={13} />
@@ -758,7 +762,7 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
       {/* ── HTML import modal ── */}
       {showHtmlModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[80vh] flex flex-col">
             {/* header */}
             <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500">
               <div className="flex items-center gap-3">
@@ -771,7 +775,8 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
               </button>
             </div>
 
-            <div className="p-6 space-y-5">
+                <div className="p-5 md:p-6 space-y-5 overflow-y-auto max-h-[calc(80vh-96px)] pr-4">
+              
               {/* step 1 */}
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
@@ -787,6 +792,27 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
                   >
                     {promptCopied ? <><Check size={12} className="text-green-500" /> Copied!</> : <><Copy size={12} /> Copy prompt</>}
                   </button>
+                  {/* AI links */}
+                  <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                    <a href="https://chat.openai.com" target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-gray-200 hover:border-orange-300 hover:bg-orange-50 rounded-lg text-[11px] font-semibold text-gray-600 hover:text-orange-600 transition">
+                      <ExternalLink size={9} /> ChatGPT
+                    </a>
+                    <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-gray-200 hover:border-orange-300 hover:bg-orange-50 rounded-lg text-[11px] font-semibold text-gray-600 hover:text-orange-600 transition">
+                      <ExternalLink size={9} /> Gemini
+                    </a>
+                  </div>
+                  {/* short how-to steps for clarity */}
+                  <div className="mt-3 text-sm text-gray-600">
+                    <p className="font-medium mb-2">How to use the AI</p>
+                    <ol className="list-decimal list-inside space-y-1">
+                      <li>Click <strong>Copy prompt</strong>.</li>
+                      <li>Open ChatGPT or Gemini and paste the prompt.</li>
+                      <li>Ask the AI to generate the post and return only the HTML body (no &lt;html&gt; or &lt;body&gt; tags).</li>
+                      <li>Copy the AI's HTML output and paste it into Step 2 below, then click <strong>Insert into post</strong>.</li>
+                    </ol>
+                  </div>
                 </div>
               </div>
 
@@ -800,7 +826,7 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
                   value={htmlPaste}
                   onChange={e => setHtmlPaste(e.target.value)}
                   placeholder="<h2>Introduction</h2><p>Your AI-generated HTML goes here…</p>"
-                  rows={8}
+                  rows={6}
                   className="w-full text-xs font-mono text-gray-700 bg-gray-50 border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 rounded-xl p-4 outline-none resize-none placeholder-gray-400 leading-relaxed transition"
                 />
               </div>

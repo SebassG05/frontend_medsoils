@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   PenLine, Calendar, Tag, ArrowRight, X, Search,
-  BookOpen, Users, TrendingUp, ChevronLeft, ChevronRight, Sparkles,
+  BookOpen, Users, TrendingUp, ChevronLeft, ChevronRight, Sparkles, ExternalLink,
 } from 'lucide-react'
 import Footer from '../components/layout/Footer'
 import BlogEditor from '../components/blog/BlogEditor'
@@ -77,13 +77,13 @@ function PostCard({ post, onClick, wide }) {
       transition={{ duration: 0.3 }}
       onClick={onClick}
       className={`cursor-pointer group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden flex ${
-        wide ? 'flex-row h-56' : 'flex-col h-full'
+        wide ? 'flex-col sm:flex-row sm:h-56' : 'flex-col h-full'
       }`}
     >
       {/* cover */}
       {coverSrc && (
         <div className={`overflow-hidden bg-gray-100 shrink-0 ${
-          wide ? 'w-80 h-full' : 'h-44 w-full'
+          wide ? 'w-full h-48 sm:w-72 sm:h-full' : 'h-44 w-full'
         }`}>
           <img src={coverSrc} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={e => { e.currentTarget.parentElement.style.display = 'none' }} />
         </div>
@@ -103,7 +103,7 @@ function PostCard({ post, onClick, wide }) {
         )}
 
         <h3 className={`font-bold text-gray-800 leading-snug group-hover:text-orange-600 transition-colors ${
-          wide ? 'text-2xl mb-3' : 'text-base mb-2 line-clamp-2'
+          wide ? 'text-xl sm:text-2xl mb-2 sm:mb-3 line-clamp-2 sm:line-clamp-none' : 'text-base mb-2 line-clamp-2'
         }`}>
           {post.title}
         </h3>
@@ -252,19 +252,19 @@ export default function Blog() {
               <Sparkles size={12} /> MedSoils Community
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">
-              The Soil Science Blog
+              The <span className="text-orange-500">Soil Science</span> Blog
             </h1>
             <p className="text-gray-500 text-lg mb-8 leading-relaxed">
               Insights, research, and stories from the Mediterranean soil community.
             </p>
 
             {/* stats */}
-            <div className="flex items-center justify-center gap-8 mb-8 text-gray-400 text-sm">
-              <span className="flex items-center gap-1.5"><BookOpen size={15} />{total} article{total !== 1 ? 's' : ''}</span>
-              <span className="w-px h-4 bg-gray-200" />
-              <span className="flex items-center gap-1.5"><Users size={15} />Community writers</span>
-              <span className="w-px h-4 bg-gray-200" />
-              <span className="flex items-center gap-1.5"><TrendingUp size={15} />Trending topics</span>
+            <div className="flex items-center justify-center gap-4 sm:gap-8 mb-8 text-gray-400 text-xs sm:text-sm flex-wrap">
+              <span className="flex items-center gap-1.5"><BookOpen size={14} />{total} article{total !== 1 ? 's' : ''}</span>
+              <span className="hidden sm:block w-px h-4 bg-gray-200" />
+              <span className="hidden sm:flex items-center gap-1.5"><Users size={14} />Community writers</span>
+              <span className="hidden sm:block w-px h-4 bg-gray-200" />
+              <span className="hidden sm:flex items-center gap-1.5"><TrendingUp size={14} />Trending topics</span>
             </div>
 
             {/* search */}
@@ -362,7 +362,7 @@ export default function Blog() {
         {/* ── toolbar + editor: only for logged-in users ── */}
         {user && (<>
         {/* ── toolbar: tags + write button ── */}
-        <div className="flex items-center gap-3 mb-8 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-8">
           {/* tag pills */}
           <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto pb-1 scrollbar-none">
             <button
@@ -386,7 +386,7 @@ export default function Blog() {
           {/* write button */}
           <button
             onClick={() => setShowEditor(e => !e)}
-            className={`shrink-0 flex items-center gap-2 px-5 py-2.5 font-semibold rounded-xl transition shadow-md text-sm ${
+            className={`w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 font-semibold rounded-xl transition shadow-md text-sm ${
               showEditor
                 ? 'bg-gray-100 text-gray-700 shadow-none'
                 : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-200 hover:from-orange-600 hover:to-amber-600'
@@ -403,10 +403,13 @@ export default function Blog() {
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden mb-10"
             >
+              {/* AI tip banner removed; guidance is available in the editor banner */}
+
               <BlogEditor onPublish={handlePublish} loading={loadingCreate} />
             </motion.div>
           )}
         </AnimatePresence>
+
         </>)} {/* end user-only toolbar */}
 
         {/* ── content ── */}

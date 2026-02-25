@@ -45,7 +45,6 @@ function App() {
               <Route path="/about-program" element={<AboutProgram />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="*" element={<Home />} />
-              
             </Routes>
           </main>
         </div>

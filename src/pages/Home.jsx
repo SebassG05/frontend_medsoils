@@ -337,6 +337,97 @@ const Home = () => {
         </motion.div>
       </section>
 
+      {/* Sección About the Program */}
+      <section className="relative bg-gradient-to-b from-gray-50 to-white pt-8 pb-8 md:pt-12 md:pb-12 overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-20 -mr-48 -mt-20"></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-cyan-100 rounded-full blur-3xl opacity-20 -ml-36 -mb-20"></div>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-100px' }}
+          className="container mx-auto px-4 relative z-10 max-w-6xl"
+        >
+          {/* Header */}
+          <motion.div variants={itemVariants} className="text-center mb-14">
+            <p className="text-sm font-semibold text-orange-500 uppercase tracking-widest mb-3">Our Programme</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+              A Joint <span className="text-orange-500">International</span> Master's
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
+              Addressing climate change challenges in the Mediterranean region through interdisciplinary knowledge and practical skills.
+            </p>
+          </motion.div>
+
+          {/* Goal cards */}
+          <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+            {[
+              {
+                icon: GraduationCap,
+                color: 'bg-orange-500',
+                bg: 'bg-orange-50',
+                border: 'border-orange-100',
+                title: 'Educate Experts',
+                desc: 'Thorough theoretical and practical understanding of soil science for the next generation of professionals.',
+              },
+              {
+                icon: Lightbulb,
+                color: 'bg-cyan-500',
+                bg: 'bg-cyan-50',
+                border: 'border-cyan-100',
+                title: 'Innovative Solutions',
+                desc: 'Develop sustainable soil management practices that are economically viable and ecologically responsible.',
+              },
+              {
+                icon: Globe,
+                color: 'bg-orange-500',
+                bg: 'bg-orange-50',
+                border: 'border-orange-100',
+                title: 'International Cooperation',
+                desc: 'Unite academics and professionals across four Mediterranean countries to tackle transnational climate challenges.',
+              },
+            ].map(({ icon: Icon, color, bg, border, title, desc }) => (
+              <motion.div
+                key={title}
+                variants={itemVariants}
+                whileHover={{ y: -6 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                className={`rounded-2xl border ${border} ${bg} p-7 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow`}
+              >
+                <div className={`w-12 h-12 rounded-xl ${color} flex items-center justify-center`}>
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg">{title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/about-program"
+                className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-full font-semibold hover:shadow-lg transition-shadow group"
+              >
+                Explore the Programme
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/admission"
+                className="inline-flex items-center gap-3 border-2 border-orange-500 text-orange-500 px-8 py-4 rounded-full font-semibold hover:bg-orange-50 transition-all"
+              >
+                Apply Now
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </section>
+
       {/* Sección Blog Carousel */}
       <section className="relative bg-white py-20 md:py-32 overflow-hidden">
         {/* Fondo decorativo */}
