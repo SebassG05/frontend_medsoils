@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, FileText, Link2, Tag, BookOpen, UploadCloud,
-  AlignLeft, Type, Eye, CheckCircle, ChevronRight, Loader2, AlertCircle, X,
+  AlignLeft, Type, Eye, CheckCircle, ChevronRight, Loader2, AlertCircle, X, Image as ImageIcon,
 } from 'lucide-react'
 import { createResource } from '../services/resourceService'
 
 /* ─── helpers ─── */
 const ease = [0.16, 1, 0.3, 1]
-const EMPTY = { title: '', description: '', url: '', tag: '', pages: '' }
+const EMPTY = { title: '', description: '', url: '', tag: '', pages: '', thumbnail: '' }
 
 /* ─── Stepper ─── */
 function Stepper({ step }) {
@@ -75,30 +75,29 @@ function formatPages(val) {
 }
 
 function PreviewCard({ form }) {
-  const isLocal = url => url.startsWith('blob:') || url.startsWith('data:') || /^https?:\/\/(localhost|127\.0\.0\.1)/.test(url)
-  const pdfEmbedUrl = form.url
-    ? (isLocal(form.url) ? form.url : `https://docs.google.com/gview?url=${encodeURIComponent(form.url)}&embedded=true`)
-    : null
-
   return (
     <div className="rounded-3xl border border-amber-100 bg-white shadow-xl overflow-hidden max-w-sm mx-auto">
-      {/* PDF preview area */}
-      <div className="relative h-44 overflow-hidden bg-amber-50">
-        {pdfEmbedUrl ? (
-          <>
-            <iframe
-              src={pdfEmbedUrl}
-              title="PDF preview"
-              className="absolute inset-0 w-full h-full border-0 scale-[1.02]"
-              style={{ pointerEvents: 'none' }}
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-amber-50/80 via-transparent to-transparent" />
-          </>
+      {/* Media area: custom thumbnail or static doc preview */}
+      <div className="relative h-44 overflow-hidden bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center">
+        {form.thumbnail ? (
+          <img src={form.thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <FileText size={48} className="text-amber-300" strokeWidth={1.2} />
-          </div>
+          <>
+            <div className="w-32 bg-white rounded-2xl shadow-lg p-4 flex flex-col gap-2 transform -rotate-2 group-hover:rotate-0 transition-transform duration-300">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+                  <FileText size={14} className="text-amber-500" />
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full flex-1" />
+              </div>
+              {[100, 75, 90, 65, 80, 55].map((w, i) => (
+                <div key={i} className="h-1.5 rounded-full bg-gray-100" style={{ width: `${w}%` }} />
+              ))}
+              <div className="h-1.5 rounded-full bg-amber-100 mt-1" style={{ width: '50%' }} />
+            </div>
+            {/* subtle orb */}
+            <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-amber-200/40" />
+          </>
         )}
         {form.tag && (
           <span className="absolute top-3 right-3 text-xs font-semibold bg-white/90 text-amber-600 rounded-full px-2.5 py-0.5 shadow">
@@ -285,6 +284,18 @@ export default function AddPdfResource() {
                     <input className={inp} placeholder="e.g. 24 pages" value={form.pages} onChange={e => set('pages', e.target.value)} />
                   </Field>
                 </div>
+
+                <Field icon={ImageIcon} label="Cover image URL">
+                  <div className="relative">
+                    <ImageIcon size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                    <input
+                      className={`${inp} pl-10`}
+                      placeholder="https://… (optional thumbnail)"
+                      value={form.thumbnail}
+                      onChange={e => set('thumbnail', e.target.value)}
+                    />
+                  </div>
+                </Field>
               </div>
 
               {error && (
@@ -327,6 +338,7 @@ export default function AddPdfResource() {
                   { label: 'Description', value: form.description },
                   { label: 'Tag',         value: form.tag   || '—' },
                   { label: 'Pages',       value: formatPages(form.pages) || '—' },
+                  { label: 'Thumbnail',   value: form.thumbnail || '—' },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex gap-3 text-sm">
                     <span className="w-28 shrink-0 font-semibold text-gray-400">{label}</span>
