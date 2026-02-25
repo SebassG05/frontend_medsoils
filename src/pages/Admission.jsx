@@ -282,17 +282,14 @@ const Admission = () => {
                 >
                   {[
                     {
-                      num: '01',
                       label: "Bachelor's Degree",
                       desc: "Or equivalent qualification in a relevant field such as Environmental Science, Agriculture, Forestry, Geography, Geology, Biology, or related disciplines.",
                     },
                     {
-                      num: '02',
                       label: "English Language Proficiency",
                       desc: "Minimum B2 level according to CEFR, or equivalent certification such as TOEFL, IELTS, or similar.",
                     },
                     {
-                      num: '03',
                       label: "Strong Motivation",
                       desc: "Genuine commitment to an international, interdisciplinary master focused on the Mediterranean region and climate change adaptation.",
                     },
@@ -614,7 +611,6 @@ const Admission = () => {
             <div className="flex-1 w-full flex flex-col gap-5">
               {[
                 {
-                  num: '01',
                   label: 'Tuition fees',
                   icon: (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
@@ -625,7 +621,6 @@ const Admission = () => {
                   delay: 0.45,
                 },
                 {
-                  num: '02',
                   label: 'Travel and installation costs',
                   icon: (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
@@ -635,10 +630,9 @@ const Admission = () => {
                   delay: 0.58,
                 },
                 {
-                  num: '03',
                   label: 'Monthly living allowance',
                   icon: (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
+                    <svg viewBox="2 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
                   ),

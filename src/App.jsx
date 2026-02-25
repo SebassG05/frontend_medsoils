@@ -51,7 +51,6 @@ function App() {
               <Route path="/resources/add/video" element={<AddVideoResource />} />
               <Route path="/resources/add/pdf" element={<AddPdfResource />} />
               <Route path="*" element={<Home />} />
-              
             </Routes>
           </main>
         </div>

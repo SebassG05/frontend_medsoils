@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Calendar, Tag, ArrowLeft, Trash2, AlertTriangle, X, Pencil } from 'lucide-react'
+import { Calendar, Tag, ArrowLeft, Trash2, AlertTriangle, X, Pencil, Sparkles, ExternalLink, Copy, CheckCheck } from 'lucide-react'
 import Footer from '../components/layout/Footer'
 import BlogEditor from '../components/blog/BlogEditor'
 import { fetchBlogById, deleteBlog, updateBlog } from '../services/blogService'
@@ -17,6 +17,11 @@ export default function BlogPost() {
   const [showConfirm, setShowConfirm] = useState(false)
   const [editing,   setEditing]   = useState(false)
   const [saving,    setSaving]    = useState(false)
+  const [showAiTips, setShowAiTips] = useState(false)
+  const [aiPasteText, setAiPasteText] = useState('')
+  const [aiInsertContent, setAiInsertContent] = useState(null)
+  const [copied, setCopied] = useState(false)
+  const editorKey = useRef(0)
 
   /* ─── current user ─── */
   let currentUser = null
@@ -55,6 +60,23 @@ export default function BlogPost() {
       setDeleting(false)
       setShowConfirm(false)
     }
+  }
+
+  const AI_PROMPT = `Write a professional blog post about [YOUR TOPIC HERE].\nReturn ONLY the HTML body content - no <html>, <head> or <body> tags.\nUse these tags so the styles apply correctly:\n  • <h2> for section headings\n  • <h3> for sub-headings\n  • <p> for paragraphs\n  • <strong> bold, <em> italic, <u> underline\n  • <ul><li> bullet lists, <ol><li> numbered lists\n  • <blockquote> for quotes or callouts\n  • <img src="URL" alt="description"> for images (use real image URLs)\n  • <a href="URL">text</a> for links\nDo NOT include any CSS, <style> blocks, or class attributes.`
+
+  function handleCopyPrompt() {
+    navigator.clipboard.writeText(AI_PROMPT).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  function handleInsertAi() {
+    if (!aiPasteText.trim()) return
+    editorKey.current += 1
+    setAiInsertContent(aiPasteText.trim())
+    setAiPasteText('')
+    setShowAiTips(false)
   }
 
   const isOwner = currentUser && post && (
@@ -146,6 +168,14 @@ export default function BlogPost() {
                     >
                       <Pencil size={14} /> {editing ? 'Cancel edit' : 'Edit post'}
                     </button>
+                    {editing && (
+                      <button
+                        onClick={() => setShowAiTips(true)}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold border border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100 transition"
+                      >
+                        <Sparkles size={14} /> Import from AI 
+                      </button>
+                    )}
                     <button
                       onClick={() => setShowConfirm(true)}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-red-500 hover:text-white hover:bg-red-500 border border-red-200 hover:border-red-500 transition"
@@ -167,12 +197,15 @@ export default function BlogPost() {
                   className="overflow-hidden border-t border-gray-100"
                 >
                   <div className="p-6">
+                    {/* AI guidance moved to editor banner (see BlogEditor) */}
+
                     <BlogEditor
+                      key={editorKey.current}
                       onPublish={handleUpdate}
                       loading={saving}
                       isEditing
                       initialTitle={post.title}
-                      initialContent={post.content}
+                      initialContent={aiInsertContent ?? post.content}
                       initialTags={post.tags || []}
                       initialBanner={post.bannerImage || ''}
                     />
@@ -213,6 +246,7 @@ export default function BlogPost() {
                   object-fit: contain;
                 }
                 .blog-post-content video { border-radius: 14px; max-width: 100%; width: 100%; margin: 1.5rem auto; display: block; box-shadow: 0 4px 20px rgba(0,0,0,.1); }
+                .blog-post-content iframe { border-radius: 14px; width: 100%; aspect-ratio: 16/9; margin: 1.5rem auto; display: block; border: none; box-shadow: 0 4px 20px rgba(0,0,0,.12); }
                 .blog-post-content table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; }
                 .blog-post-content th, .blog-post-content td { border: 1px solid #e5e7eb; padding: 0.6rem 1rem; text-align: left; font-size: 0.95rem; }
                 .blog-post-content th { background: #fff7ed; font-weight: 700; color: #374151; }
@@ -220,12 +254,109 @@ export default function BlogPost() {
               <div dangerouslySetInnerHTML={{ __html: post.content.replace(/<img\b/gi, '<img referrerpolicy="no-referrer"') }} />
             </div>
           </article>
+
+          {/* Guidance moved to the editor banner in BlogEditor.jsx */}
         </div>
       </motion.div>
 
       <div aria-hidden="true" className="h-[3px] w-full"
         style={{ background: 'linear-gradient(90deg,transparent 0%,#f97316 30%,#fb923c 60%,transparent 100%)' }} />
       <Footer />
+
+      {/* ─── AI tips modal ─── */}
+      <AnimatePresence>
+        {showAiTips && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+            onClick={() => setShowAiTips(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+              onClick={e => e.stopPropagation()}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
+            >
+              {/* header */}
+              <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500">
+                <div className="flex items-center gap-2">
+                  <Sparkles size={16} className="text-white" />
+                  <p className="text-sm font-bold text-white">Import from AI</p>
+                </div>
+                <button onClick={() => setShowAiTips(false)} className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition">
+                  <X size={14} />
+                </button>
+              </div>
+
+              <div className="px-6 py-5 space-y-5">
+                {/* Step 1 */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                    <p className="text-xs font-bold text-gray-700 uppercase tracking-wider">Copy this prompt and paste it into ChatGPT, Gemini or any AI</p>
+                  </div>
+                  <div className="relative rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+                    <pre className="text-xs text-gray-700 font-mono leading-relaxed whitespace-pre-wrap pr-28">{AI_PROMPT}</pre>
+                    <button
+                      onClick={handleCopyPrompt}
+                      className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:border-orange-300 hover:bg-orange-50 rounded-lg text-xs font-semibold text-gray-600 hover:text-orange-600 transition shadow-sm"
+                    >
+                      {copied ? <><CheckCheck size={11} className="text-green-500" /> Copied!</> : <><Copy size={11} /> Copy prompt</>}
+                    </button>
+                    {/* AI links */}
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                      <a href="https://chat.openai.com" target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-gray-200 hover:border-orange-300 hover:bg-orange-50 rounded-lg text-[11px] font-semibold text-gray-600 hover:text-orange-600 transition">
+                        <ExternalLink size={9} /> ChatGPT
+                      </a>
+                      <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-gray-200 hover:border-orange-300 hover:bg-orange-50 rounded-lg text-[11px] font-semibold text-gray-600 hover:text-orange-600 transition">
+                        <ExternalLink size={9} /> Gemini
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 2 */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                    <p className="text-xs font-bold text-gray-700 uppercase tracking-wider">Paste the HTML result here</p>
+                  </div>
+                  <textarea
+                    value={aiPasteText}
+                    onChange={e => setAiPasteText(e.target.value)}
+                    placeholder="<h2>Introduction</h2><p>Your AI-generated HTML goes here…</p>"
+                    rows={5}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs font-mono text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-200 resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* footer */}
+              <div className="flex items-center justify-end gap-3 px-6 pb-5">
+                <button
+                  onClick={() => setShowAiTips(false)}
+                  className="px-5 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleInsertAi}
+                  disabled={!aiPasteText.trim()}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-orange-400 to-amber-400 hover:from-orange-500 hover:to-amber-500 disabled:opacity-40 text-white font-semibold rounded-xl transition shadow-md text-sm"
+                >
+                  <Sparkles size={14} /> Insert into post
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ─── delete confirmation modal ─── */}
       <AnimatePresence>

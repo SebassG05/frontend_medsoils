@@ -206,7 +206,7 @@ const BlogCarousel = () => {
         <div className="hidden md:flex items-center gap-2">
           <Link to="/blog"
             className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-orange-500 border border-orange-200 bg-orange-50 hover:bg-orange-100 rounded-xl transition mr-2">
-            View all <ArrowRight size={13} />
+            View all  
           </Link>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -271,13 +271,7 @@ const BlogCarousel = () => {
                       <BookOpen size={40} className="text-orange-200" />
                     </div>
                   )}
-                  {blog.tags?.[0] && (
-                    <div className="absolute top-4 left-4">
-                      <span className={`${getCategoryColor(blog.tags[0])} text-white text-xs font-semibold px-3 py-1 rounded-full`}>
-                        {blog.tags[0]}
-                      </span>
-                    </div>
-                  )}
+
                 </div>
 
                 {/* Content */}
@@ -294,6 +288,17 @@ const BlogCarousel = () => {
                   <h3 className="font-bold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-orange-500 transition-colors">
                     {blog.title}
                   </h3>
+
+                  {/* Tags */}
+                  {blog.tags?.[0] && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {blog.tags.map((tag) => (
+                        <span key={tag} className={`${getCategoryColor(tag)} text-white text-xs font-semibold px-3 py-1 rounded-full`}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Excerpt */}
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">
