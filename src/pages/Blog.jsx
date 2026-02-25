@@ -236,13 +236,40 @@ export default function Blog() {
   return (
     <>
       {/* single continuous background for the whole page */}
-      <div style={{ background: 'linear-gradient(to bottom, #ffffff 0%, #fff7f0 40%, #ffe8d6 75%, #ffe0c8 100%)' }}>
+      <div className="bg-white" style={{ background: 'linear-gradient(160deg, #ffffff 0%, #f8fafc 55%, #fdf6ee 100%)' }}>
 
       {/* ══════════ HERO ══════════ */}
       <div className="relative overflow-hidden">
-        {/* decorative blobs */}
-        <div className="pointer-events-none absolute -top-20 -right-20 w-96 h-96 rounded-full bg-orange-100/40 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-10 -left-10 w-72 h-72 rounded-full bg-amber-100/30 blur-2xl" />
+        {/* thin orange accent line — draws left to right */}
+        <motion.div
+          className="absolute top-0 left-0 right-0 h-[3px] bg-orange-500 origin-left z-20"
+          initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        />
+
+        {/* orange orb — top right */}
+        <div className="pointer-events-none absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 65%)' }} />
+
+        {/* cyan orb — bottom left */}
+        <div className="pointer-events-none absolute -bottom-32 -left-32 w-[550px] h-[550px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(14,165,233,0.05) 0%, transparent 65%)' }} />
+
+        {/* dot pattern — top left */}
+        <motion.svg className="absolute top-10 left-10 pointer-events-none" width="130" height="130" viewBox="0 0 130 130"
+          initial={{ opacity: 0 }} animate={{ opacity: 0.15 }} transition={{ duration: 1, delay: 0.4 }}>
+          {Array.from({ length: 5 }).map((_, row) => Array.from({ length: 5 }).map((_, col) => (
+            <circle key={`dot-tl-${row}-${col}`} cx={col * 26 + 13} cy={row * 26 + 13} r="2" fill="#f97316" />
+          )))}
+        </motion.svg>
+
+        {/* dot pattern — bottom right */}
+        <motion.svg className="absolute bottom-10 right-10 pointer-events-none" width="130" height="130" viewBox="0 0 130 130"
+          initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} transition={{ duration: 1, delay: 0.6 }}>
+          {Array.from({ length: 5 }).map((_, row) => Array.from({ length: 5 }).map((_, col) => (
+            <circle key={`dot-br-${row}-${col}`} cx={col * 26 + 13} cy={row * 26 + 13} r="2" fill="#0ea5e9" />
+          )))}
+        </motion.svg>
 
         <div className="relative container mx-auto px-4 py-14 md:py-20">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
@@ -252,7 +279,7 @@ export default function Blog() {
               <Sparkles size={12} /> MedSoils Community
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">
-              The Soil Science Blog
+              The Soil Science <span className="text-orange-500">Blog</span>
             </h1>
             <p className="text-gray-500 text-lg mb-8 leading-relaxed">
               Insights, research, and stories from the Mediterranean soil community.
@@ -312,38 +339,22 @@ export default function Blog() {
       {/* ── page body ── */}
       <div className="relative min-h-screen overflow-hidden">
 
-        {/* geometric grid */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
+        {/* subtle dot grid */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="blog-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#f97316" strokeWidth="0.8"/>
+            <pattern id="blog-dots" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle cx="1.5" cy="1.5" r="1.5" fill="#f97316" />
             </pattern>
           </defs>
-          <rect width="100%" height="100%" fill="url(#blog-grid)" />
+          <rect width="100%" height="100%" fill="url(#blog-dots)" />
         </svg>
 
-        {/* glow orbs */}
-        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)' }} />
-        <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%)' }} />
-
-        {/* floating dot pattern — top left */}
-        <svg className="absolute top-10 left-8 opacity-20 pointer-events-none" width="180" height="180" viewBox="0 0 180 180">
-          {Array.from({ length: 6 }).map((_, row) =>
-            Array.from({ length: 6 }).map((_, col) => (
-              <circle key={`${row}-${col}`} cx={col * 30 + 15} cy={row * 30 + 15} r="2" fill="#f97316" />
-            ))
-          )}
-        </svg>
-        {/* floating dot pattern — bottom right */}
-        <svg className="absolute bottom-10 right-8 opacity-20 pointer-events-none" width="180" height="180" viewBox="0 0 180 180">
-          {Array.from({ length: 6 }).map((_, row) =>
-            Array.from({ length: 6 }).map((_, col) => (
-              <circle key={`${row}-${col}`} cx={col * 30 + 15} cy={row * 30 + 15} r="2" fill="#f97316" />
-            ))
-          )}
-        </svg>
+        {/* ambient glow — right */}
+        <div className="absolute top-0 right-0 w-[480px] h-[480px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)' }} />
+        {/* ambient glow — left */}
+        <div className="absolute bottom-0 left-0 w-[380px] h-[380px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%)' }} />
 
         <div className="relative z-10 container mx-auto px-4 py-10 max-w-6xl">
 

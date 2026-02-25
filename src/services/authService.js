@@ -47,9 +47,10 @@ export async function loginUser({ email, password }) {
     }
     
     // Guardar token en localStorage
-    if (data.data?.token) {
-      localStorage.setItem('token', data.data.token);
-      localStorage.setItem('user', JSON.stringify(data.data.user));
+    const token = data.data?.accessToken || data.data?.token
+    if (token) {
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', JSON.stringify(data.data.user))
     }
     
     return data;
