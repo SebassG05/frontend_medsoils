@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* ── Global button cursor ─────────────────────────────────── */
+button {
+  cursor: pointer;
+}
+
 /* ── Custom scrollbar ─────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
