@@ -2,6 +2,11 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { useEffect } from 'react'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import Header from './components/layout/Header'
+import CookieBanner from './components/cookies/CookieBanner'
+import { initGA4 } from './utils/analyticsManager'
+
+// Bootstrap GA4 Consent Mode v2 immediately (before any render)
+initGA4()
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -34,6 +39,7 @@ function App() {
         <ScrollToTop />
         <div className="min-h-screen bg-white">
           <Header />
+          <CookieBanner />
           <main className="pt-24">
             <Routes>
               <Route path="/" element={<Home />} />
