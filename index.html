@@ -5,6 +5,26 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Frontend MedSoils</title>
+
+    <!--
+      Google Consent Mode v2 — bootstrap MUST run before any gtag/GA script.
+      Sets all consents to 'denied' by default until the user decides.
+      The React app (analyticsManager.js) will call gtag('consent','update')
+      once the user makes a choice or a stored preference is found.
+    -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
+      gtag('consent', 'default', {
+        analytics_storage:     'denied',
+        ad_storage:            'denied',
+        ad_user_data:          'denied',
+        ad_personalization:    'denied',
+        functionality_storage: 'denied',
+        security_storage:      'granted',
+        wait_for_update:       500
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
