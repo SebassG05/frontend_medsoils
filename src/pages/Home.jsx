@@ -166,7 +166,7 @@ const Home = () => {
               </motion.h1>
               <motion.p
                 variants={itemVariants}
-                className="text-lg text-gray-600 leading-relaxed mb-8 max-w-xl"
+                className="text-lg text-gray-600 leading-relaxed mb-8 max-w-xl text-justify"
               >
                 Aims to develop a new generation of soil experts through a Joint International Master's programme to tackle soil challenges in the Mediterranean region exacerbated by climate change.
               </motion.p>
@@ -315,7 +315,7 @@ const Home = () => {
               </motion.h2>
               <motion.p
                 variants={itemVariants}
-                className="text-lg text-gray-600 leading-relaxed mb-8"
+                className="text-lg text-gray-600 leading-relaxed mb-8 text-justify"
               >
                 The International Master 'MEDSOILS CHALLENGE' is a joint initiative organized by a consortium of prestigious higher education institutions and technical partners from four Mediterranean countries.
               </motion.p>

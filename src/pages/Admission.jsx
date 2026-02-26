@@ -51,7 +51,7 @@ const DotGrid = ({ className = '' }) => (
 const Admission = () => {
   return (
     <>
-      <div className="min-h-screen bg-white overflow-hidden">
+      <div className="min-h-screen bg-white overflow-hidden text-justify">
 
         {/* ── HERO / ADMISSION REQUIREMENTS ───────────────────────────── */}
         <motion.section

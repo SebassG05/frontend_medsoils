@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Star, Users, ChevronLeft, ChevronRight } from 'lucide-react'
 import Footer from '../components/layout/Footer'
 
-function ReviewCard({ r, user, onDelete, deleting }) {
+function ReviewCard({ r, user, onDelete, deleting, onOpen }) {
   // Prioritize the custom name entered in the form over the registered user name
   const displayName = (r.name || r.createdBy?.name || 'Anonymous').toUpperCase()
   const isRegisteredUser = !!r.createdBy
@@ -37,7 +37,26 @@ function ReviewCard({ r, user, onDelete, deleting }) {
               <Star className="w-4 h-4 text-orange-400" />
             </div>
           </div>
-          <p className="text-sm text-gray-600 mt-3">{r.text}</p>
+          {/* truncate long reviews and provide a "Read more" button */}
+          {(() => {
+            const maxLen = 180
+            const text = r.text || ''
+            const isLong = text.length > maxLen
+            return (
+              <p className="text-sm text-gray-600 mt-3">
+                {isLong ? `${text.slice(0, maxLen).trim()}…` : text}
+                {isLong && (
+                  <button
+                    type="button"
+                    onClick={() => onOpen?.(r)}
+                    className="ml-2 text-orange-500 hover:underline text-sm text-justify"
+                  >
+                    Read more
+                  </button>
+                )}
+              </p>
+            )
+          })()}
           {user && createdById && userId && String(createdById) === String(userId) && (
             <div className="mt-4">
               <button
@@ -85,6 +104,7 @@ export default function Reviews() {
   const [user, setUser] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [itemsPerPage, setItemsPerPage] = useState(3)
+  const [fullReview, setFullReview] = useState(null)
 
   // Handle responsive items per page
   useEffect(() => {
@@ -295,6 +315,14 @@ export default function Reviews() {
 
   const visibleReviews = reviews.slice(currentIndex, currentIndex + itemsPerPage)
 
+  function openFullReview(r) {
+    setFullReview(r)
+  }
+
+  function closeFullReview() {
+    setFullReview(null)
+  }
+
   return (
     <div className="bg-gradient-to-br from-white via-orange-50 to-white">
       <div className="container mx-auto px-4 py-16">
@@ -465,7 +493,7 @@ export default function Reviews() {
             >
               {reviews.map(r => (
                 <div key={r._id || r.id} className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0">
-                  <ReviewCard r={r} user={user} onDelete={requestDelete} deleting={deletingIds.includes(r._id || r.id)} />
+                  <ReviewCard r={r} user={user} onDelete={requestDelete} deleting={deletingIds.includes(r._id || r.id)} onOpen={openFullReview} />
                 </div>
               ))}
             </motion.div>
@@ -523,6 +551,30 @@ export default function Reviews() {
               >
                 {deletingIds.includes(confirmReview._id || confirmReview.id) ? 'Deleting...' : 'Delete review'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Full review modal (opened from "Read more") */}
+      {fullReview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/40" onClick={closeFullReview} />
+          <div className="relative bg-white max-w-2xl w-full rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-xl">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-orange-200 flex items-center justify-center font-semibold text-xs">{(fullReview.name || '').slice(0,3)}</div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm sm:text-base font-semibold text-gray-800 truncate">{(fullReview.name || 'Anonymous').toUpperCase()}</p>
+                  <div className="flex items-center gap-1 text-orange-500 font-semibold text-sm">{fullReview.rating} <Star className="w-4 h-4" /></div>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">{new Date(fullReview.createdAt || fullReview.date || Date.now()).toLocaleDateString()}</p>
+              </div>
+            </div>
+            <div className="mt-4 text-gray-700 leading-relaxed text-justify">
+              {fullReview.text}
+            </div>
+            <div className="mt-5 flex justify-end">
+              <button onClick={closeFullReview} className="px-3 sm:px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm sm:text-base">Close</button>
             </div>
           </div>
         </div>

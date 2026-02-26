@@ -53,7 +53,7 @@ const IussEndorsement = () => {
 
             <motion.p
               variants={itemVariants}
-              className="text-gray-600 text-base md:text-lg leading-relaxed"
+              className="text-gray-600 text-base md:text-lg leading-relaxed text-justify"
             >
               The MEDSOILS CHALLENGE Master Programme is proud to be supported by the{' '}
               <strong className="text-gray-800 font-semibold">

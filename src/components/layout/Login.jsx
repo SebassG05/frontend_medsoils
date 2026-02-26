@@ -201,8 +201,6 @@ const Login = ({ onClose, onSignUpClick }) => {
         {/* remember + forgot */}
         <div className="flex items-center justify-between text-sm">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-orange-500 accent-orange-500" />
-            <span className="text-gray-500">Remember me</span>
           </label>
           <button
             type="button"
