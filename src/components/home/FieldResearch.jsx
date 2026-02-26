@@ -73,7 +73,7 @@ const FieldResearch = () => {
 
             <motion.p
               variants={itemVariants}
-              className="text-lg text-gray-600 leading-relaxed"
+              className="text-lg text-gray-600 leading-relaxed text-justify"
             >
               Our students and researchers engage directly with the land — studying soil health,
               biodiversity, and ecosystem dynamics in real Mediterranean environments. Fieldwork
