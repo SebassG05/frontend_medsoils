@@ -205,7 +205,11 @@ const Login = ({ onClose, onSignUpClick }) => {
             <span className="text-gray-500">Remember me</span>
           </label>
           <button
-            type="button" onClick={() => navigate('/settings')}
+            type="button"
+            onClick={() => {
+              onClose?.()
+              navigate('/settings', { state: { openPassword: true } })
+            }}
             className="text-orange-500 hover:text-orange-600 font-medium transition"
           >
             Forgot password?

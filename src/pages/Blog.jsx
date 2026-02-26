@@ -240,13 +240,6 @@ export default function Blog() {
 
       {/* ══════════ HERO ══════════ */}
       <div className="relative overflow-hidden">
-        {/* thin orange accent line — draws left to right */}
-        <motion.div
-          className="absolute top-0 left-0 right-0 h-[3px] bg-orange-500 origin-left z-20"
-          initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
-          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-        />
-
         {/* orange orb — top right */}
         <div className="pointer-events-none absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full"
           style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 65%)' }} />

@@ -718,7 +718,14 @@ export default function Resources() {
       <AnimatePresence>
         {toast && <Toast msg={toast.msg} ok={toast.ok} onClose={() => setToast(null)} />}
       </AnimatePresence>
-
+      
+          <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                viewport={{ once: true }}
+                className="relative w-full h-[3px] bg-gradient-to-r from-transparent via-orange-400 to-transparent origin-center my-8"
+          />
       <Footer />
     </div>
   )
