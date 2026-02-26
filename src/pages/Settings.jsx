@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { KeyRound, ChevronRight, CheckCircle2 } from 'lucide-react'
 
@@ -7,7 +8,9 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
 const Settings = () => {
   const navigate = useNavigate()
-  const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(false)
+  const location = useLocation()
+  const initialOpen = !!(location?.state?.openPassword || new URLSearchParams(location.search).get('open') === 'password')
+  const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(initialOpen)
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -33,6 +36,11 @@ const Settings = () => {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    // If navigation included state to open the password section, ensure it's open
+    if (location?.state?.openPassword) setIsPasswordSectionOpen(true)
+  }, [location])
 
   return (
     <div className="min-h-screen bg-gray-50">

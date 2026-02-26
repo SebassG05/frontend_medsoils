@@ -29,6 +29,7 @@ import LoginPage from './pages/LoginPage'
 import Resources from './pages/Resources'
 import AddVideoResource from './pages/AddVideoResource'
 import AddPdfResource from './pages/AddPdfResource'
+import Reviews from './pages/Reviews'
 
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
@@ -54,6 +55,7 @@ function App() {
               <Route path="/about-program" element={<AboutProgram />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/resources" element={<Resources />} />
+              <Route path="/reviews" element={<Reviews />} />
               <Route path="/resources/add/video" element={<AddVideoResource />} />
               <Route path="/resources/add/pdf" element={<AddPdfResource />} />
               <Route path="*" element={<Home />} />

@@ -29,6 +29,7 @@ const Header = () => {
     { name: 'Blog', path: '/blog' },
     { name: 'Resources', path: '/resources' },
     { name: 'Contact', path: '/contact' },
+    { name: 'Reviews', path: '/reviews' },
   ]
 
   const headerBackground = useTransform(
