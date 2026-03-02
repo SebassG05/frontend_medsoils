@@ -77,13 +77,13 @@ function PostCard({ post, onClick, wide }) {
       transition={{ duration: 0.3 }}
       onClick={onClick}
       className={`cursor-pointer group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden flex ${
-        wide ? 'flex-col sm:flex-row sm:h-56' : 'flex-col h-full'
+        wide ? 'flex-col sm:flex-row sm:h-80' : 'flex-col h-full'
       }`}
     >
       {/* cover */}
       {coverSrc && (
         <div className={`overflow-hidden bg-gray-100 shrink-0 ${
-          wide ? 'w-full h-48 sm:w-72 sm:h-full' : 'h-44 w-full'
+          wide ? 'w-full h-72 sm:w-96 sm:h-full' : 'h-64 w-full'
         }`}>
           <img src={coverSrc} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={e => { e.currentTarget.parentElement.style.display = 'none' }} />
         </div>
@@ -264,17 +264,180 @@ export default function Blog() {
           )))}
         </motion.svg>
 
+        {/* abstract intersecting gray lines background - hero */}
+        <motion.svg 
+          className="absolute inset-0 w-full h-full pointer-events-none select-none" 
+          xmlns="http://www.w3.org/2000/svg" 
+          preserveAspectRatio="none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.3 }}
+        >
+          <defs>
+            <linearGradient id="hero-line-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#e5e5e5" stopOpacity="0" />
+              <stop offset="50%" stopColor="#d4d4d4" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#e5e5e5" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="hero-line-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#a3a3a3" stopOpacity="0" />
+              <stop offset="50%" stopColor="#737373" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#a3a3a3" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          
+          <motion.line 
+            x1="0%" y1="15%" x2="100%" y2="35%" 
+            stroke="url(#hero-line-grad-1)" 
+            strokeWidth="1.5" 
+            opacity="0.6"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="0%" y1="45%" x2="100%" y2="25%" 
+            stroke="#e5e5e5" 
+            strokeWidth="1" 
+            opacity="0.5"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.3, delay: 0.7, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="0%" y1="70%" x2="100%" y2="85%" 
+            stroke="url(#hero-line-grad-1)" 
+            strokeWidth="2" 
+            opacity="0.4"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.4, delay: 0.9, ease: "easeInOut" }}
+          />
+          
+          <motion.line 
+            x1="100%" y1="10%" x2="0%" y2="40%" 
+            stroke="#737373" 
+            strokeWidth="1.5" 
+            opacity="0.3"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.6, delay: 0.6, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="100%" y1="55%" x2="0%" y2="75%" 
+            stroke="url(#hero-line-grad-2)" 
+            strokeWidth="1" 
+            opacity="0.35"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.5, delay: 0.8, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="100%" y1="90%" x2="0%" y2="60%" 
+            stroke="#a3a3a3" 
+            strokeWidth="1.5" 
+            opacity="0.25"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.4, delay: 1, ease: "easeInOut" }}
+          />
+          
+          <motion.line 
+            x1="0%" y1="20%" x2="100%" y2="20%" 
+            stroke="#d4d4d4" 
+            strokeWidth="1" 
+            opacity="0.35"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.2, delay: 1.1, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="0%" y1="48%" x2="100%" y2="48%" 
+            stroke="url(#hero-line-grad-1)" 
+            strokeWidth="2" 
+            opacity="0.4"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.3, delay: 1.2, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="0%" y1="78%" x2="100%" y2="78%" 
+            stroke="#a3a3a3" 
+            strokeWidth="1" 
+            opacity="0.3"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.4, delay: 1.3, ease: "easeInOut" }}
+          />
+          
+          <motion.line 
+            x1="18%" y1="0%" x2="18%" y2="100%" 
+            stroke="#e5e5e5" 
+            strokeWidth="1" 
+            opacity="0.4"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.8, delay: 0.4, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="38%" y1="0%" x2="38%" y2="100%" 
+            stroke="url(#hero-line-grad-2)" 
+            strokeWidth="1.5" 
+            opacity="0.3"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.7, delay: 0.6, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="62%" y1="0%" x2="62%" y2="100%" 
+            stroke="#d4d4d4" 
+            strokeWidth="1" 
+            opacity="0.35"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.9, delay: 0.8, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="85%" y1="0%" x2="85%" y2="100%" 
+            stroke="#737373" 
+            strokeWidth="1.5" 
+            opacity="0.25"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.6, delay: 1, ease: "easeInOut" }}
+          />
+          
+          <motion.line 
+            x1="10%" y1="0%" x2="90%" y2="100%" 
+            stroke="#e5e5e5" 
+            strokeWidth="1" 
+            opacity="0.3"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="90%" y1="0%" x2="10%" y2="100%" 
+            stroke="#a3a3a3" 
+            strokeWidth="1" 
+            opacity="0.25"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 2, delay: 0.7, ease: "easeInOut" }}
+          />
+        </motion.svg>
+
         <div className="relative container mx-auto px-4 py-14 md:py-20">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <span className="inline-flex items-center gap-1.5 bg-orange-100 text-orange-500 text-xs font-semibold px-3 py-1.5 rounded-full mb-5 border border-orange-200/60">
-              <Sparkles size={12} /> MedSoils Community
+            <span className="inline-flex items-center gap-1.5 bg-orange-100 text-orange-500 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-orange-200/60">
+              <Sparkles size={14} /> MedSoils Community
             </span>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">
+            <h1 className="text-6xl md:text-8xl font-extrabold text-gray-800 leading-tight mb-6">
               The <span className="text-orange-500">Soil Science</span> Blog
             </h1>
-            <p className="text-gray-500 text-lg mb-8 leading-relaxed">
+            <p className="text-gray-500 text-xl md:text-2xl mb-10 leading-relaxed">
               Insights, research, and stories from the Mediterranean soil community.
             </p>
 
@@ -332,8 +495,176 @@ export default function Blog() {
       {/* ── page body ── */}
       <div className="relative min-h-screen overflow-hidden">
 
+        {/* abstract intersecting gray lines background */}
+        <motion.svg 
+          className="absolute inset-0 w-full h-full pointer-events-none select-none" 
+          xmlns="http://www.w3.org/2000/svg" 
+          preserveAspectRatio="none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.3 }}
+        >
+          <defs>
+            <linearGradient id="line-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#e5e5e5" stopOpacity="0" />
+              <stop offset="50%" stopColor="#d4d4d4" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#e5e5e5" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="line-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#a3a3a3" stopOpacity="0" />
+              <stop offset="50%" stopColor="#737373" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#a3a3a3" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          
+          {/* diagonal lines - light */}
+          <motion.line 
+            x1="0%" y1="15%" x2="100%" y2="35%" 
+            stroke="url(#line-grad-1)" 
+            strokeWidth="1.5" 
+            opacity="0.6"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="0%" y1="45%" x2="100%" y2="25%" 
+            stroke="#e5e5e5" 
+            strokeWidth="1" 
+            opacity="0.5"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.3, delay: 0.7, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="0%" y1="70%" x2="100%" y2="85%" 
+            stroke="url(#line-grad-1)" 
+            strokeWidth="2" 
+            opacity="0.4"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.4, delay: 0.9, ease: "easeInOut" }}
+          />
+          
+          {/* diagonal lines - dark */}
+          <motion.line 
+            x1="100%" y1="10%" x2="0%" y2="40%" 
+            stroke="#737373" 
+            strokeWidth="1.5" 
+            opacity="0.3"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.6, delay: 0.6, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="100%" y1="55%" x2="0%" y2="75%" 
+            stroke="url(#line-grad-2)" 
+            strokeWidth="1" 
+            opacity="0.35"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.5, delay: 0.8, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="100%" y1="90%" x2="0%" y2="60%" 
+            stroke="#a3a3a3" 
+            strokeWidth="1.5" 
+            opacity="0.25"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.4, delay: 1, ease: "easeInOut" }}
+          />
+          
+          {/* horizontal lines */}
+          <motion.line 
+            x1="0%" y1="20%" x2="100%" y2="20%" 
+            stroke="#d4d4d4" 
+            strokeWidth="1" 
+            opacity="0.35"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.2, delay: 1.1, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="0%" y1="48%" x2="100%" y2="48%" 
+            stroke="url(#line-grad-1)" 
+            strokeWidth="2" 
+            opacity="0.4"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.3, delay: 1.2, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="0%" y1="78%" x2="100%" y2="78%" 
+            stroke="#a3a3a3" 
+            strokeWidth="1" 
+            opacity="0.3"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.4, delay: 1.3, ease: "easeInOut" }}
+          />
+          
+          {/* vertical lines */}
+          <motion.line 
+            x1="18%" y1="0%" x2="18%" y2="100%" 
+            stroke="#e5e5e5" 
+            strokeWidth="1" 
+            opacity="0.4"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.8, delay: 0.4, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="38%" y1="0%" x2="38%" y2="100%" 
+            stroke="url(#line-grad-2)" 
+            strokeWidth="1.5" 
+            opacity="0.3"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.7, delay: 0.6, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="62%" y1="0%" x2="62%" y2="100%" 
+            stroke="#d4d4d4" 
+            strokeWidth="1" 
+            opacity="0.35"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.9, delay: 0.8, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="85%" y1="0%" x2="85%" y2="100%" 
+            stroke="#737373" 
+            strokeWidth="1.5" 
+            opacity="0.25"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.6, delay: 1, ease: "easeInOut" }}
+          />
+          
+          {/* additional diagonal intersections */}
+          <motion.line 
+            x1="10%" y1="0%" x2="90%" y2="100%" 
+            stroke="#e5e5e5" 
+            strokeWidth="1" 
+            opacity="0.3"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
+          />
+          <motion.line 
+            x1="90%" y1="0%" x2="10%" y2="100%" 
+            stroke="#a3a3a3" 
+            strokeWidth="1" 
+            opacity="0.25"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 2, delay: 0.7, ease: "easeInOut" }}
+          />
+        </motion.svg>
+
         {/* subtle dot grid */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.02]" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="blog-dots" width="28" height="28" patternUnits="userSpaceOnUse">
               <circle cx="1.5" cy="1.5" r="1.5" fill="#f97316" />

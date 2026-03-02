@@ -1,8 +1,36 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Star, Users, ChevronLeft, ChevronRight } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Star, Users, ChevronLeft, ChevronRight, MessageSquare, Award } from 'lucide-react'
 import Footer from '../components/layout/Footer'
+
+const ease = [0.16, 1, 0.3, 1]
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 36 },
+  visible: (delay = 0) => ({
+    opacity: 1, y: 0,
+    transition: { duration: 0.75, ease, delay },
+  }),
+}
+
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    transition: { duration: 0.6, ease, delay },
+  }),
+}
+
+const DotGrid = ({ className = '' }) => (
+  <svg className={`absolute pointer-events-none select-none ${className}`} width="320" height="320" viewBox="0 0 320 320">
+    {Array.from({ length: 10 }).map((_, row) =>
+      Array.from({ length: 10 }).map((_, col) => (
+        <circle key={`${row}-${col}`} cx={col * 32 + 16} cy={row * 32 + 16} r="1.5" fill="#f97316" fillOpacity="0.18" />
+      ))
+    )}
+  </svg>
+)
 
 function ReviewCard({ r, user, onDelete, deleting, onOpen }) {
   // Prioritize the custom name entered in the form over the registered user name
@@ -14,61 +42,102 @@ function ReviewCard({ r, user, onDelete, deleting, onOpen }) {
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 8 }}
-      className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 shadow-sm h-full flex flex-col"
+      exit={{ opacity: 0, y: -20 }}
+      className="bg-white rounded-xl border border-gray-100 p-8 h-full flex flex-col relative group overflow-hidden hover:shadow-2xl transition-all duration-500"
+      style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)' }}
+      whileHover={{ y: -8, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)' }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
     >
-      <div className="flex items-start gap-3 sm:gap-4">
-        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white font-semibold text-xs sm:text-sm shrink-0 ${isRegisteredUser ? 'bg-green-500' : 'bg-orange-400'}`}>
-          {displayName.split(' ').map(n => n[0]).join('').slice(0,3)}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+      {/* Subtle gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50/0 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-6 mb-5">
+          <div className="flex items-start gap-4 flex-1 min-w-0">
+            {/* Avatar */}
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-base shrink-0 shadow-lg transition-all duration-300 group-hover:scale-110 ${isRegisteredUser ? 'bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600' : 'bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800'}`}>
+              {displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+            </div>
+            
+            {/* User info */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-800 truncate">{displayName}</p>
-              <p className="text-xs text-gray-400">{new Date(r.createdAt || r.date).toLocaleDateString()}</p>
+              <h4 className="text-lg font-bold text-gray-900 truncate mb-1 tracking-tight">{displayName}</h4>
+              <p className="text-sm text-gray-500 mb-2">{new Date(r.createdAt || r.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
               {isRegisteredUser && (
-                <span className="inline-block text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full mt-1">Verified User</span>
+                <span className="inline-flex items-center gap-1.5 text-xs bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-semibold border border-emerald-200/60">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Verified
+                </span>
               )}
             </div>
-            <div className="flex items-center gap-1 shrink-0">
-              <span className="text-sm font-semibold text-orange-500">{Number(r.rating || 0).toFixed(1)}</span>
-              <Star className="w-4 h-4 text-orange-400" />
+          </div>
+          
+          {/* Rating */}
+          <div className="shrink-0">
+            <div className="flex items-baseline gap-1 bg-gradient-to-br from-amber-50 to-orange-50 px-4 py-2.5 rounded-lg border border-orange-100/80">
+              <span className="text-2xl font-black text-gray-900">{Number(r.rating || 0).toFixed(1)}</span>
+              <Star className="w-5 h-5 text-amber-500 fill-amber-500 mb-0.5" />
             </div>
           </div>
-          {/* truncate long reviews and provide a "Read more" button */}
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-5" />
+
+        {/* Review text */}
+        <div className="flex-1 mb-5">
           {(() => {
-            const maxLen = 180
+            const maxLen = 220
             const text = r.text || ''
             const isLong = text.length > maxLen
             return (
-              <p className="text-sm text-gray-600 mt-3">
-                {isLong ? `${text.slice(0, maxLen).trim()}…` : text}
+              <>
+                <p className="text-[15px] text-gray-700 leading-relaxed font-normal">
+                  <span className="text-orange-500 font-serif text-xl leading-none mr-1">"</span>
+                  {isLong ? `${text.slice(0, maxLen).trim()}...` : text}
+                  <span className="text-orange-500 font-serif text-xl leading-none ml-1">"</span>
+                </p>
                 {isLong && (
                   <button
                     type="button"
                     onClick={() => onOpen?.(r)}
-                    className="ml-2 text-orange-500 hover:underline text-sm text-justify"
+                    className="mt-4 inline-flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-semibold transition-colors duration-200 group/btn"
                   >
-                    Read more
+                    Read full review
+                    <svg className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                   </button>
                 )}
-              </p>
+              </>
             )
           })()}
-          {user && createdById && userId && String(createdById) === String(userId) && (
-            <div className="mt-4">
+        </div>
+
+        {/* Footer */}
+        {user && createdById && userId && String(createdById) === String(userId) && (
+          <>
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-4" />
+            <div className="flex justify-end">
               <button
                 onClick={() => onDelete(r)}
                 disabled={deleting}
-                className={`text-sm font-medium ${deleting ? 'text-gray-400' : 'text-red-500 hover:underline'}`}
+                className={`inline-flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-lg transition-all duration-200 ${deleting ? 'text-gray-400 bg-gray-50 cursor-not-allowed' : 'text-red-600 hover:text-white hover:bg-red-600'}`}
               >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
                 {deleting ? 'Deleting...' : 'Delete'}
               </button>
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </motion.article>
   )
@@ -324,261 +393,607 @@ export default function Reviews() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-white via-orange-50 to-white">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-3"><strong className="text-orange-500">User</strong> Reviews</h1>
-          <p className="text-gray-500">What people say about MedSoils — community feedback and learner experiences.</p>
+    <div className="min-h-screen bg-white overflow-hidden">
+      
+      {/* ── HERO SECTION ──────────────────────────────────────────── */}
+      <motion.section
+        className="relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #dcf6f8 0%, #edfcfd 50%, #dcf6f8 100%)' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, ease }}
+      >
+        {/* Geometric grid lines */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.07]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#f97316" strokeWidth="0.8"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+
+        {/* Large glowing orb — top right */}
+        <div className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)' }} />
+        
+        {/* Small glowing orb — bottom left */}
+        <div className="absolute -bottom-20 -left-20 w-[340px] h-[340px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 70%)' }} />
+
+        {/* Floating orange dots pattern — top left */}
+        <svg className="absolute top-8 left-8 opacity-20 pointer-events-none" width="180" height="180" viewBox="0 0 180 180">
+          {Array.from({ length: 6 }).map((_, row) =>
+            Array.from({ length: 6 }).map((_, col) => (
+              <circle key={`${row}-${col}`} cx={col * 30 + 15} cy={row * 30 + 15} r="2" fill="#f97316" />
+            ))
+          )}
+        </svg>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 md:py-32 flex flex-col md:flex-row items-center gap-16">
+          
+          {/* Left column — text */}
+          <div className="flex-1 min-w-0">
+            {/* Badge */}
+            <motion.div
+              className="inline-flex items-center gap-2 mb-7"
+              initial={{ opacity: 0, x: -24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease }}
+            >
+              <span className="h-px w-8 bg-orange-500" />
+              <span className="text-[13px] font-bold tracking-[0.22em] text-orange-500 uppercase">Community Feedback</span>
+            </motion.div>
+
+            <motion.h1
+              className="text-5xl md:text-6xl lg:text-[6.5rem] font-extrabold leading-[1.05] mb-8 text-gray-900"
+              variants={fadeUp}
+              custom={0.15}
+              initial="hidden"
+              animate="visible"
+            >
+              <span className="text-orange-500">User</span>{' '}
+              <span
+                className="relative inline-block"
+                style={{ WebkitTextStroke: '2.5px #f97316', color: 'transparent' }}
+              >
+                Reviews
+              </span>
+            </motion.h1>
+
+            <motion.div
+              className="flex items-center gap-3 mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <div className="h-[3px] w-12 bg-orange-500 rounded-full" />
+              <div className="h-[3px] w-4 bg-orange-500/40 rounded-full" />
+            </motion.div>
+
+            <motion.p
+              className="text-gray-700 leading-relaxed text-lg lg:text-xl max-w-xl"
+              variants={fadeUp}
+              custom={0.35}
+              initial="hidden"
+              animate="visible"
+            >
+              What people say about <strong className="text-gray-900">MedSoils</strong> — community feedback and learner experiences.
+            </motion.p>
+          </div>
+
+          {/* Right column — stat cards */}
+          <motion.div
+            className="flex-shrink-0 flex flex-col gap-6 w-full md:w-80"
+            variants={fadeUp}
+            custom={0.3}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div
+              className="relative rounded-2xl border border-cyan-200 p-7 overflow-hidden"
+              style={{ background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(12px)' }}
+              whileHover={{ scale: 1.03, borderColor: 'rgba(249,115,22,0.6)' }}
+            >
+              <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-orange-500 via-orange-300 to-transparent" />
+              <div className="flex items-center gap-4 mb-3">
+                <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center">
+                  <Star className="w-7 h-7 text-orange-500 fill-orange-500" />
+                </div>
+                <p className="text-5xl font-black text-orange-500">{avg.toFixed(1)}</p>
+              </div>
+              <p className="text-gray-900 font-bold text-lg">Average Rating</p>
+              <p className="text-gray-500 text-base mt-1">From {reviews.length} reviews</p>
+            </motion.div>
+
+            <motion.div
+              className="relative rounded-2xl border border-cyan-200 p-7 overflow-hidden"
+              style={{ background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(12px)' }}
+              whileHover={{ scale: 1.03, borderColor: 'rgba(249,115,22,0.6)' }}
+            >
+              <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-orange-500 via-orange-300 to-transparent" />
+              <div className="flex items-center gap-4 mb-3">
+                <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center">
+                  <Users className="w-7 h-7 text-orange-500" />
+                </div>
+                <p className="text-5xl font-black text-orange-500">{reviews.length}</p>
+              </div>
+              <p className="text-gray-900 font-bold text-lg">Total Reviews</p>
+              <p className="text-gray-500 text-base mt-1">Community feedback</p>
+            </motion.div>
+          </motion.div>
         </div>
 
-        {/* Large Review Form at Top */}
-        <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
-          <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 shadow-lg">
-            {/* Average Rating and Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 sm:mb-8">
-              <div className="flex items-center gap-3 mb-4 md:mb-0">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl sm:rounded-2xl flex items-center justify-center">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Leave a Review</h2>
-                  <p className="text-sm sm:text-base text-gray-600">Share your experience with our community</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3 bg-orange-50 border border-orange-100 rounded-xl px-4 sm:px-6 py-3 sm:py-4 shadow-sm">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-orange-400" />
-                <div>
-                  <div className="text-xs sm:text-sm text-gray-500">Average rating</div>
-                  <div className="text-xl sm:text-2xl font-bold text-orange-500">{avg.toFixed(1)} <span className="text-gray-400 text-sm sm:text-base">/ 5</span></div>
-                </div>
-              </div>
-            </div>
+        {/* Bottom wave divider */}
+        <div className="relative z-10 -mb-px">
+          <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full block">
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#ffffff" />
+          </svg>
+        </div>
+      </motion.section>
+
+      {/* ── REVIEW FORM SECTION ──────────────────────────────────────── */}
+      <section className="relative py-16 px-6 overflow-hidden" style={{ background: 'linear-gradient(160deg, #ffffff 0%, #f8fafc 100%)' }}>
+        {/* Subtle background geometry */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-40"
+          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)' }} />
+        <DotGrid className="top-4 right-4 opacity-20" />
+
+        <div className="max-w-5xl mx-auto relative z-10">
+          
+          {/* Top label */}
+
+
+          <motion.div
+            className="flex items-center gap-3 mb-10"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.25, duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="h-[3px] w-12 bg-orange-500 rounded-full" />
+            <div className="h-[3px] w-4 bg-orange-200 rounded-full" />
+          </motion.div>
+
+          {/* Form Container */}
+          <motion.div
+            className="bg-white border border-gray-100 rounded-3xl p-6 sm:p-10 shadow-xl"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease }}
+            viewport={{ once: true }}
+          >
             {user ? (
-              <>
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
-                  <div className="space-y-4 sm:space-y-6">
-                    <div>
-                      <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2 sm:mb-3">Your name (max 3 characters)</label>
+              <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Form Header with Icon */}
+                <div className="flex items-center gap-4 pb-6 border-b border-gray-100">
+                  <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center">
+                    <MessageSquare className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Share Your Experience</h3>
+                    <p className="text-gray-600 text-sm">Help others by sharing your honest feedback</p>
+                  </div>
+                </div>
+
+                {/* Form Fields Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  
+                  {/* Name Field */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-gray-700">
+                      Your Display Name
+                      <span className="text-gray-400 font-normal ml-1">(max 3 chars)</span>
+                    </label>
+                    <div className="relative">
                       <input 
                         value={name} 
                         onChange={e => setName(e.target.value.slice(0, 3).toUpperCase())} 
-                        placeholder="Max 3 chars" 
+                        placeholder="ABC" 
                         maxLength={3}
-                        className="w-full px-4 sm:px-6 py-3 sm:py-4 border border-gray-200 rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white" 
+                        className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-base font-medium focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-gray-50 focus:bg-white uppercase tracking-wider" 
                       />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2 sm:mb-3">Rating</label>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        {[1,2,3,4,5].map(star => (
-                          <button
-                            key={star}
-                            type="button"
-                            onClick={() => setRating(star)}
-                            className={`p-1.5 sm:p-2 rounded-xl transition-colors duration-200 ${
-                              star <= rating 
-                                ? 'text-orange-400 hover:text-orange-500' 
-                                : 'text-gray-300 hover:text-gray-400'
-                            }`}
-                          >
-                            <Star 
-                              className="w-6 h-6 sm:w-8 sm:h-8" 
-                              fill={star <= rating ? 'currentColor' : 'none'}
-                            />
-                          </button>
-                        ))}
-                        <span className="ml-2 sm:ml-3 text-sm sm:text-base font-medium text-gray-600">
-                          {rating} star{rating !== 1 ? 's' : ''}
-                        </span>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-medium">
+                        {name.length}/3
                       </div>
                     </div>
                   </div>
                   
-                  <div className="space-y-4 sm:space-y-6">
-                    <div>
-                      <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2 sm:mb-3">Your review</label>
-                      <textarea 
-                        value={text} 
-                        onChange={e => setText(e.target.value)} 
-                        rows={6} 
-                        placeholder="Share your experience with MedSoils..." 
-                        className="w-full px-4 sm:px-6 py-3 sm:py-4 border border-gray-200 rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white resize-none"
-                      />
-                      <div className="mt-2 text-xs sm:text-sm text-gray-500">
-                        {text.length}/500 characters
+                  {/* Rating Field */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-gray-700">Your Rating</label>
+                    <div className="flex items-center gap-2 bg-gray-50 p-4 rounded-xl border-2 border-gray-200">
+                      {[1,2,3,4,5].map(star => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setRating(star)}
+                          className={`p-2 rounded-lg transition-all duration-200 ${
+                            star <= rating 
+                              ? 'text-orange-400 hover:text-orange-500 scale-110' 
+                              : 'text-gray-300 hover:text-gray-400'
+                          }`}
+                        >
+                          <Star 
+                            className="w-7 h-7" 
+                            fill={star <= rating ? 'currentColor' : 'none'}
+                            strokeWidth={2}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="font-bold text-orange-500 text-lg">{rating}.0</span>
+                      <span className="text-gray-500">/ 5 stars</span>
+                    </div>
+                  </div>
+
+                  {/* Stats Preview */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-gray-700">Current Average</label>
+                    <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border-2 border-orange-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+                          <Star className="w-6 h-6 text-orange-500 fill-orange-500" />
+                        </div>
+                        <div>
+                          <div className="text-3xl font-black text-orange-600">{avg.toFixed(1)}</div>
+                          <div className="text-xs text-gray-600">{reviews.length} total reviews</div>
+                        </div>
                       </div>
                     </div>
-                    
-                    <button 
-                      type="submit" 
-                      disabled={!text.trim()}
-                      className="w-full py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-amber-500 disabled:from-gray-300 disabled:to-gray-400 text-white rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 hover:shadow-lg hover:scale-[1.02] disabled:hover:scale-100 disabled:hover:shadow-none disabled:cursor-not-allowed"
-                    >
-                      {text.trim() ? 'Submit Review' : 'Write your review first'}
-                    </button>
                   </div>
-                  
-                  {success && (
-                    <div className="md:col-span-2 flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-xl">
-                      <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <div className="text-sm sm:text-base text-green-700 font-medium">{success}</div>
-                    </div>
-                  )}
-                </form>
-              </>
-            ) : (
-              <>
-                <div className="text-center py-8 sm:py-12">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
+                </div>
+
+                {/* Review Text Area */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-700">Your Review</label>
+                  <textarea 
+                    value={text} 
+                    onChange={e => setText(e.target.value)} 
+                    rows={5} 
+                    placeholder="Share your experience with MedSoils... Tell us what you liked, what could be improved, and how it helped you."
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-gray-50 focus:bg-white resize-none leading-relaxed"
+                    maxLength={500}
+                  />
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">{text.length}/500 characters</span>
+                    <span className={`font-medium ${text.length > 450 ? 'text-orange-500' : 'text-gray-400'}`}>
+                      {500 - text.length} remaining
+                    </span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-3 px-4">Sign in required</h3>
-                  <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 leading-relaxed max-w-md mx-auto px-4">
-                    Join our community to share your experience and help others make informed decisions.
-                  </p>
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-4">
                   <button 
-                    onClick={() => navigate('/login')} 
-                    className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 hover:shadow-lg hover:scale-105"
+                    type="submit" 
+                    disabled={!text.trim()}
+                    className="w-full py-5 bg-gradient-to-r from-orange-500 to-amber-500 disabled:from-gray-300 disabled:to-gray-400 text-white rounded-xl font-bold text-lg transition-all duration-200 hover:shadow-xl hover:scale-[1.02] disabled:hover:scale-100 disabled:hover:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-3"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                    </svg>
-                    Sign In to Review
+                    <MessageSquare className="w-5 h-5" />
+                    {text.trim() ? 'Submit Your Review' : 'Write your review first'}
                   </button>
                 </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Reviews Carousel */}
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800"> <strong className="text-orange-500">Community</strong> Reviews</h2>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <span className="text-xs sm:text-sm text-orange-500 hidden sm:inline">
-                {currentIndex + 1} - {Math.min(currentIndex + itemsPerPage, reviews.length)} of {reviews.length}
-              </span>
-              <div className="flex gap-1 sm:gap-2">
-                <button
-                  onClick={prevSlide}
-                  disabled={currentIndex === 0}
-                  className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-orange-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                
+                {/* Success Message */}
+                {success && (
+                  <motion.div 
+                    className="flex items-center gap-3 p-4 bg-green-50 border-2 border-green-200 rounded-xl"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div className="text-base text-green-700 font-semibold">{success}</div>
+                  </motion.div>
+                )}
+              </form>
+            ) : (
+              <div className="text-center py-16">
+                <motion.div 
+                  className="w-24 h-24 bg-gradient-to-br from-orange-100 to-orange-200 rounded-3xl flex items-center justify-center mx-auto mb-6"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
-                </button>
-                <button
-                  onClick={nextSlide}
-                  disabled={currentIndex >= reviews.length - itemsPerPage}
-                  className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-orange-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  <svg className="w-12 h-12 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </motion.div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-3">Sign in required</h3>
+                <p className="text-base text-gray-600 mb-8 leading-relaxed max-w-md mx-auto">
+                  Join our community to share your experience and help others make informed decisions about MedSoils.
+                </p>
+                <button 
+                  onClick={() => navigate('/login')} 
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-bold text-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
                 >
-                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  </svg>
+                  Sign In to Leave a Review
                 </button>
               </div>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── REVIEWS CAROUSEL SECTION ──────────────────────────────────── */}
+      <section className="relative py-20 px-6" style={{ background: 'linear-gradient(135deg, #dcf6f8 0%, #edfcfd 50%, #dcf6f8 100%)' }}>
+        
+        {/* Decorative top line */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent" />
+
+        {/* Grid pattern */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.05]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid-reviews" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#f97316" strokeWidth="0.8"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid-reviews)" />
+        </svg>
+
+        {/* Glowing orb */}
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none opacity-50"
+          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)' }} />
+
+        <div className="max-w-7xl mx-auto relative z-10 pt-4">
+          
+          {/* Section Header */}
+          <div className="mb-16">
+            <motion.div
+              className="inline-flex items-center gap-2 mb-6"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.55, ease }}
+              viewport={{ once: true }}
+            >
+              <span className="h-px w-8 bg-orange-500" />
+              <span className="text-[11px] font-bold tracking-[0.22em] text-orange-500 uppercase">What Our Community Says</span>
+            </motion.div>
+
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+              <div>
+                <motion.h2
+                  className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-[1.1] mb-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, ease }}
+                  viewport={{ once: true }}
+                >
+                  <span className="text-orange-500">Community</span> Reviews
+                </motion.h2>
+                
+                <motion.div
+                  className="flex items-center gap-3"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.25, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="h-[3px] w-12 bg-orange-500 rounded-full" />
+                  <div className="h-[3px] w-4 bg-orange-200 rounded-full" />
+                </motion.div>
+              </div>
+
+              {/* Navigation Controls */}
+              <motion.div 
+                className="flex items-center gap-4"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, ease }}
+                viewport={{ once: true }}
+              >
+                <span className="text-sm text-gray-600 font-medium hidden sm:inline">
+                  {currentIndex + 1} - {Math.min(currentIndex + itemsPerPage, reviews.length)} of {reviews.length}
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={prevSlide}
+                    disabled={currentIndex === 0}
+                    className="p-3 rounded-xl border-2 border-orange-200 bg-white hover:bg-orange-50 hover:border-orange-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 disabled:hover:bg-white"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-orange-600" />
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    disabled={currentIndex >= reviews.length - itemsPerPage}
+                    className="p-3 rounded-xl border-2 border-orange-200 bg-white hover:bg-orange-50 hover:border-orange-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 disabled:hover:bg-white"
+                  >
+                    <ChevronRight className="w-5 h-5 text-orange-600" />
+                  </button>
+                </div>
+              </motion.div>
             </div>
           </div>
           
-          <div className="relative overflow-hidden">
-            <motion.div 
-              className="flex gap-3 sm:gap-4 md:gap-6"
-              animate={{ x: `${-currentIndex * (100 / itemsPerPage)}%` }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            >
-              {reviews.map(r => (
-                <div key={r._id || r.id} className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0">
-                  <ReviewCard r={r} user={user} onDelete={requestDelete} deleting={deletingIds.includes(r._id || r.id)} onOpen={openFullReview} />
-                </div>
-              ))}
-            </motion.div>
+          {/* Reviews Carousel */}
+          <div className="relative py-4">
+            <div className="overflow-hidden">
+              <motion.div 
+                className="flex gap-4 md:gap-6"
+                animate={{ x: `${-currentIndex * (100 / itemsPerPage)}%` }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                {reviews.map(r => (
+                  <div key={r._id || r.id} className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 py-2">
+                    <ReviewCard r={r} user={user} onDelete={requestDelete} deleting={deletingIds.includes(r._id || r.id)} onOpen={openFullReview} />
+                  </div>
+                ))}
+              </motion.div>
+            </div>
           </div>
           
           {/* Carousel dots */}
-          <div className="flex justify-center gap-1.5 sm:gap-2 mt-6 sm:mt-8">
+          <div className="flex justify-center gap-2 mt-12">
             {Array.from({ length: Math.ceil(reviews.length / itemsPerPage) }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index * itemsPerPage)}
-                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-200 ${
+                className={`h-2 rounded-full transition-all duration-300 ${
                   Math.floor(currentIndex / itemsPerPage) === index
-                    ? 'bg-orange-500 scale-110'
-                    : 'bg-gray-300 hover:bg-gray-400'
+                    ? 'bg-orange-500 w-8'
+                    : 'bg-gray-300 hover:bg-gray-400 w-2'
                 }`}
               />
             ))}
           </div>
         </div>
+
+        {/* Decorative bottom line */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent" />
+
+      </section>
+
+      {/* Footer section */}
+      <div className="bg-white">
+        <Footer />
       </div>
-          <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
-                viewport={{ once: true }}
-                className="relative w-full h-[3px] bg-gradient-to-r from-transparent via-orange-400 to-transparent origin-center my-8"
-          />
-      <Footer />
-      {/* Confirm Delete Modal */}
+
+      {/* ── CONFIRM DELETE MODAL ──────────────────────────────────────── */}
       {confirmReview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <div className="absolute inset-0 bg-black/40" onClick={cancelDelete} />
-          <div className="relative bg-white max-w-lg w-full rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-xl">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 sm:mb-3">Delete review</h3>
-            <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Are you sure you want to delete this review? This action cannot be undone.</p>
-            <div className="mb-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-start gap-2 sm:gap-3">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-200 flex items-center justify-center font-semibold text-xs sm:text-sm text-orange-700 shrink-0">{(confirmReview.name || '').slice(0,3)}</div>
+        <motion.div 
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+            onClick={cancelDelete}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          />
+          <motion.div 
+            className="relative bg-white max-w-lg w-full rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-100"
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            transition={{ type: "spring", duration: 0.5 }}
+          >
+            {/* Header */}
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-gray-900 mb-1">Delete Review</h3>
+                <p className="text-sm text-gray-600">This action cannot be undone. Your review will be permanently removed.</p>
+              </div>
+            </div>
+
+            {/* Review Preview */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center font-semibold text-xs text-white shrink-0">
+                  {(confirmReview.name || '').slice(0,3)}
+                </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs sm:text-sm font-semibold text-gray-800 truncate">{(confirmReview.name || 'Anonymous').toUpperCase()}</p>
-                    <div className="flex items-center gap-1 text-orange-500 font-semibold text-xs sm:text-sm shrink-0">{confirmReview.rating} <Star className="w-3 h-3 sm:w-4 sm:h-4" /></div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <p className="text-sm font-semibold text-gray-900 truncate">{(confirmReview.name || 'Anonymous').toUpperCase()}</p>
+                    <div className="flex items-center gap-1 text-orange-500 font-semibold text-sm shrink-0">
+                      {confirmReview.rating} <Star className="w-4 h-4 fill-orange-500" />
+                    </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">{confirmReview.text}</p>
+                  <p className="text-sm text-gray-600 line-clamp-3">{confirmReview.text}</p>
                 </div>
               </div>
             </div>
-            <div className="flex justify-end gap-2 sm:gap-3">
-              <button onClick={cancelDelete} className="px-3 sm:px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm sm:text-base">Cancel</button>
+
+            {/* Actions */}
+            <div className="flex gap-3">
+              <button 
+                onClick={cancelDelete} 
+                className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 bg-white hover:bg-gray-50 font-semibold text-gray-700 transition-colors"
+              >
+                Cancel
+              </button>
               <button
                 onClick={performDelete}
                 disabled={deletingIds.includes(confirmReview._id || confirmReview.id)}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-white text-sm sm:text-base ${deletingIds.includes(confirmReview._id || confirmReview.id) ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'}`}
+                className={`flex-1 px-4 py-3 rounded-xl font-semibold text-white transition-all ${
+                  deletingIds.includes(confirmReview._id || confirmReview.id) 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-red-500 hover:bg-red-600 hover:shadow-lg'
+                }`}
               >
-                {deletingIds.includes(confirmReview._id || confirmReview.id) ? 'Deleting...' : 'Delete review'}
+                {deletingIds.includes(confirmReview._id || confirmReview.id) ? 'Deleting...' : 'Delete Review'}
               </button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
-      {/* Full review modal (opened from "Read more") */}
-      {fullReview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <div className="absolute inset-0 bg-black/40" onClick={closeFullReview} />
-          <div className="relative bg-white max-w-2xl w-full rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-xl">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-orange-200 flex items-center justify-center font-semibold text-xs">{(fullReview.name || '').slice(0,3)}</div>
+
+      {/* ── FULL REVIEW MODAL ──────────────────────────────────────── */}
+      <AnimatePresence>
+        {fullReview && (
+          <motion.div 
+            className="fixed inset-0 z-50 flex items-center justify-center px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+              onClick={closeFullReview}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            />
+            <motion.div 
+              className="relative bg-white max-w-2xl w-full rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto"
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.4, damping: 25, stiffness: 300 }}
+            >
+            {/* Header */}
+            <div className="flex items-start gap-4 pb-6 border-b border-gray-100 mb-6">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center font-bold text-sm text-white shrink-0">
+                {(fullReview.name || '').slice(0,3)}
+              </div>
               <div className="flex-1">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm sm:text-base font-semibold text-gray-800 truncate">{(fullReview.name || 'Anonymous').toUpperCase()}</p>
-                  <div className="flex items-center gap-1 text-orange-500 font-semibold text-sm">{fullReview.rating} <Star className="w-4 h-4" /></div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <p className="text-lg font-bold text-gray-900">{(fullReview.name || 'Anonymous').toUpperCase()}</p>
+                  <div className="flex items-center gap-1 bg-orange-50 px-3 py-1.5 rounded-lg">
+                    <span className="text-lg font-bold text-orange-500">{fullReview.rating}</span>
+                    <Star className="w-5 h-5 text-orange-400 fill-orange-400" />
+                  </div>
                 </div>
-                <p className="text-xs text-gray-400 mt-1">{new Date(fullReview.createdAt || fullReview.date || Date.now()).toLocaleDateString()}</p>
+                <p className="text-sm text-gray-500">{new Date(fullReview.createdAt || fullReview.date || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
             </div>
-            <div className="mt-4 text-gray-700 leading-relaxed text-justify">
-              {fullReview.text}
+
+            {/* Review Content */}
+            <div className="prose prose-gray max-w-none mb-6">
+              <p className="text-gray-700 leading-relaxed text-justify whitespace-pre-wrap">
+                {fullReview.text}
+              </p>
             </div>
-            <div className="mt-5 flex justify-end">
-              <button onClick={closeFullReview} className="px-3 sm:px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm sm:text-base">Close</button>
+
+            {/* Close Button */}
+            <div className="flex justify-end pt-4 border-t border-gray-100">
+              <button 
+                onClick={closeFullReview} 
+                className="px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold text-gray-700 transition-colors"
+              >
+                Close
+              </button>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
