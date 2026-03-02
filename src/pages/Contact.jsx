@@ -492,7 +492,7 @@ const Contact = () => {
     {/* ── Footer accent line ── */}
     <div
       aria-hidden="true"
-      className="h-[3px] w-full"
+      className="h-1 w-full"
       style={{
         background: 'linear-gradient(90deg, transparent 0%, #f97316 30%, #fb923c 60%, transparent 100%)',
       }}

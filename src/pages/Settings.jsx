@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { KeyRound, ChevronRight, CheckCircle2 } from 'lucide-react'
+import { KeyRound, ChevronRight, CheckCircle2, Cookie } from 'lucide-react'
+import CookieSettings from '../components/cookies/CookieSettings'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
@@ -11,6 +12,7 @@ const Settings = () => {
   const location = useLocation()
   const initialOpen = !!(location?.state?.openPassword || new URLSearchParams(location.search).get('open') === 'password')
   const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(initialOpen)
+  const [isCookieSectionOpen, setIsCookieSectionOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -162,6 +164,57 @@ const Settings = () => {
                 </form>
                 )}
               </AnimatePresence>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Privacy & Cookies Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-6"
+        >
+          {/* Section Title */}
+          <div className="px-6 py-4 border-b border-gray-100">
+            <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide text-xs">
+              Privacy & Cookies
+            </h2>
+          </div>
+
+          {/* Cookie Preferences Row */}
+          <motion.button
+            whileHover={{ backgroundColor: '#fff7ed' }}
+            transition={{ duration: 0.15 }}
+            onClick={() => setIsCookieSectionOpen(!isCookieSectionOpen)}
+            className="w-full flex items-center justify-between px-6 py-5 cursor-pointer transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0">
+                <Cookie className="w-5 h-5 text-orange-400" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-semibold text-gray-900">Cookie preferences</p>
+                <p className="text-xs text-gray-400 mt-0.5">Manage your cookie and privacy settings</p>
+              </div>
+            </div>
+            <motion.div
+              animate={{ rotate: isCookieSectionOpen ? 90 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </motion.div>
+          </motion.button>
+
+          {/* Cookie Settings - Expandable */}
+          <motion.div
+            initial={false}
+            animate={isCookieSectionOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="px-6 pb-6 pt-2 bg-gray-50/40 border-t border-gray-100">
+              <CookieSettings />
             </div>
           </motion.div>
         </motion.div>

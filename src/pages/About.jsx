@@ -111,11 +111,6 @@ const About = () => {
             )))}
           </motion.svg>
 
-          {/* Thin orange accent line — top, draws L→R */}
-          <motion.div className="absolute top-0 left-0 right-0 h-[3px] bg-orange-500 origin-left"
-            initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
-            transition={{ duration: 1.1, ease, delay: 0.15 }} />
-
           {/* Content */}
           <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 flex flex-col lg:flex-row items-center gap-14 lg:gap-20">
 
