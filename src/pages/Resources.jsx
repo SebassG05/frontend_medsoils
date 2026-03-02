@@ -62,8 +62,8 @@ function TypeBadge({ type }) {
   const { icon: Icon, bg, text, label } = TYPE_META[type] || {}
   if (!Icon) return null
   return (
-    <span className={`inline-flex items-center gap-1 ${bg} ${text} rounded-full text-xs font-medium px-2 py-0.5`}>
-      <Icon size={11} />{label}
+    <span className={`inline-flex items-center gap-1.5 ${bg} ${text} rounded-xl text-sm font-bold px-3.5 py-2 shadow-lg backdrop-blur-sm bg-opacity-95 border ${TYPE_META[type]?.border}`}>
+      <Icon size={14} strokeWidth={2.5} />{label}
     </span>
   )
 }
@@ -87,23 +87,23 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
   return (
     <motion.article
       variants={fadeUp}
-      whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
-      transition={{ duration: 0.25 }}
-      className={`flex flex-col bg-white rounded-2xl border ${border} overflow-hidden group relative`}
+      whileHover={{ y: -8, boxShadow: '0 25px 50px rgba(0,0,0,0.12)' }}
+      transition={{ duration: 0.3 }}
+      className={`flex flex-col bg-white rounded-3xl border ${border} overflow-hidden group relative shadow-lg hover:shadow-2xl`}
     >
       {/* delete btn (superadmin only) */}
       {isSuperadmin && (
         <button
           onClick={() => onDelete(resource._id)}
-          className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
           title="Delete resource"
         >
-          <Trash2 size={13} />
+          <Trash2 size={16} />
         </button>
       )}
 
-      {/* media area — always h-44 */}
-      <div className="relative h-44 overflow-hidden shrink-0">
+      {/* media area — larger */}
+      <div className="relative h-56 overflow-hidden shrink-0">
         {hasThumb ? (
           <>
             <img
@@ -115,22 +115,22 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
         ) : resource.type === 'pdf' ? (
           /* ─ Static PDF document preview ─ */
           <div className="w-full h-full bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center">
-            <div className="w-24 bg-white rounded-xl shadow-md p-3 flex flex-col gap-1.5 transform -rotate-2 group-hover:rotate-0 transition-transform duration-300">
-              <div className="flex items-center gap-1.5 mb-1">
-                <div className="w-5 h-5 rounded bg-amber-100 flex items-center justify-center shrink-0">
-                  <FileText size={11} className="text-amber-500" />
+            <div className="w-28 bg-white rounded-xl shadow-lg p-4 flex flex-col gap-2 transform -rotate-2 group-hover:rotate-0 transition-transform duration-300">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-6 h-6 rounded bg-amber-100 flex items-center justify-center shrink-0">
+                  <FileText size={13} className="text-amber-500" />
                 </div>
-                <div className="h-1.5 bg-gray-200 rounded-full flex-1" />
+                <div className="h-2 bg-gray-200 rounded-full flex-1" />
               </div>
               {[100, 80, 90, 70, 85].map((w, i) => (
-                <div key={i} className="h-1 rounded-full bg-gray-100" style={{ width: `${w}%` }} />
+                <div key={i} className="h-1.5 rounded-full bg-gray-100" style={{ width: `${w}%` }} />
               ))}
-              <div className="h-1 rounded-full bg-amber-100 mt-0.5" style={{ width: '60%' }} />
+              <div className="h-1.5 rounded-full bg-amber-100 mt-0.5" style={{ width: '60%' }} />
             </div>
           </div>
         ) : (
           <div className={`w-full h-full ${bg} flex items-center justify-center`}>
-            <Icon size={48} className={`${text} opacity-60`} strokeWidth={1.2} />
+            <Icon size={56} className={`${text} opacity-60`} strokeWidth={1.5} />
           </div>
         )}
 
@@ -141,44 +141,44 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={e => e.stopPropagation()}
-            className="absolute inset-0 flex items-center justify-center"
+            className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover:bg-black/10 transition-colors"
             aria-label={`Watch ${resource.title}`}
           >
-            <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform hover:bg-white">
-              <PlayCircle size={24} className="text-orange-500" />
+            <div className="w-16 h-16 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all hover:bg-white">
+              <PlayCircle size={32} className="text-orange-500" strokeWidth={2} />
             </div>
           </a>
         )}
 
-        <div className="absolute top-3 left-3"><TypeBadge type={resource.type} /></div>
+        <div className="absolute top-4 left-4"><TypeBadge type={resource.type} /></div>
       </div>
 
       {/* content */}
-      <div className="flex flex-col flex-1 p-5">
-        <div className="flex items-center justify-between gap-2 mb-3">
+      <div className="flex flex-col flex-1 p-6">
+        <div className="flex items-center justify-between gap-3 mb-4">
           {resource.tag
-            ? <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${bg} ${text} border ${border}`}>
-                <Tag size={10} />{resource.tag}
+            ? <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full ${bg} ${text} border ${border}`}>
+                <Tag size={11} />{resource.tag}
               </span>
             : <span />}
-          {meta && <span className="text-xs font-medium text-gray-400 shrink-0 tabular-nums">{meta}</span>}
+          {meta && <span className="text-sm font-semibold text-gray-400 shrink-0 tabular-nums">{meta}</span>}
         </div>
-        <h3 className="font-extrabold text-gray-900 text-lg leading-snug mb-2 group-hover:text-orange-500 transition-colors line-clamp-2 tracking-tight">
+        <h3 className="font-bold text-gray-900 text-xl leading-tight mb-3 group-hover:text-orange-500 transition-colors line-clamp-2">
           {resource.title}
         </h3>
-        <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 flex-1">
+        <p className="text-base text-gray-600 leading-relaxed line-clamp-3 flex-1 mb-5">
           {resource.description}
         </p>
         <a
           href={resource.url}
           target="_blank"
           rel="noopener noreferrer"
-          className={`mt-4 inline-flex items-center gap-1.5 text-sm font-semibold ${text} hover:underline`}
+          className={`inline-flex items-center justify-center gap-2 text-sm font-bold ${text} hover:bg-opacity-10 ${bg} py-3 px-4 rounded-xl transition-all hover:gap-3`}
           onClick={e => e.stopPropagation()}
         >
-          {resource.type === 'video' ? <><PlayCircle size={14} /> Watch</>
-           : resource.type === 'image' ? <><ExternalLink size={14} /> View gallery</>
-           : <><Download size={14} /> Download</>}
+          {resource.type === 'video' ? <><PlayCircle size={16} strokeWidth={2.5} /> Watch Video</>
+           : resource.type === 'image' ? <><ExternalLink size={16} strokeWidth={2.5} /> View Gallery</>
+           : <><Download size={16} strokeWidth={2.5} /> Download PDF</>}
         </a>
       </div>
     </motion.article>
@@ -514,41 +514,28 @@ export default function Resources() {
 
       {/* ── Hero ── */}
       <section
-        className="relative overflow-hidden pt-16 pb-20"
+        className="relative overflow-hidden pt-24 pb-40"
         style={{ background: 'linear-gradient(135deg, #dcf6f8 0%, #edfcfd 50%, #dcf6f8 100%)', overflow: 'clip' }}
       >
-        <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.07]" style={{ clipPath: 'inset(0)' }} xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="resources-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#f97316" strokeWidth="0.8"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#resources-grid)" />
-        </svg>
-        <div className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)' }} />
-        <div className="absolute -bottom-20 -left-20 w-[340px] h-[340px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 70%)' }} />
-
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
           <motion.p
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease }}
-            className="text-sm font-semibold tracking-widest uppercase text-orange-500 mb-4"
+            className="text-sm font-semibold tracking-widest uppercase text-orange-500 mb-6"
           >
             Knowledge Hub
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08, ease }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-5"
+            className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight mb-7"
           >
             <span className="text-orange-500">Resources</span> &amp; Materials
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.16, ease }}
-            className="max-w-2xl mx-auto text-lg text-gray-500 mb-10"
+            className="max-w-2xl mx-auto text-xl text-gray-500 mb-12"
           >
             Videos, documents and image galleries curated by the MEDSOILS Challenge team
             to support students, researchers, and soil-science enthusiasts.
@@ -570,28 +557,43 @@ export default function Resources() {
               </button>
             )}
           </motion.div>
-        </div>
-      </section>
 
-      {/* ── Stats ── */}
-      <section className="border-y border-gray-100 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-center gap-12 sm:gap-20">
-          {stats.map(({ label, count, icon: Icon, color }) => (
-            <div key={label} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0">
-                <Icon size={20} className={color} />
+          {/* Stats */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.32 }}
+            className="mt-16 flex items-center justify-center gap-16 sm:gap-24"
+          >
+            {stats.map(({ label, count, icon: Icon, color }) => (
+              <div 
+                key={label} 
+                className="flex flex-col items-center gap-4 group"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-white/80 backdrop-blur-sm shadow-md border border-gray-100 flex items-center justify-center shrink-0 group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                  <Icon size={32} className={color} strokeWidth={1.5} />
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gray-900 mb-1">{count}</p>
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{label}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xl font-bold text-gray-900">{count}</p>
-                <p className="text-xs text-gray-400">{label}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Wave shape at bottom */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none" style={{ transform: 'rotate(180deg)' }}>
+          <svg className="relative block w-full h-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="#ffffff"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="#ffffff"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#ffffff"></path>
+          </svg>
         </div>
       </section>
 
       {/* ── Toolbar ── */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4 flex items-center justify-between gap-4 flex-wrap">
+      <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-10 pb-4 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
           {CATEGORIES.map(cat => (
             <button
@@ -617,7 +619,7 @@ export default function Resources() {
 
       {/* ── Superadmin panel ── */}
       {isSuperadmin && (
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pb-6">
           <motion.div
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease }}
@@ -647,7 +649,7 @@ export default function Resources() {
       )}
 
       {/* ── Grid ── */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[40vh]">
+      <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-8 min-h-[40vh]">
         {!user ? (
           /* ─── not logged in: lock box ─── */
           <motion.div
@@ -699,7 +701,7 @@ export default function Resources() {
               <motion.div
                 key={activeCategory + searchQuery}
                 variants={stagger} initial="hidden" animate="show"
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 {filtered.map(r => (
                   <ResourceCard
