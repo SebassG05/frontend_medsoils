@@ -109,7 +109,7 @@ const AboutProgram = () => {
         {/* Sticky visual — order-2 on mobile so text appears first */}
         <StickyPanel className="order-2 lg:order-1">
           <div className="w-full max-w-sm h-[300px] lg:h-[480px] rounded-3xl overflow-hidden shadow-xl bg-gray-100">
-            {/* Replace with your image, e.g: <img src="..." className="w-full h-full object-cover" /> */}
+            {<img src="https://res.cloudinary.com/dktr2wcto/image/upload/v1772447765/unnamed_9_fpap0q.jpg" className="w-full h-full object-cover" /> }
           </div>
         </StickyPanel>
 
@@ -219,7 +219,7 @@ const AboutProgram = () => {
         {/* Sticky visual — naturally after text in DOM = after text on mobile */}
         <StickyPanel>
           <div className="w-full max-w-sm h-[300px] lg:h-[480px] rounded-3xl overflow-hidden shadow-xl bg-gray-100">
-            {/* Replace with your image, e.g: <img src="..." className="w-full h-full object-cover" /> */}
+            {<img src="https://res.cloudinary.com/dktr2wcto/image/upload/v1772447772/unnamed_10_ssgmsm.jpg" className="w-full h-full object-cover" />}
           </div>
         </StickyPanel>
 
@@ -231,7 +231,7 @@ const AboutProgram = () => {
         {/* Sticky visual — order-2 on mobile so text appears first */}
         <StickyPanel className="order-2 lg:order-1">
           <div className="w-full max-w-sm h-[300px] lg:h-[480px] rounded-3xl overflow-hidden shadow-xl bg-gray-100">
-            {/* Replace with your image, e.g: <img src="..." className="w-full h-full object-cover" /> */}
+            {<img src="https://res.cloudinary.com/dktr2wcto/image/upload/v1772448620/unnamed_11_m63sew.jpg" className="w-full h-full object-cover" /> }
           </div>
         </StickyPanel>
 
