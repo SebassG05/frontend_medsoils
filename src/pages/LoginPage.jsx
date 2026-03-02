@@ -119,7 +119,6 @@ export default function LoginPage() {
             )}
           </AnimatePresence>
         </div>
-
       </div>
     </div>
   )
