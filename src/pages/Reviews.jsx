@@ -534,11 +534,51 @@ export default function Reviews() {
       </motion.section>
 
       {/* ── REVIEW FORM SECTION ──────────────────────────────────────── */}
-      <section className="relative py-16 px-6 overflow-hidden" style={{ background: 'linear-gradient(160deg, #ffffff 0%, #f8fafc 100%)' }}>
-        {/* Subtle background geometry */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none opacity-40"
-          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)' }} />
-        <DotGrid className="top-4 right-4 opacity-20" />
+      <section className="relative py-16 px-6 overflow-hidden bg-white">
+        {/* abstract intersecting wavy orange lines */}
+        <motion.svg
+          className="absolute inset-0 w-full h-full pointer-events-none select-none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <defs>
+            <linearGradient id="fcw-h" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#f97316" stopOpacity="0" />
+              <stop offset="50%" stopColor="#f97316" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="fcw-v" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#f97316" stopOpacity="0" />
+              <stop offset="50%" stopColor="#f97316" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          {/* diagonal ↘ — orange, top zone */}
+          <motion.path fill="none" stroke="url(#fcw-h)" strokeWidth="0.45" opacity="0.32"
+            d="M 0,8 C 3.9,10.3 8.0,11.2 12.5,10.5 C 17.0,9.8 21.1,10.7 25,13 C 28.9,15.3 33.0,16.2 37.5,15.5 C 42.0,14.8 46.1,15.7 50,18 C 53.9,20.3 58.0,21.2 62.5,20.5 C 67.0,19.8 71.1,20.7 75,23 C 78.9,25.3 83.0,26.2 87.5,25.5 C 92.0,24.8 96.1,25.7 100,28"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }} viewport={{ once: true }} />
+          {/* horizontal — orange, center */}
+          <motion.path fill="none" stroke="url(#fcw-h)" strokeWidth="0.45" opacity="0.28"
+            d="M 0,50 C 3.1,48.8 9.4,48.8 12.5,50 C 15.6,51.2 21.9,51.2 25,50 C 28.1,48.8 34.4,48.8 37.5,50 C 40.6,51.2 46.9,51.2 50,50 C 53.1,48.8 59.4,48.8 62.5,50 C 65.6,51.2 71.9,51.2 75,50 C 78.1,48.8 84.4,48.8 87.5,50 C 90.6,51.2 96.9,51.2 100,50"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.3, delay: 0.9, ease: "easeInOut" }} viewport={{ once: true }} />
+          {/* diagonal ↗ — orange, bottom zone */}
+          <motion.path fill="none" stroke="#fb923c" strokeWidth="0.4" opacity="0.25"
+            d="M 0,80 C 4.5,80.7 8.6,79.8 12.5,77.5 C 16.4,75.2 20.5,74.3 25,75 C 29.5,75.7 33.6,74.8 37.5,72.5 C 41.4,70.2 45.5,69.3 50,70 C 54.5,70.7 58.6,69.8 62.5,67.5 C 66.4,65.2 70.5,64.3 75,65 C 79.5,65.7 83.6,64.8 87.5,62.5 C 91.4,60.2 95.5,59.3 100,60"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.4, delay: 0.7, ease: "easeInOut" }} viewport={{ once: true }} />
+          {/* reverse diagonal — cyan, upper-mid to lower-mid */}
+          <motion.path fill="none" stroke="#67e8f9" strokeWidth="0.3" opacity="0.12"
+            d="M 100,30 C 95.4,29.9 91.3,31.1 87.5,33.75 C 83.7,36.4 79.6,37.7 75,37.5 C 70.4,37.4 66.3,38.6 62.5,41.25 C 58.7,43.9 54.6,45.2 50,45 C 45.4,44.9 41.3,46.1 37.5,48.75 C 33.7,51.4 29.6,52.7 25,52.5 C 20.4,52.4 16.3,53.6 12.5,56.25 C 8.7,58.9 4.6,60.2 0,60"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.6, delay: 0.6, ease: "easeInOut" }} viewport={{ once: true }} />
+          {/* vertical — cyan, right-center */}
+          <motion.path fill="none" stroke="#67e8f9" strokeWidth="0.28" opacity="0.11"
+            d="M 70,0 C 68.8,3.1 68.8,9.4 70,12.5 C 71.2,15.6 71.2,21.9 70,25 C 68.8,28.1 68.8,34.4 70,37.5 C 71.2,40.6 71.2,46.9 70,50 C 68.8,53.1 68.8,59.4 70,62.5 C 71.2,65.6 71.2,71.9 70,75 C 68.8,78.1 68.8,84.4 70,87.5 C 71.2,90.6 71.2,96.9 70,100"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.8, delay: 0.4, ease: "easeInOut" }} viewport={{ once: true }} />
+        </motion.svg>
 
         <div className="max-w-5xl mx-auto relative z-10">
           
@@ -634,7 +674,7 @@ export default function Reviews() {
                     <label className="block text-sm font-semibold text-gray-700">Current Average</label>
                     <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border-2 border-orange-200">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg flex items-center justify-center">
                           <Star className="w-6 h-6 text-orange-500 fill-orange-500" />
                         </div>
                         <div>
@@ -725,24 +765,51 @@ export default function Reviews() {
       </section>
 
       {/* ── REVIEWS CAROUSEL SECTION ──────────────────────────────────── */}
-      <section className="relative py-20 px-6" style={{ background: 'linear-gradient(135deg, #dcf6f8 0%, #edfcfd 50%, #dcf6f8 100%)' }}>
-        
-        {/* Decorative top line */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent" />
-
-        {/* Grid pattern */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.05]" xmlns="http://www.w3.org/2000/svg">
+      <section className="relative py-20 px-6 overflow-hidden bg-white">
+        {/* abstract intersecting wavy orange lines */}
+        <motion.svg
+          className="absolute inset-0 w-full h-full pointer-events-none select-none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
           <defs>
-            <pattern id="grid-reviews" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#f97316" strokeWidth="0.8"/>
-            </pattern>
+            <linearGradient id="rcw-h" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#f97316" stopOpacity="0" />
+              <stop offset="50%" stopColor="#f97316" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="rcw-v" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#f97316" stopOpacity="0" />
+              <stop offset="50%" stopColor="#f97316" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+            </linearGradient>
           </defs>
-          <rect width="100%" height="100%" fill="url(#grid-reviews)" />
-        </svg>
-
-        {/* Glowing orb */}
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none opacity-50"
-          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)' }} />
+          {/* diagonal ↘ — orange, top zone */}
+          <motion.path fill="none" stroke="url(#rcw-h)" strokeWidth="0.45" opacity="0.32"
+            d="M 0,8 C 3.9,10.3 8.0,11.2 12.5,10.5 C 17.0,9.8 21.1,10.7 25,13 C 28.9,15.3 33.0,16.2 37.5,15.5 C 42.0,14.8 46.1,15.7 50,18 C 53.9,20.3 58.0,21.2 62.5,20.5 C 67.0,19.8 71.1,20.7 75,23 C 78.9,25.3 83.0,26.2 87.5,25.5 C 92.0,24.8 96.1,25.7 100,28"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }} viewport={{ once: true }} />
+          {/* horizontal — orange, center */}
+          <motion.path fill="none" stroke="url(#rcw-h)" strokeWidth="0.45" opacity="0.28"
+            d="M 0,50 C 3.1,48.8 9.4,48.8 12.5,50 C 15.6,51.2 21.9,51.2 25,50 C 28.1,48.8 34.4,48.8 37.5,50 C 40.6,51.2 46.9,51.2 50,50 C 53.1,48.8 59.4,48.8 62.5,50 C 65.6,51.2 71.9,51.2 75,50 C 78.1,48.8 84.4,48.8 87.5,50 C 90.6,51.2 96.9,51.2 100,50"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.3, delay: 0.9, ease: "easeInOut" }} viewport={{ once: true }} />
+          {/* diagonal ↗ — orange, bottom zone */}
+          <motion.path fill="none" stroke="#fb923c" strokeWidth="0.4" opacity="0.25"
+            d="M 0,80 C 4.5,80.7 8.6,79.8 12.5,77.5 C 16.4,75.2 20.5,74.3 25,75 C 29.5,75.7 33.6,74.8 37.5,72.5 C 41.4,70.2 45.5,69.3 50,70 C 54.5,70.7 58.6,69.8 62.5,67.5 C 66.4,65.2 70.5,64.3 75,65 C 79.5,65.7 83.6,64.8 87.5,62.5 C 91.4,60.2 95.5,59.3 100,60"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.4, delay: 0.7, ease: "easeInOut" }} viewport={{ once: true }} />
+          {/* reverse diagonal — cyan, upper-mid to lower-mid */}
+          <motion.path fill="none" stroke="#67e8f9" strokeWidth="0.3" opacity="0.12"
+            d="M 100,30 C 95.4,29.9 91.3,31.1 87.5,33.75 C 83.7,36.4 79.6,37.7 75,37.5 C 70.4,37.4 66.3,38.6 62.5,41.25 C 58.7,43.9 54.6,45.2 50,45 C 45.4,44.9 41.3,46.1 37.5,48.75 C 33.7,51.4 29.6,52.7 25,52.5 C 20.4,52.4 16.3,53.6 12.5,56.25 C 8.7,58.9 4.6,60.2 0,60"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.6, delay: 0.6, ease: "easeInOut" }} viewport={{ once: true }} />
+          {/* vertical — cyan, right-center */}
+          <motion.path fill="none" stroke="#67e8f9" strokeWidth="0.28" opacity="0.11"
+            d="M 70,0 C 68.8,3.1 68.8,9.4 70,12.5 C 71.2,15.6 71.2,21.9 70,25 C 68.8,28.1 68.8,34.4 70,37.5 C 71.2,40.6 71.2,46.9 70,50 C 68.8,53.1 68.8,59.4 70,62.5 C 71.2,65.6 71.2,71.9 70,75 C 68.8,78.1 68.8,84.4 70,87.5 C 71.2,90.6 71.2,96.9 70,100"
+            initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ duration: 1.8, delay: 0.4, ease: "easeInOut" }} viewport={{ once: true }} />
+        </motion.svg>
 
         <div className="max-w-7xl mx-auto relative z-10 pt-4">
           
@@ -847,13 +914,19 @@ export default function Reviews() {
           </div>
         </div>
 
-        {/* Decorative bottom line */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent" />
+       
 
       </section>
 
       {/* Footer section */}
-      <div className="bg-white">
+      <div className="bg-white mt-0">
+          <div
+        aria-hidden="true"
+        className="h-[3px] w-full mt-30 mb-0"
+        style={{
+          background: 'linear-gradient(90deg, transparent 0%, #f97316 30%, #fb923c 60%, transparent 100%)',
+        }}
+      />
         <Footer />
       </div>
 
