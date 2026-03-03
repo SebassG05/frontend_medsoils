@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Eye, EyeOff, KeyRound, CheckCircle2, Check, X } from 'lucide-react'
+import { Eye, EyeOff, KeyRound, CheckCircle2, Check, X, ShieldAlert } from 'lucide-react'
+import { forceChangePassword } from '../services/authService'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
@@ -17,6 +18,7 @@ const ResetPassword = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const token = searchParams.get('token')
+  const forced = searchParams.get('forced') === 'true'
 
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -37,20 +39,26 @@ const ResetPassword = () => {
       return
     }
 
-    if (!token) {
-      setError('Invalid or missing reset token. Please request a new reset link.')
-      return
-    }
-
     setIsLoading(true)
     try {
-      const res = await fetch(`${API_URL}/auth/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, newPassword }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.message || 'Failed to reset password')
+      if (forced) {
+        // Authenticated forced-reset flow (no email token required)
+        await forceChangePassword(newPassword)
+        window.dispatchEvent(new Event('storage'))
+      } else {
+        if (!token) {
+          setError('Invalid or missing reset token. Please request a new reset link.')
+          setIsLoading(false)
+          return
+        }
+        const res = await fetch(`${API_URL}/auth/reset-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, newPassword }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.message || 'Failed to reset password')
+      }
       setSuccess(true)
       setTimeout(() => navigate('/'), 1500)
     } catch (err) {
@@ -60,7 +68,8 @@ const ResetPassword = () => {
     }
   }
 
-  if (!token) {
+  // Non-forced mode with no token in URL
+  if (!forced && !token) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-8 max-w-md w-full text-center">
@@ -84,11 +93,14 @@ const ResetPassword = () => {
         transition={{ duration: 0.5 }}
         className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-md w-full"
       >
-        {/* Icon — only shown before success */}
+        {/* Icon â€” only shown before success */}
         {!success && (
           <div className="flex justify-center mb-6">
-            <div className="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center">
-              <KeyRound className="w-7 h-7 text-orange-400" />
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center ${forced ? 'bg-amber-50' : 'bg-orange-50'}`}>
+              {forced
+                ? <ShieldAlert className="w-7 h-7 text-amber-500" />
+                : <KeyRound className="w-7 h-7 text-orange-400" />
+              }
             </div>
           </div>
         )}
@@ -101,13 +113,26 @@ const ResetPassword = () => {
           >
             <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-3" />
             <h2 className="text-xl font-bold text-gray-900 mb-2">Password updated!</h2>
-            <p className="text-gray-500 text-sm">You can now sign in with your new password.</p>
+            <p className="text-gray-500 text-sm">You can now use your new password.</p>
             <p className="text-gray-400 text-xs mt-2">Redirecting...</p>
           </motion.div>
         ) : (
           <>
-            <h2 className="text-2xl font-bold text-gray-900 text-center mb-1">Set new password</h2>
-            <p className="text-gray-500 text-sm text-center mb-6">Enter and confirm your new password below.</p>
+            <h2 className="text-2xl font-bold text-gray-900 text-center mb-1">
+              {forced ? 'Create your password' : 'Set new password'}
+            </h2>
+            <p className="text-gray-500 text-sm text-center mb-6">
+              {forced
+                ? 'Your account requires a new password before you can continue. Please choose a secure password.'
+                : 'Enter and confirm your new password below.'}
+            </p>
+
+            {forced && (
+              <div className="mb-5 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                <ShieldAlert className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+                <p className="text-xs text-amber-700">For security reasons you must set a personal password before accessing the platform.</p>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
@@ -128,7 +153,7 @@ const ResetPassword = () => {
                     type={showNew ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder="New Password"
                     required
                     className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                   />
@@ -193,7 +218,7 @@ const ResetPassword = () => {
                     type={showConfirm ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder="Confirm Password"
                     required
                     className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                   />

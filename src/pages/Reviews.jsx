@@ -913,9 +913,7 @@ export default function Reviews() {
             ))}
           </div>
         </div>
-
-       
-
+        
       </section>
 
       {/* Footer section */}

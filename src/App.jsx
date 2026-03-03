@@ -1,20 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import Header from './components/layout/Header'
 import CookieBanner from './components/cookies/CookieBanner'
 import { initGA4 } from './utils/analyticsManager'
-
-// Bootstrap GA4 Consent Mode v2 immediately (before any render)
-initGA4()
-
-function ScrollToTop() {
-  const { pathname } = useLocation()
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
-  }, [pathname])
-  return null
-}
 import Home from './pages/Home'
 import About from './pages/About'
 import Admission from './pages/Admission'
@@ -31,6 +20,29 @@ import AddVideoResource from './pages/AddVideoResource'
 import AddPdfResource from './pages/AddPdfResource'
 import Reviews from './pages/Reviews'
 
+// Bootstrap GA4 Consent Mode v2 immediately (before any render)
+initGA4()
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname])
+  return null
+}
+
+/** Redirects users that must reset their password to the forced-reset page */
+function ForceResetGuard({ children }) {
+  const location = useLocation()
+  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const isOnResetPage = location.pathname === '/reset-password'
+
+  if (user?.mustResetPassword && !isOnResetPage) {
+    return <Navigate to="/reset-password?forced=true" replace />
+  }
+  return children
+}
+
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
@@ -43,22 +55,22 @@ function App() {
           <CookieBanner />
           <main className="pt-24">
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/admission" element={<Admission />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogPost />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/settings" element={<Settings />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/try" element={<Try />} />
-              <Route path="/about-program" element={<AboutProgram />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/resources" element={<Resources />} />
-              <Route path="/reviews" element={<Reviews />} />
-              <Route path="/resources/add/video" element={<AddVideoResource />} />
-              <Route path="/resources/add/pdf" element={<AddPdfResource />} />
-              <Route path="*" element={<Home />} />
+              <Route path="/" element={<ForceResetGuard><Home /></ForceResetGuard>} />
+              <Route path="/about" element={<ForceResetGuard><About /></ForceResetGuard>} />
+              <Route path="/admission" element={<ForceResetGuard><Admission /></ForceResetGuard>} />
+              <Route path="/blog" element={<ForceResetGuard><Blog /></ForceResetGuard>} />
+              <Route path="/blog/:id" element={<ForceResetGuard><BlogPost /></ForceResetGuard>} />
+              <Route path="/contact" element={<ForceResetGuard><Contact /></ForceResetGuard>} />
+              <Route path="/settings" element={<ForceResetGuard><Settings /></ForceResetGuard>} />
+              <Route path="/try" element={<ForceResetGuard><Try /></ForceResetGuard>} />
+              <Route path="/about-program" element={<ForceResetGuard><AboutProgram /></ForceResetGuard>} />
+              <Route path="/login" element={<ForceResetGuard><LoginPage /></ForceResetGuard>} />
+              <Route path="/resources" element={<ForceResetGuard><Resources /></ForceResetGuard>} />
+              <Route path="/reviews" element={<ForceResetGuard><Reviews /></ForceResetGuard>} />
+              <Route path="/resources/add/video" element={<ForceResetGuard><AddVideoResource /></ForceResetGuard>} />
+              <Route path="/resources/add/pdf" element={<ForceResetGuard><AddPdfResource /></ForceResetGuard>} />
+              <Route path="*" element={<ForceResetGuard><Home /></ForceResetGuard>} />
             </Routes>
           </main>
         </div>
