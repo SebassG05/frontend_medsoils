@@ -42,10 +42,16 @@ const Login = ({ onClose, onSignUpClick }) => {
     setIsLoading(true)
     setError('')
     try {
-      await loginUser({ email, password })
+      const result = await loginUser({ email, password })
       setEmail('')
       setPassword('')
       window.dispatchEvent(new Event('storage'))
+      // If the user must reset their password, force-redirect before closing
+      if (result?.data?.user?.mustResetPassword) {
+        onClose?.()
+        navigate('/reset-password?forced=true')
+        return
+      }
       onClose?.()
     } catch (err) {
       setError(err.message || 'Failed to sign in')

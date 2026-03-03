@@ -58,3 +58,29 @@ export async function loginUser({ email, password }) {
     throw error;
   }
 }
+
+/**
+ * Changes the password for an authenticated user who has the mustResetPassword flag.
+ * Clears the flag on success and updates localStorage.
+ */
+export async function forceChangePassword(newPassword) {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${API_URL.replace(/\/$/, '')}/auth/force-change-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ newPassword }),
+  })
+
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.message || 'Failed to change password')
+
+  // Update the stored user so mustResetPassword is cleared
+  if (data.data?.user) {
+    localStorage.setItem('user', JSON.stringify(data.data.user))
+  }
+
+  return data
+}
