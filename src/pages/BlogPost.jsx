@@ -4,7 +4,52 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, Tag, ArrowLeft, Trash2, AlertTriangle, X, Pencil, Sparkles, ExternalLink, Copy, CheckCheck } from 'lucide-react'
 import Footer from '../components/layout/Footer'
 import BlogEditor from '../components/blog/BlogEditor'
+import BlogCarousel from '../components/blog/BlogCarousel'
 import { fetchBlogById, deleteBlog, updateBlog } from '../services/blogService'
+
+/* ─── parse HTML and replace <div class="carousel"> blocks with React carousel ─── */
+function renderContent(html) {
+  if (!html) return null
+  const CAROUSEL_RE = /<div[^>]*class=["']carousel["'][^>]*>([\s\S]*?)<\/div>/gi
+  const IMG_RE      = /<img[^>]+src=["']([^"']+)["'][^>]*?(?:alt=["']([^"']*)["'][^>]*)?\/?>/gi
+
+  const parts = []
+  let last = 0, match
+  CAROUSEL_RE.lastIndex = 0
+
+  while ((match = CAROUSEL_RE.exec(html)) !== null) {
+    // HTML before this carousel
+    if (match.index > last) {
+      parts.push(
+        <div key={`html-${last}`}
+          dangerouslySetInnerHTML={{ __html: html.slice(last, match.index).replace(/<img\b/gi, '<img referrerpolicy="no-referrer"') }}
+        />
+      )
+    }
+    // Extract images from the carousel innerHTML
+    const images = []
+    let imgMatch
+    IMG_RE.lastIndex = 0
+    while ((imgMatch = IMG_RE.exec(match[1])) !== null) {
+      images.push({ src: imgMatch[1], alt: imgMatch[2] || '' })
+    }
+    parts.push(<BlogCarousel key={`carousel-${match.index}`} images={images} />)
+    last = match.index + match[0].length
+  }
+
+  // remaining HTML after last carousel
+  if (last < html.length) {
+    parts.push(
+      <div key={`html-${last}`}
+        dangerouslySetInnerHTML={{ __html: html.slice(last).replace(/<img\b/gi, '<img referrerpolicy="no-referrer"') }}
+      />
+    )
+  }
+
+  return parts.length ? parts : (
+    <div dangerouslySetInnerHTML={{ __html: html.replace(/<img\b/gi, '<img referrerpolicy="no-referrer"') }} />
+  )
+}
 
 export default function BlogPost() {
   const { id }   = useParams()
@@ -109,7 +154,7 @@ export default function BlogPost() {
         transition={{ duration: 0.5 }}
         className="container mx-auto px-4 py-12"
       >
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* back */}
           <button
             onClick={() => navigate('/blog')}
@@ -251,7 +296,7 @@ export default function BlogPost() {
                 .blog-post-content th, .blog-post-content td { border: 1px solid #e5e7eb; padding: 0.6rem 1rem; text-align: left; font-size: 0.95rem; }
                 .blog-post-content th { background: #fff7ed; font-weight: 700; color: #374151; }
               `}</style>
-              <div dangerouslySetInnerHTML={{ __html: post.content.replace(/<img\b/gi, '<img referrerpolicy="no-referrer"') }} />
+              {renderContent(post.content)}
             </div>
           </article>
 
