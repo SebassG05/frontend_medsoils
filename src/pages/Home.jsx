@@ -9,6 +9,7 @@ import BlogCarousel from '../components/home/BlogCarousel'
 import SoilQuizBanner from '../components/home/SoilQuizBanner'
 import IussEndorsement from '../components/home/IussEndorsement'
 import FieldResearch from '../components/home/FieldResearch'
+import { fetchBlogStats } from '../services/blogService'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
@@ -30,6 +31,11 @@ const Home = () => {
   const [reviewsPerPage, setReviewsPerPage] = useState(3)
   const [perimeter, setPerimeter] = useState(3200)
   const [cardSize, setCardSize] = useState({ w: 1200, h: 320 })
+  const [blogStats, setBlogStats] = useState({
+    totalArticles: 0,
+    totalAuthors: 0,
+    totalTopics: 0
+  })
 
   useEffect(() => {
     const checkMobile = () => {
@@ -51,6 +57,20 @@ const Home = () => {
           if (json.data?.length) setReviews(json.data)
         }
       } catch {}
+    })()
+    return () => { mounted = false }
+  }, [])
+
+  // Fetch blog statistics
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const stats = await fetchBlogStats()
+        if (mounted) setBlogStats(stats)
+      } catch (err) {
+        console.error('Failed to load blog stats:', err)
+      }
     })()
     return () => { mounted = false }
   }, [])
@@ -572,9 +592,9 @@ const Home = () => {
               {/* Stats row */}
               <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-8 md:gap-16 mb-10">
                 {[
-                  { value: '40+', label: 'Articles published' },
-                  { value: '12', label: 'Expert authors' },
-                  { value: '4', label: 'Countries covered' },
+                  { value: blogStats.totalArticles > 0 ? `${blogStats.totalArticles}` : '0', label: 'Articles published' },
+                  { value: blogStats.totalAuthors > 0 ? `${blogStats.totalAuthors}` : '0', label: 'Expert authors' },
+                  { value: blogStats.totalTopics > 0 ? `${blogStats.totalTopics}` : '0', label: 'Topics covered' },
                 ].map((stat) => (
                   <div key={stat.label} className="flex flex-col items-center min-w-[100px]">
                     <span className="text-3xl md:text-4xl font-bold bg-gradient-to-br from-orange-500 to-orange-600 bg-clip-text text-transparent">{stat.value}</span>

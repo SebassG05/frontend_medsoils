@@ -57,3 +57,12 @@ export async function deleteBlog(id) {
   if (!res.ok) throw new Error(data.message || 'Failed to delete post');
   return data;
 }
+
+export async function fetchBlogStats() {
+  const res = await fetch(`${API_URL}/blogs/stats`, {
+    headers: authHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to load stats');
+  return data.data;
+}
