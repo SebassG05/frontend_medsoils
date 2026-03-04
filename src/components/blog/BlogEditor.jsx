@@ -14,7 +14,7 @@ import {
   Heading2, Heading3, Link as LinkIcon, Code, List, ListOrdered,
   Quote, AlignLeft, AlignCenter, AlignRight, Undo, Redo,
   Minus, ImagePlus, Film, X, Tag, FileText, FileCode, Copy, Check, ArrowRight,
-  ExternalLink,
+  ExternalLink, LayoutList,
   CheckCircle2, AlertCircle, Loader2, Upload, Eye, EyeOff,
 } from 'lucide-react'
 
@@ -113,6 +113,85 @@ const VideoNode = Node.create({
   },
   addNodeView() {
     return ReactNodeViewRenderer(VideoPreview)
+  },
+})
+
+/* ═══════════════  CarouselPreview (editor NodeView) ═══════════════ */
+function CarouselPreview({ node, deleteNode }) {
+  const images = JSON.parse(node.attrs.images || '[]')
+  const [page, setPage] = useState(0)
+  const perPage = 2
+  const total = Math.ceil(images.length / perPage)
+  const slice = images.slice(page * perPage, page * perPage + perPage)
+
+  return (
+    <NodeViewWrapper>
+      <div contentEditable={false} style={{ position: 'relative', margin: '1rem 0', borderRadius: 14, overflow: 'hidden', background: '#111', userSelect: 'none' }}>
+        {/* slides */}
+        <div style={{ display: 'flex', height: 260 }}>
+          {slice.map((img, i) => (
+            <div key={i} style={{ flex: 1, overflow: 'hidden' }}>
+              <img src={img.src} alt={img.alt || ''} referrerPolicy="no-referrer"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 0, margin: 0, boxShadow: 'none' }} />
+            </div>
+          ))}
+          {slice.length < perPage && <div style={{ flex: 1, background: '#1f2937' }} />}
+        </div>
+        {/* arrows */}
+        {total > 1 && (
+          <>
+            <button type="button" onClick={() => setPage(p => (p - 1 + total) % total)}
+              style={{ position:'absolute',left:8,top:'50%',transform:'translateY(-50%)',background:'rgba(255,255,255,0.85)',border:'none',borderRadius:'50%',width:32,height:32,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:'bold',color:'#374151' }}>‹</button>
+            <button type="button" onClick={() => setPage(p => (p + 1) % total)}
+              style={{ position:'absolute',right:8,top:'50%',transform:'translateY(-50%)',background:'rgba(255,255,255,0.85)',border:'none',borderRadius:'50%',width:32,height:32,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:'bold',color:'#374151' }}>›</button>
+          </>
+        )}
+        {/* dots */}
+        {total > 1 && (
+          <div style={{ position:'absolute',bottom:8,left:0,right:0,display:'flex',justifyContent:'center',gap:5 }}>
+            {Array.from({ length: total }).map((_, i) => (
+              <button type="button" key={i} onClick={() => setPage(i)}
+                style={{ width: i === page ? 18 : 8, height: 8, borderRadius: 4, border:'none', background: i === page ? '#fff' : 'rgba(255,255,255,0.45)', cursor:'pointer', padding:0, transition:'all .2s' }} />
+            ))}
+          </div>
+        )}
+        {/* label */}
+        <div style={{ position:'absolute',top:8,left:10,background:'rgba(0,0,0,.55)',color:'#fff',fontSize:11,borderRadius:6,padding:'2px 8px' }}>
+          🖼️ Carousel ({images.length} photos)
+        </div>
+        {/* delete */}
+        <button type="button" onClick={deleteNode}
+          style={{ position:'absolute',top:8,right:8,background:'rgba(0,0,0,.55)',border:'none',color:'#fff',borderRadius:'50%',width:26,height:26,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14 }}>
+          ×
+        </button>
+      </div>
+    </NodeViewWrapper>
+  )
+}
+
+const CarouselNode = Node.create({
+  name: 'carousel',
+  group: 'block',
+  atom: true,
+  addAttributes() {
+    return { images: { default: '[]' } }
+  },
+  parseHTML() {
+    return [{
+      tag: 'div.carousel',
+      getAttrs(dom) {
+        const imgs = [...dom.querySelectorAll('img')].map(img => ({ src: img.getAttribute('src'), alt: img.getAttribute('alt') || '' }))
+        return { images: JSON.stringify(imgs) }
+      },
+    }]
+  },
+  renderHTML({ HTMLAttributes }) {
+    const images = JSON.parse(HTMLAttributes.images || '[]')
+    const imgTags = images.map(img => ['img', { src: img.src, alt: img.alt || '', referrerpolicy: 'no-referrer' }])
+    return ['div', { class: 'carousel' }, ...imgTags]
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(CarouselPreview)
   },
 })
 
@@ -256,8 +335,11 @@ export default function BlogEditor({ onPublish, loading, initialTitle = '', init
   const [promptCopied,  setPromptCopied]    = useState(false)
   const [preview,       setPreview]         = useState(false)
   const [showConfirm,   setShowConfirm]     = useState(false)
-  const fileRef   = useRef(null)
-  const bannerRef = useRef(null)
+  const [showCarousel,  setShowCarousel]    = useState(false)
+  const [carouselUrls,  setCarouselUrls]    = useState(['', ''])
+  const fileRef      = useRef(null)
+  const carouselRef  = useRef(null)
+  const bannerRef    = useRef(null)
 
   /* force re-render when editor state changes (active marks, selection, etc.) */
   const [, forceUpdate] = useReducer(x => x + 1, 0)
@@ -274,6 +356,7 @@ export default function BlogEditor({ onPublish, loading, initialTitle = '', init
         HTMLAttributes: { referrerpolicy: 'no-referrer' },
       }),
       VideoNode,
+      CarouselNode,
       LinkExt.configure({ openOnClick: false }),
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
@@ -366,6 +449,36 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
     }).run()
     setVideoUrl('')
     setShowVideoInput(false)
+  }
+
+  /* ─── insert carousel ─── */
+  function insertCarousel() {
+    const imgs = carouselUrls.filter(u => u.trim())
+    if (!imgs.length) return
+    const images = JSON.stringify(imgs.map(u => ({ src: u.trim(), alt: '' })))
+    editor.chain().focus().insertContent({ type: 'carousel', attrs: { images } }).run()
+    setCarouselUrls(['', ''])
+    setShowCarousel(false)
+  }
+
+  function handleCarouselFiles(fileList) {
+    const files = Array.from(fileList).filter(f => f.type.startsWith('image/'))
+    files.forEach(file => {
+      const reader = new FileReader()
+      reader.onload = e => {
+        setCarouselUrls(prev => {
+          // fill the first empty slot, otherwise append
+          const idx = prev.findIndex(u => !u.trim())
+          if (idx !== -1) {
+            const next = [...prev]
+            next[idx] = e.target.result
+            return next
+          }
+          return [...prev, e.target.result]
+        })
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   /* ─── link prompt ─── */
@@ -639,6 +752,13 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
         >
           <Film size={14} /> Video URL
         </button>
+        <button
+          type="button"
+          onClick={() => setShowCarousel(v => !v)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition"
+        >
+          <LayoutList size={14} /> Carousel
+        </button>
         <input
           ref={fileRef}
           type="file"
@@ -756,6 +876,73 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
             className="p-1 text-gray-400 hover:text-gray-600 transition">
             <X size={14} />
           </button>
+        </div>
+      )}
+
+      {/* ── carousel builder panel ── */}
+      {showCarousel && (
+        <div className="mx-6 mb-3 bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-xs font-bold text-orange-600">
+              <LayoutList size={13} /> Carousel — add images (2 per slide)
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => { carouselRef.current?.click() }}
+                className="flex items-center gap-1 px-2.5 py-1 bg-white border border-orange-200 hover:bg-orange-100 rounded-lg text-xs font-semibold text-orange-600 transition"
+              >
+                <Upload size={11} /> Upload photos
+              </button>
+              <input ref={carouselRef} type="file" multiple accept="image/*" className="hidden"
+                onChange={e => { handleCarouselFiles(e.target.files); e.target.value = '' }} />
+              <button type="button" onClick={() => { setShowCarousel(false); setCarouselUrls(['', '']) }}
+                className="p-1 text-gray-400 hover:text-gray-600 transition">
+                <X size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* URL rows */}
+          <div className="space-y-2">
+            {carouselUrls.map((url, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-gray-400 w-4 shrink-0">{i + 1}</span>
+                {url && url.startsWith('data:') ? (
+                  <div className="flex items-center gap-2 flex-1">
+                    <img src={url} alt="" className="h-8 w-12 object-cover rounded border border-orange-200" />
+                    <span className="text-xs text-gray-500 truncate flex-1">Uploaded image</span>
+                  </div>
+                ) : (
+                  <input
+                    value={url}
+                    onChange={e => setCarouselUrls(prev => { const n=[...prev]; n[i]=e.target.value; return n })}
+                    placeholder={`Image URL ${i + 1}`}
+                    className="flex-1 text-xs outline-none bg-white border border-orange-200 rounded-lg px-3 py-1.5 text-gray-700 placeholder-gray-400"
+                  />
+                )}
+                <button type="button"
+                  onClick={() => setCarouselUrls(prev => prev.length > 1 ? prev.filter((_, j) => j !== i) : prev)}
+                  className="p-1 text-gray-300 hover:text-red-400 transition">
+                  <X size={12} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 pt-1">
+            <button type="button"
+              onClick={() => setCarouselUrls(prev => [...prev, ''])}
+              className="text-xs text-orange-500 hover:text-orange-700 font-semibold transition">
+              + Add image
+            </button>
+            <div className="flex-1" />
+            <button type="button" onClick={insertCarousel}
+              disabled={!carouselUrls.some(u => u.trim())}
+              className="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 text-white text-xs font-semibold rounded-lg transition">
+              Insert carousel
+            </button>
+          </div>
         </div>
       )}
 
