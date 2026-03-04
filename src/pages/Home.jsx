@@ -14,11 +14,6 @@ import { fetchBlogStats } from '../services/blogService'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
 const defaultReviews = [
-  { id: 1, name: 'Ana Martínez', rating: 4.8, text: 'Great course materials and community support — highly recommended!', date: '2025-11-08' },
-  { id: 2, name: 'Luca Rossi',   rating: 4.5, text: 'Practical resources and excellent lectures. The forum helped a lot.', date: '2025-10-02' },
-  { id: 3, name: 'Marta Silva',  rating: 5.0, text: 'I loved the field examples — very relevant to our region.', date: '2025-09-15' },
-  { id: 4, name: 'Omar Khaled',  rating: 4.2, text: 'Good content; would love more advanced case studies on arid zones.', date: '2025-08-21' },
-  { id: 5, name: 'Sofia Reis',   rating: 4.9, text: 'World-class faculty and an incredibly supportive international cohort.', date: '2025-07-14' },
 ]
 
 const Home = () => {
@@ -743,6 +738,17 @@ const Home = () => {
 
           {/* Cards */}
           <motion.div variants={itemVariants} className="relative">
+            {reviews.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+                <div className="w-20 h-20 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center mb-6 shadow-inner">
+                  <MessageSquare className="w-9 h-9 text-orange-300" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-700 mb-2">No reviews yet</h3>
+                <p className="text-gray-400 text-sm max-w-xs leading-relaxed">
+                  Be the first to share your experience with the MedSoils community.
+                </p>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {reviews
                 .slice(reviewIndex * reviewsPerPage, reviewIndex * reviewsPerPage + reviewsPerPage)
@@ -806,6 +812,7 @@ const Home = () => {
                   )
                 })}
             </div>
+            )}
 
             {/* Pagination nav */}
             {reviews.length > reviewsPerPage && (
