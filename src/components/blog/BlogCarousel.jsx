@@ -29,7 +29,7 @@ export default function BlogCarousel({ images = [] }) {
   }
 
   return (
-    <div className="relative w-full my-6 select-none rounded-2xl overflow-hidden bg-gray-900">
+    <div className="relative w-full my-6 select-none rounded-2xl overflow-hidden" style={{ height: 'clamp(220px, 40vw, 420px)' }}>
       {/* slides */}
       <AnimatePresence initial={false} custom={dir} mode="wait">
         <motion.div
@@ -40,26 +40,25 @@ export default function BlogCarousel({ images = [] }) {
           animate="center"
           exit="exit"
           transition={{ duration: 0.35, ease: 'easeInOut' }}
-          className="flex gap-1"
+          className="absolute inset-0 flex gap-0.5 rounded-2xl overflow-hidden"
         >
           {slice.map((img, i) => (
             <div
               key={i}
-              className="flex-1 overflow-hidden"
-              style={{ maxHeight: 360 }}
+              className="flex-1 overflow-hidden h-full"
             >
               <img
                 src={img.src}
                 alt={img.alt || ''}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"
-                style={{ height: 360, borderRadius: 0, margin: 0, boxShadow: 'none' }}
+                style={{ borderRadius: 0, margin: 0, boxShadow: 'none' }}
               />
             </div>
           ))}
           {/* fill empty slot if odd number of images on last slide */}
           {slice.length < perPage && (
-            <div className="flex-1 bg-gray-800" />
+            <div className="flex-1 h-full bg-gray-800" />
           )}
         </motion.div>
       </AnimatePresence>
@@ -68,7 +67,7 @@ export default function BlogCarousel({ images = [] }) {
       {total > 1 && (
         <button
           onClick={() => go(-1)}
-          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow-lg flex items-center justify-center transition"
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow-lg flex items-center justify-center transition outline-none focus:outline-none"
           aria-label="Previous"
         >
           <ChevronLeft size={20} className="text-gray-700" />
@@ -79,7 +78,7 @@ export default function BlogCarousel({ images = [] }) {
       {total > 1 && (
         <button
           onClick={() => go(1)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow-lg flex items-center justify-center transition"
+          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow-lg flex items-center justify-center transition outline-none focus:outline-none"
           aria-label="Next"
         >
           <ChevronRight size={20} className="text-gray-700" />
@@ -93,7 +92,7 @@ export default function BlogCarousel({ images = [] }) {
             <button
               key={i}
               onClick={() => { setDir(i > page ? 1 : -1); setPage(i) }}
-              className={`rounded-full transition-all ${
+              className={`rounded-full transition-all outline-none focus:outline-none ${
                 i === page ? 'w-5 h-2 bg-white' : 'w-2 h-2 bg-white/50 hover:bg-white/80'
               }`}
               aria-label={`Go to slide ${i + 1}`}
