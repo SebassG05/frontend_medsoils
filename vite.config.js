@@ -40,7 +40,7 @@ export default defineConfig({
           },
         ]
       },
-      includeAssets: ['Corporatives/Images/Logo/Logo.png', 'Corporatives/Typography/Rondana Regular.otf', 'pwa-icons/*.png'],
+      includeAssets: ['Corporatives/Images/Logo/Logo.png', 'Corporatives/Typography/Rondana Regular.otf'],
       manifest: {
         name: 'Campus Evenor - Soluciones Tecnológicas',
         short_name: 'Campus Evenor - Soluciones Tecnológicas',
@@ -53,77 +53,9 @@ export default defineConfig({
         orientation: 'portrait-primary',
         categories: ['technology', 'science', 'environment'],
         icons: [
-          {
-            src: 'pwa-icons/icon-72x72.png',
-            sizes: '72x72',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-icons/icon-96x96.png',
-            sizes: '96x96',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-icons/icon-128x128.png',
-            sizes: '128x128',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-icons/icon-144x144.png',
-            sizes: '144x144',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-icons/icon-152x152.png',
-            sizes: '152x152',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-icons/manifest-icon-192.maskable.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: 'pwa-icons/manifest-icon-192.maskable.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'maskable'
-          },
-          {
-            src: 'pwa-icons/icon-384x384.png',
-            sizes: '384x384',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-icons/manifest-icon-512.maskable.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: 'pwa-icons/manifest-icon-512.maskable.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
-          }
+          // PWA icons temporarily disabled - add icons to /public/pwa-icons/ to enable
         ],
-        shortcuts: [
-          {
-            name: 'Inicio',
-            short_name: 'Inicio',
-            description: 'Campus Evenor - Soluciones Tecnológicas',
-            url: '/',
-            icons: [{ src: '/pwa-icons/icon-96x96.png', sizes: '96x96' }]
-          },
-          {
-            name: 'Contacto',
-            short_name: 'Contacto',
-            description: 'Contactar con Campus Evenor - Soluciones Tecnológicas',
-            url: '/contacto',
-            icons: [{ src: '/pwa-icons/icon-96x96.png', sizes: '96x96' }]
-          }
-        ]
+        shortcuts: []
       }
     })
   ],
