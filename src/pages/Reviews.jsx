@@ -149,11 +149,7 @@ export default function Reviews() {
   const navigate = useNavigate()
 
   const defaultReviews = [
-    { id: 1, name: 'Ana Martínez', rating: 4.8, text: 'Great course materials and community support — highly recommended!', date: '2025-11-08' },
-    { id: 2, name: 'Luca Rossi',    rating: 4.5, text: 'Practical resources and excellent lectures. The forum helped a lot.', date: '2025-10-02' },
-    { id: 3, name: 'Marta Silva',   rating: 5.0, text: 'I loved the field examples — very relevant to our region.', date: '2025-09-15' },
-    { id: 4, name: 'Omar Khaled',   rating: 4.2, text: 'Good content; would like more advanced case studies.', date: '2025-08-21' },
-  ]
+     ]
 
   const [reviews, setReviews] = useState(defaultReviews)
   const [deletingIds, setDeletingIds] = useState([])
@@ -851,6 +847,7 @@ export default function Reviews() {
               </div>
 
               {/* Navigation Controls */}
+              {reviews.length > 0 && (
               <motion.div 
                 className="flex items-center gap-4"
                 initial={{ opacity: 0, x: 20 }}
@@ -878,11 +875,40 @@ export default function Reviews() {
                   </button>
                 </div>
               </motion.div>
+              )}
             </div>
           </div>
           
           {/* Reviews Carousel */}
           <div className="relative py-4">
+            {reviews.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-col items-center justify-center py-24 px-6 text-center"
+              >
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-orange-100 to-amber-50 border border-orange-200 flex items-center justify-center shadow-lg">
+                    <svg className="w-11 h-11 text-orange-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                    </svg>
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-orange-500 border-2 border-white flex items-center justify-center">
+                    <span className="text-white text-[10px] font-bold">0</span>
+                  </div>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-3">No reviews yet</h3>
+                <p className="text-gray-400 text-base max-w-sm leading-relaxed mb-6">
+                  The community hasn't shared any experiences yet. Be the first one to leave a review!
+                </p>
+                <div className="flex items-center gap-2 text-sm text-orange-400 font-medium">
+                  <span className="w-8 h-px bg-orange-200" />
+                  Share your experience above
+                  <span className="w-8 h-px bg-orange-200" />
+                </div>
+              </motion.div>
+            ) : (
             <div className="overflow-hidden">
               <motion.div 
                 className="flex gap-4 md:gap-6"
@@ -896,9 +922,11 @@ export default function Reviews() {
                 ))}
               </motion.div>
             </div>
+            )}
           </div>
           
           {/* Carousel dots */}
+          {reviews.length > 0 && (
           <div className="flex justify-center gap-2 mt-12">
             {Array.from({ length: Math.ceil(reviews.length / itemsPerPage) }).map((_, index) => (
               <button
@@ -912,6 +940,7 @@ export default function Reviews() {
               />
             ))}
           </div>
+          )}
         </div>
         
       </section>
