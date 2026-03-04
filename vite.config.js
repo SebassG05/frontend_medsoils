@@ -16,18 +16,19 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       // ✅ AÑADIR: Estrategia de generación del SW
       strategies: 'generateSW', // Genera automáticamente el Service Worker
-      // ✅ AÑADIR: Configuración del manifest para desarrollo
+      // Disabled in development to prevent stale SW from reloading the page on first load
       devOptions: {
-        enabled: true, // Habilitar PWA en desarrollo
-        type: 'module',
+        enabled: false,
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg}'],
         globIgnores: ['**/arrow-left*.js'],
         navigateFallback: null,
+        skipWaiting: false,
+        clientsClaim: false,
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         runtimeCaching: [
           {
