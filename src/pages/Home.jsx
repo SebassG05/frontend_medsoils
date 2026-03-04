@@ -2,7 +2,7 @@ import React from "react"
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, GraduationCap, Globe, Microscope, Sprout, Lightbulb } from 'lucide-react'
+import { ArrowRight, GraduationCap, Globe, Microscope, Sprout, Lightbulb, Star, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react'
 import Footer from '../components/layout/Footer'
 import ScrollToTop from '../components/ui/ScrollToTop'
 import BlogCarousel from '../components/home/BlogCarousel'
@@ -10,11 +10,24 @@ import SoilQuizBanner from '../components/home/SoilQuizBanner'
 import IussEndorsement from '../components/home/IussEndorsement'
 import FieldResearch from '../components/home/FieldResearch'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
+
+const defaultReviews = [
+  { id: 1, name: 'Ana Martínez', rating: 4.8, text: 'Great course materials and community support — highly recommended!', date: '2025-11-08' },
+  { id: 2, name: 'Luca Rossi',   rating: 4.5, text: 'Practical resources and excellent lectures. The forum helped a lot.', date: '2025-10-02' },
+  { id: 3, name: 'Marta Silva',  rating: 5.0, text: 'I loved the field examples — very relevant to our region.', date: '2025-09-15' },
+  { id: 4, name: 'Omar Khaled',  rating: 4.2, text: 'Good content; would love more advanced case studies on arid zones.', date: '2025-08-21' },
+  { id: 5, name: 'Sofia Reis',   rating: 4.9, text: 'World-class faculty and an incredibly supportive international cohort.', date: '2025-07-14' },
+]
+
 const Home = () => {
   const [activeCard, setActiveCard] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const borderRectRef = useRef(null)
   const blogCardRef = useRef(null)
+  const [reviews, setReviews] = useState(defaultReviews)
+  const [reviewIndex, setReviewIndex] = useState(0)
+  const [reviewsPerPage, setReviewsPerPage] = useState(3)
   const [perimeter, setPerimeter] = useState(3200)
   const [cardSize, setCardSize] = useState({ w: 1200, h: 320 })
 
@@ -25,6 +38,33 @@ const Home = () => {
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Fetch reviews from backend
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const res = await fetch(`${API_URL}/reviews`)
+        if (mounted && res.ok) {
+          const json = await res.json()
+          if (json.data?.length) setReviews(json.data)
+        }
+      } catch {}
+    })()
+    return () => { mounted = false }
+  }, [])
+
+  // Responsive cards per page for reviews
+  useEffect(() => {
+    const update = () => {
+      if (window.innerWidth < 640) setReviewsPerPage(1)
+      else if (window.innerWidth < 1024) setReviewsPerPage(2)
+      else setReviewsPerPage(3)
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
   }, [])
 
   useEffect(() => {
@@ -563,9 +603,245 @@ const Home = () => {
         </div>
       </section>
 
+
       {/* Sección Field Research */}
       <FieldResearch />
 
+
+      {/* ─── Reviews Section ─── */}
+      <section className="relative mt-0 bg-gradient-to-b from-white via-orange-50/30 to-white py-10 md:py-14 overflow-hidden">
+        {/* Background blobs */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-25 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-cyan-100 rounded-full blur-3xl opacity-20 translate-x-1/2 translate-y-1/2 pointer-events-none" />
+        {/* Dot grid */}
+        <svg className="absolute right-8 top-8 opacity-[0.07] pointer-events-none" width="220" height="220" viewBox="0 0 220 220">
+          {Array.from({ length: 7 }).map((_, r) =>
+            Array.from({ length: 7 }).map((_, c) => (
+              <circle key={`${r}-${c}`} cx={c * 32 + 12} cy={r * 32 + 12} r="2" fill="#f97316" />
+            ))
+          )}
+        </svg>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          className="container mx-auto px-4 max-w-6xl relative z-10"
+        >
+          {/* Average rating card */}
+          <motion.div variants={itemVariants} className="flex justify-center mb-10">
+            <div className="relative bg-white rounded-2xl border border-orange-100 shadow-md shadow-orange-100/40 px-10 py-7 flex flex-col sm:flex-row items-center gap-6 sm:gap-10 overflow-hidden">
+              {/* Subtle radial glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-amber-50 opacity-70 pointer-events-none" />
+
+              {/* Big score */}
+              <div className="relative flex flex-col items-center">
+                <span className="text-6xl font-black text-gray-900 leading-none">
+                  {reviews.length
+                    ? (reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / reviews.length).toFixed(1)
+                    : '0.0'}
+                </span>
+                <span className="text-xs text-gray-400 font-medium mt-1 uppercase tracking-widest">out of 5</span>
+              </div>
+
+              {/* Divider */}
+              <div className="hidden sm:block w-px h-16 bg-orange-100" />
+
+              {/* Stars + count */}
+              <div className="relative flex flex-col items-center gap-3">
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, s) => {
+                    const avg = reviews.length
+                      ? reviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / reviews.length
+                      : 0
+                    const filled = s + 1 <= Math.floor(avg)
+                    const half = !filled && s < avg
+                    return (
+                      <span key={s} className="relative w-7 h-7">
+                        <Star className="w-7 h-7 text-gray-200 fill-gray-200 absolute inset-0" />
+                        {(filled || half) && (
+                          <span
+                            className="absolute inset-0 overflow-hidden"
+                            style={{ width: filled ? '100%' : `${(avg - Math.floor(avg)) * 100}%` }}
+                          >
+                            <Star className="w-7 h-7 text-amber-400 fill-amber-400" />
+                          </span>
+                        )}
+                      </span>
+                    )
+                  })}
+                </div>
+                <span className="text-sm text-gray-500 font-medium">
+                  Based on <span className="text-gray-800 font-bold">{reviews.length}</span> review{reviews.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+
+              {/* Divider */}
+              <div className="hidden sm:block w-px h-16 bg-orange-100" />
+
+              {/* Distribution mini bars */}
+              <div className="relative flex flex-col gap-1.5 min-w-[130px]">
+                {[5, 4, 3, 2, 1].map(val => {
+                  const count = reviews.filter(r => Math.round(Number(r.rating || 0)) === val).length
+                  const pct = reviews.length ? (count / reviews.length) * 100 : 0
+                  return (
+                    <div key={val} className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400 w-3 text-right">{val}</span>
+                      <Star className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />
+                      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${pct}%` }}
+                          transition={{ duration: 0.8, delay: (5 - val) * 0.08, ease: 'easeOut' }}
+                          viewport={{ once: true }}
+                          className="h-full bg-gradient-to-r from-amber-400 to-orange-400 rounded-full"
+                        />
+                      </div>
+                      <span className="text-xs text-gray-400 w-5">{count}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Header */}
+          <motion.div variants={itemVariants} className="text-center mb-14">
+            <span className="inline-flex items-center gap-2 bg-orange-100 border border-orange-300 text-orange-600 text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full mb-5">
+              <MessageSquare className="w-3.5 h-3.5" />
+              Community Reviews
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mt-3">
+              What our{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400">students say</span>
+            </h2>
+            <p className="text-gray-500 text-lg mt-4 max-w-xl mx-auto">
+              Real experiences from the MedSoils community around the world.
+            </p>
+          </motion.div>
+
+          {/* Cards */}
+          <motion.div variants={itemVariants} className="relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {reviews
+                .slice(reviewIndex * reviewsPerPage, reviewIndex * reviewsPerPage + reviewsPerPage)
+                .map((r, i) => {
+                  const displayName = (r.name || r.createdBy?.name || 'Anonymous').toUpperCase()
+                  const isVerified = !!r.createdBy
+                  const stars = Math.round(Number(r.rating || 0))
+                  return (
+                    <motion.div
+                      key={r._id || r.id}
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: i * 0.1, ease: 'easeOut' }}
+                      whileHover={{ y: -6, boxShadow: '0 20px 40px -8px rgba(0,0,0,0.12)' }}
+                      className="bg-white rounded-2xl border border-gray-100 p-7 flex flex-col gap-4 shadow-sm hover:shadow-xl transition-all duration-400 relative overflow-hidden group"
+                    >
+                      {/* Top orange gradient accent */}
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 to-orange-300 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                      {/* Stars */}
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }).map((_, s) => (
+                          <Star
+                            key={s}
+                            className={`w-4 h-4 ${s < stars ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}`}
+                          />
+                        ))}
+                        <span className="ml-2 text-sm font-bold text-gray-700">{Number(r.rating || 0).toFixed(1)}</span>
+                      </div>
+
+                      {/* Text */}
+                      <p className="text-gray-600 text-sm leading-relaxed flex-1">
+                        <span className="text-orange-400 font-serif text-xl leading-none mr-1">"</span>
+                        {(r.text || '').length > 160 ? `${(r.text || '').slice(0, 160).trim()}…` : (r.text || '')}
+                        <span className="text-orange-400 font-serif text-xl leading-none ml-1">"</span>
+                      </p>
+
+                      {/* Author */}
+                      <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 ${
+                          isVerified
+                            ? 'bg-gradient-to-br from-emerald-400 to-teal-600'
+                            : 'bg-gradient-to-br from-orange-400 to-orange-600'
+                        }`}>
+                          {displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 leading-tight">{displayName}</p>
+                          <p className="text-xs text-gray-400">
+                            {new Date(r.createdAt || r.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                          </p>
+                        </div>
+                        {isVerified && (
+                          <span className="ml-auto inline-flex items-center gap-1 text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-2 py-1 rounded-full font-semibold">
+                            <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                            Verified
+                          </span>
+                        )}
+                      </div>
+                    </motion.div>
+                  )
+                })}
+            </div>
+
+            {/* Pagination nav */}
+            {reviews.length > reviewsPerPage && (
+              <div className="flex items-center justify-center gap-3 mt-10">
+                <button
+                  onClick={() => setReviewIndex(i => Math.max(0, i - 1))}
+                  disabled={reviewIndex === 0}
+                  className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-orange-400 hover:text-orange-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                {Array.from({ length: Math.ceil(reviews.length / reviewsPerPage) }).map((_, p) => (
+                  <button
+                    key={p}
+                    onClick={() => setReviewIndex(p)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                      p === reviewIndex ? 'bg-orange-500 scale-125' : 'bg-gray-300 hover:bg-orange-300'
+                    }`}
+                  />
+                ))}
+                <button
+                  onClick={() => setReviewIndex(i => Math.min(Math.ceil(reviews.length / reviewsPerPage) - 1, i + 1))}
+                  disabled={reviewIndex >= Math.ceil(reviews.length / reviewsPerPage) - 1}
+                  className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-orange-400 hover:text-orange-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-14">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+              <Link
+                to="/reviews"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-9 py-4 rounded-full font-semibold shadow-lg shadow-orange-200/50 hover:shadow-orange-300/50 transition-all group"
+              >
+                Share your review
+                <MessageSquare className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+              <Link
+                to="/reviews"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="inline-flex items-center gap-3 border-2 border-orange-400 text-orange-500 px-9 py-4 rounded-full font-semibold hover:bg-orange-50 transition-all group"
+              >
+                See all reviews
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </section>
       {/* Raya decorativa */}
       <motion.div
         initial={{ scaleX: 0 }}

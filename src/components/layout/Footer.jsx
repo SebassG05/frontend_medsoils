@@ -73,7 +73,7 @@ const Footer = () => {
                 alt="Facebook"
                 onClick={() => window.open("https://www.facebook.com/MedsoilChallenge/", "_blank")}
                 className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer hover:opacity-80"
-                whileHover={{ scale: 1.2, rotate: 10 }}
+                whileHover={{ scale: 1.2, rotate: -10}}
                 transition={{ duration: 0.3 }}
               />
               <motion.img
@@ -87,7 +87,7 @@ const Footer = () => {
                 src="https://cdn-icons-png.flaticon.com/512/87/87390.png"
                 alt="Instagram"
                 className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer hover:opacity-80"
-                whileHover={{ scale: 1.2, rotate: 10 }}
+                whileHover={{ scale: 1.2, rotate: -10 }}
                 transition={{ duration: 0.3 }}
               />
               <motion.img

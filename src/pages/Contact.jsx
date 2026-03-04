@@ -23,23 +23,13 @@ const contactInfo = [
   {
     icon: MapPin,
     label: 'Location',
-    value: 'Europe',
+    value: 'Mediterranean Area',
   },
   {
     icon: Mail,
     label: 'Email',
-    value: 'Email',
-  },
-  {
-    icon: Phone,
-    label: 'Phone',
-    value: '+1 123-456-7890 / +1 123-456-7891'
-  },
-  {
-    icon: Clock,
-    label: 'Work hours ',
-    value: 'Mon-Thu: 9:00-4:00 Fri-Sat: 9:00-3:00 Sun: Closed',
-  },
+    value: 'medsoilchallenge@gmail.com',
+  }
 ]
 
 const COUNTRIES = [
