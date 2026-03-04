@@ -109,7 +109,7 @@ export default function BlogPost() {
         transition={{ duration: 0.5 }}
         className="container mx-auto px-4 py-12"
       >
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* back */}
           <button
             onClick={() => navigate('/blog')}
