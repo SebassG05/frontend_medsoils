@@ -300,6 +300,10 @@ export default function BlogPost() {
           </article>
 
           {/* Guidance moved to the editor banner in BlogEditor.jsx */}
+
+          <div className="mt-6 text-center">
+            <button onClick={() => navigate('/blog')} className="underline text-orange-500">Back to blog</button>
+          </div>
         </div>
       </motion.div>
 
