@@ -74,13 +74,12 @@ export default function BlogPost() {
 
   /* ─── load post ─── */
   useEffect(() => {
-    if (!currentUser) { navigate('/blog'); return }
     setLoading(true)
     fetchBlogById(id)
       .then(data  => setPost(data))
       .catch(err  => setError(err.message))
       .finally(()=> setLoading(false))
-  }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [id])
 
   /* ─── save edits ─── */
   async function handleUpdate(payload) {
