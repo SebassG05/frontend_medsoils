@@ -77,20 +77,6 @@ const Footer = () => {
                 transition={{ duration: 0.3 }}
               />
               <motion.img
-                src="https://iconape.com/wp-content/files/od/367794/svg/logo-twitter-logo-icon-png-svg.png"
-                alt="Twitter"
-                className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer hover:opacity-80"
-                whileHover={{ scale: 1.2, rotate: 10 }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.img
-                src="https://cdn-icons-png.flaticon.com/512/87/87390.png"
-                alt="Instagram"
-                className="w-6 h-6 sm:w-7 sm:h-7 cursor-pointer hover:opacity-80"
-                whileHover={{ scale: 1.2, rotate: -10 }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.img
                 src="https://res.cloudinary.com/dktr2wcto/image/upload/v1771847203/4401412_jloto0.png"
                 alt="YouTube"
                 onClick={()=>{window.open('https://www.linkedin.com/company/medsoil-challenge-master?trk=public_post_feed-actor-name')}}
@@ -169,28 +155,22 @@ const Footer = () => {
             </h5>
             <ul className="space-y-2 sm:space-y-3 pt-2 flex flex-col items-center">
               <li>
-                <a href="#" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
+                <Link to="/about" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
                   <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
                   Mision
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
+                <Link to="/about-program" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
                   <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
                   Program
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
-                  <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Our Approach
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
+                <Link to="/resources" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
                   <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
                   Activities
-                </a>
+                </Link>
               </li>
             </ul>
           </motion.div>
