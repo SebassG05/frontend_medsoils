@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   PenLine, Calendar, Tag, ArrowRight, X, Search,
@@ -62,7 +62,7 @@ function SkeletonCard({ big }) {
 }
 
 /* ─── post card ─── */
-function PostCard({ post, onClick, wide }) {
+function PostCard({ post, onClick, wide, hideAuthor = false }) {
   const coverSrc = post.bannerImage || post.coverImage || firstImage(post.content)
   const excerpt  = stripHtml(post.excerpt || post.content).slice(0, wide ? 220 : 120)
   const mins     = readTime(post.content || post.excerpt || '')
@@ -118,20 +118,29 @@ function PostCard({ post, onClick, wide }) {
 
         {/* meta */}
         <div className="mt-auto flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2">
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0 ${avatarColor(post.authorName)}`}>
-              {initials(post.authorName)}
+          {hideAuthor ? (
+            <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+              <Calendar size={9} />
+              {new Date(post.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+              <span className="mx-1">·</span>
+              <BookOpen size={9} /> {mins} min read
+            </p>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0 ${avatarColor(post.authorName)}`}>
+                {initials(post.authorName)}
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-gray-700 leading-none">{post.authorName}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+                  <Calendar size={9} />
+                  {new Date(post.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  <span className="mx-1">·</span>
+                  <BookOpen size={9} /> {mins} min read
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-700 leading-none">{post.authorName}</p>
-              <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
-                <Calendar size={9} />
-                {new Date(post.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-                <span className="mx-1">·</span>
-                <BookOpen size={9} /> {mins} min read
-              </p>
-            </div>
-          </div>
+          )}
           <span className="flex items-center gap-1 text-xs font-semibold text-orange-500 group-hover:gap-2 transition-all">
             Read <ArrowRight size={12} />
           </span>
@@ -144,7 +153,11 @@ function PostCard({ post, onClick, wide }) {
 /* ════════════════════════════ Blog page ════════════════════════════ */
 export default function Blog() {
   const user     = useCurrentUser()
+  const location = useLocation()
   const navigate = useNavigate()
+  const isEventsView = ['/blog/events', '/blog/eventos'].includes(location.pathname.toLowerCase())
+  const contentType = isEventsView ? 'event' : 'post'
+  const canCreateInCurrentView = Boolean(user) && (!isEventsView || user?.role === 'superadmin')
 
   const [posts,        setPosts]        = useState([])
   const [page,         setPage]         = useState(1)
@@ -164,7 +177,7 @@ export default function Blog() {
     setLoadingList(true)
     setListError('')
     try {
-      const data = await fetchBlogs(page, 9)
+      const data = await fetchBlogs(page, 9, { type: contentType })
       setPosts(data.posts)
       setPages(data.pagination.pages)
       setTotal(data.pagination.total)
@@ -173,20 +186,38 @@ export default function Blog() {
     } finally {
       setLoadingList(false)
     }
-  }, [page])
+  }, [contentType, page])
 
   useEffect(() => { loadPosts() }, [loadPosts])
+
+  useEffect(() => {
+    setShowEditor(false)
+    setSearch('')
+    setActiveTag('')
+    setSortBy('newest')
+    setPage(1)
+  }, [contentType])
+
+  // Defensive filter: keep views separated even if API returns mixed content.
+  const typedPosts = useMemo(
+    () => posts.filter(p => {
+      const hasLegacyEventFields = Boolean(p.eventDate || p.eventTime)
+      const normalizedType = p.type || (hasLegacyEventFields ? 'event' : 'post')
+      return normalizedType === contentType
+    }),
+    [posts, contentType]
+  )
 
   /* ─── all tags across loaded posts ─── */
   const allTags = useMemo(() => {
     const set = new Set()
-    posts.forEach(p => p.tags?.forEach(t => set.add(t)))
+    typedPosts.forEach(p => p.tags?.forEach(t => set.add(t)))
     return [...set]
-  }, [posts])
+  }, [typedPosts])
 
   /* ─── filtered posts ─── */
   const visible = useMemo(() => {
-    let arr = posts
+    let arr = typedPosts
     if (activeTag) arr = arr.filter(p => p.tags?.includes(activeTag))
     if (search.trim()) {
       const q = search.trim().toLowerCase()
@@ -214,14 +245,14 @@ export default function Blog() {
       arr = [...arr].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     }
     return arr
-  }, [posts, activeTag, search, sortBy])
+  }, [typedPosts, activeTag, search, sortBy])
 
   /* ─── publish ─── */
   async function handlePublish(payload) {
     setLoadingCreate(true)
     try {
-      await createBlog(payload)
-      setSuccessMsg('Post published! 🎉')
+      await createBlog({ ...payload, type: contentType })
+      setSuccessMsg(isEventsView ? 'Event published! 🎉' : 'Post published! 🎉')
       setShowEditor(false)
       setPage(1)
       await loadPosts()
@@ -431,22 +462,51 @@ export default function Blog() {
             className="max-w-3xl mx-auto text-center"
           >
             <span className="inline-flex items-center gap-1.5 bg-orange-100 text-orange-500 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-orange-200/60">
-              <Sparkles size={14} /> MedSoils Community
+              <Sparkles size={14} /> {isEventsView ? 'MedSoils Day Care' : 'MedSoils Community'}
             </span>
             <h1 className="text-6xl md:text-8xl font-extrabold text-gray-800 leading-tight mb-6">
-              The <span className="text-orange-500">Soil Science</span> Blog
+              {isEventsView ? (
+                <>MedSoils <span className="text-orange-500">Events</span></>
+              ) : (
+                <>The <span className="text-orange-500">Soil Science</span> Blog</>
+              )}
             </h1>
             <p className="text-gray-500 text-xl md:text-2xl mb-10 leading-relaxed">
-              Insights, research, and stories from the Mediterranean soil community.
+              {isEventsView
+                ? 'Discover upcoming Day Care activities, sessions and key dates from the MedSoils community.'
+                : 'Insights, research, and stories from the Mediterranean soil community.'}
             </p>
+
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <button
+                onClick={() => navigate('/blog')}
+                className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition ${
+                  !isEventsView
+                    ? 'bg-orange-500 text-white shadow-md'
+                    : 'bg-white/80 text-gray-500 border border-orange-100 hover:bg-orange-50 hover:text-orange-600'
+                }`}
+              >
+                Blog
+              </button>
+              <button
+                onClick={() => navigate('/blog/events')}
+                className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition ${
+                  isEventsView
+                    ? 'bg-orange-500 text-white shadow-md'
+                    : 'bg-white/80 text-gray-500 border border-orange-100 hover:bg-orange-50 hover:text-orange-600'
+                }`}
+              >
+                Events
+              </button>
+            </div>
 
             {/* stats */}
             <div className="flex items-center justify-center gap-4 sm:gap-8 mb-8 text-gray-400 text-xs sm:text-sm flex-wrap">
-              <span className="flex items-center gap-1.5"><BookOpen size={14} />{total} article{total !== 1 ? 's' : ''}</span>
+              <span className="flex items-center gap-1.5"><BookOpen size={14} />{total} {isEventsView ? `event${total !== 1 ? 's' : ''}` : `article${total !== 1 ? 's' : ''}`}</span>
               <span className="hidden sm:block w-px h-4 bg-gray-200" />
-              <span className="hidden sm:flex items-center gap-1.5"><Users size={14} />Community writers</span>
+              <span className="hidden sm:flex items-center gap-1.5"><Users size={14} />{isEventsView ? 'Community organizers' : 'Community writers'}</span>
               <span className="hidden sm:block w-px h-4 bg-gray-200" />
-              <span className="hidden sm:flex items-center gap-1.5"><TrendingUp size={14} />Trending topics</span>
+              <span className="hidden sm:flex items-center gap-1.5"><TrendingUp size={14} />{isEventsView ? 'Upcoming activities' : 'Trending topics'}</span>
             </div>
 
             {/* search */}
@@ -455,7 +515,7 @@ export default function Blog() {
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Search posts, topics, authors…"
+                placeholder={isEventsView ? 'Search events, topics, organizers…' : 'Search posts, topics, authors…'}
                 className="w-full pl-11 pr-4 py-3.5 bg-white rounded-2xl text-sm text-gray-700 placeholder-gray-400 outline-none shadow-lg shadow-orange-100/50 border border-orange-100 focus:ring-2 focus:ring-orange-200"
               />
               {search && (
@@ -718,17 +778,19 @@ export default function Blog() {
           </div>
 
           {/* write button */}
-          <button
-            onClick={() => setShowEditor(e => !e)}
-            className={`w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 font-semibold rounded-xl transition shadow-md text-sm ${
-              showEditor
-                ? 'bg-gray-100 text-gray-700 shadow-none'
-                : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-200 hover:from-orange-600 hover:to-amber-600'
-            }`}
-          >
-            <PenLine size={15} />
-            {showEditor ? 'Close editor' : 'Write a post'}
-          </button>
+          {canCreateInCurrentView && (
+            <button
+              onClick={() => setShowEditor(e => !e)}
+              className={`w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 font-semibold rounded-xl transition shadow-md text-sm ${
+                showEditor
+                  ? 'bg-gray-100 text-gray-700 shadow-none'
+                  : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-200 hover:from-orange-600 hover:to-amber-600'
+              }`}
+            >
+              <PenLine size={15} />
+              {showEditor ? 'Close editor' : isEventsView ? 'Create event' : 'Write a post'}
+            </button>
+          )}
         </div>
 
         {/* ── editor panel ── */}
@@ -739,7 +801,7 @@ export default function Blog() {
             >
               {/* AI tip banner removed; guidance is available in the editor banner */}
 
-              <BlogEditor onPublish={handlePublish} loading={loadingCreate} />
+              <BlogEditor onPublish={handlePublish} loading={loadingCreate} mode={contentType} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -764,8 +826,8 @@ export default function Blog() {
             <div className="w-20 h-20 rounded-3xl bg-gray-100 flex items-center justify-center mx-auto mb-5">
               <Search size={30} className="text-gray-300" />
             </div>
-            <p className="text-lg font-semibold text-gray-500 mb-1">No posts found</p>
-            <p className="text-sm">{search || activeTag ? 'Try a different search or tag.' : 'Be the first to write one!'}</p>
+            <p className="text-lg font-semibold text-gray-500 mb-1">{isEventsView ? 'No events found' : 'No posts found'}</p>
+            <p className="text-sm">{search || activeTag ? 'Try a different search or tag.' : isEventsView ? 'There are no events yet.' : 'Be the first to write one!'}</p>
             {(search || activeTag) && (
               <button onClick={() => { setSearch(''); setActiveTag(''); setSortBy('newest') }}
                 className="mt-4 text-orange-500 text-sm font-semibold hover:underline">Clear filters</button>
@@ -776,7 +838,7 @@ export default function Blog() {
             {/* first post — full-width horizontal */}
             {visible[0] && (
               <motion.div key={visible[0]._id} layout className="mb-6">
-                <PostCard post={visible[0]} wide onClick={() => navigate(`/blog/${visible[0]._id}`)} />
+                <PostCard post={visible[0]} wide hideAuthor={isEventsView} onClick={() => navigate(`/blog/${visible[0]._id}`)} />
               </motion.div>
             )}
 
@@ -784,7 +846,7 @@ export default function Blog() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {visible.slice(1).map((post, i) => (
                 <motion.div key={post._id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                  <PostCard post={post} onClick={() => navigate(`/blog/${post._id}`)} />
+                  <PostCard post={post} hideAuthor={isEventsView} onClick={() => navigate(`/blog/${post._id}`)} />
                 </motion.div>
               ))}
             </div>

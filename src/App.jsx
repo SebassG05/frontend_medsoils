@@ -60,6 +60,8 @@ function App() {
               <Route path="/about" element={<ForceResetGuard><About /></ForceResetGuard>} />
               <Route path="/admission" element={<ForceResetGuard><Admission /></ForceResetGuard>} />
               <Route path="/blog" element={<ForceResetGuard><Blog /></ForceResetGuard>} />
+              <Route path="/blog/events" element={<ForceResetGuard><Blog /></ForceResetGuard>} />
+              <Route path="/blog/eventos" element={<ForceResetGuard><Blog /></ForceResetGuard>} />
               <Route path="/blog/:id" element={<ForceResetGuard><BlogPost /></ForceResetGuard>} />
               <Route path="/contact" element={<ForceResetGuard><Contact /></ForceResetGuard>} />
               <Route path="/settings" element={<ForceResetGuard><Settings /></ForceResetGuard>} />

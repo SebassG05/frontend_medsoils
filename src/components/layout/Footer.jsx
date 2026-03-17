@@ -161,15 +161,21 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/about-program" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
+                <a href="https://www.consilium.europa.eu/en/policies/erasmus-plus-programme/" target="_blank" rel="noopener noreferrer" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
                   <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
                   Program
-                </Link>
+                </a>
               </li>
               <li>
                 <Link to="/resources" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
                   <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
                   Activities
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog/events" className="text-sm sm:text-base text-gray-600 hover:text-orange-500 transition-colors duration-300 group inline-flex items-center">
+                  <span className="w-0 h-0.5 bg-orange-500 group-hover:w-3 transition-all duration-300 mr-0 group-hover:mr-2"></span>
+                  Events
                 </Link>
               </li>
             </ul>
