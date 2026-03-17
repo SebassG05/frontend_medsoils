@@ -321,10 +321,24 @@ function MediaTray({ items, onInsert, onRemove }) {
 }
 
 /* ═══════════════════════════  BlogEditor  ═══════════════════════════ */
-export default function BlogEditor({ onPublish, loading, initialTitle = '', initialContent = '', initialTags = [], initialBanner = '', isEditing = false }) {
+export default function BlogEditor({
+  onPublish,
+  loading,
+  initialTitle = '',
+  initialContent = '',
+  initialTags = [],
+  initialBanner = '',
+  initialEventDate = '',
+  initialEventTime = '',
+  isEditing = false,
+  mode = 'post',
+}) {
+  const isEventMode = mode === 'event'
   const [title,       setTitle]       = useState(initialTitle)
   const [tags,        setTags]        = useState(initialTags)
   const [bannerImage, setBannerImage] = useState(initialBanner)
+  const [eventDate,   setEventDate]   = useState(initialEventDate)
+  const [eventTime,   setEventTime]   = useState(initialEventTime)
   const [uploads,     setUploads]     = useState([])
   const [dragging,    setDragging]    = useState(false)
   const [error,       setError]       = useState('')
@@ -360,7 +374,11 @@ export default function BlogEditor({ onPublish, loading, initialTitle = '', init
       LinkExt.configure({ openOnClick: false }),
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Placeholder.configure({ placeholder: 'Start writing your post here…  Use the toolbar above to format, or drag & drop a photo.' }),
+      Placeholder.configure({
+        placeholder: isEventMode
+          ? 'Write the event description here… Include agenda, location and relevant notes.'
+          : 'Start writing your post here…  Use the toolbar above to format, or drag & drop a photo.',
+      }),
       CharacterCount,
     ],
     content: initialContent || '',
@@ -501,12 +519,17 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
   function openConfirm(e) {
     e.preventDefault()
     setError('')
-    if (!title.trim()) { setError('Please add a title.'); return }
+    if (!title.trim()) {
+      setError(isEventMode ? 'Please add the event name.' : 'Please add a title.');
+      return
+    }
+    if (isEventMode && !eventDate) { setError('Please add the event date.'); return }
+    if (isEventMode && !eventTime.trim()) { setError('Please add an approximate event time.'); return }
     const html = editor?.getHTML() || ''
     // consider empty if just blank paragraphs and no real content
     const isEmpty = !html
       || html.replace(/<p>\s*<\/p>/gi, '').replace(/<br\s*\/?>/gi, '').trim() === ''
-    if (isEmpty) { setError('Please write some content.'); return }
+    if (isEmpty) { setError(isEventMode ? 'Please add the event description.' : 'Please write some content.'); return }
     if (isEditing) { handleSubmit(e); return }  // edit mode → save directly
     setShowConfirm(true)
   }
@@ -516,8 +539,8 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
     setError('')
     const html = editor?.getHTML() || ''
     try {
-      await onPublish({ title, content: html, tags, bannerImage })
-      setTitle(''); setTags([]); setBannerImage(''); setUploads([]); editor?.commands.clearContent()
+      await onPublish({ title, content: html, tags, bannerImage, eventDate, eventTime })
+      setTitle(''); setTags([]); setBannerImage(''); setUploads([]); setEventDate(''); setEventTime(''); editor?.commands.clearContent()
       setShowConfirm(false)
     } catch (err) {
       setError(err.message)
@@ -556,7 +579,7 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
                 </div>
                 <div>
                   <p className="text-white font-bold text-sm leading-none">Preview &amp; Confirm</p>
-                  <p className="text-orange-100 text-xs mt-0.5">Review your post before publishing</p>
+                  <p className="text-orange-100 text-xs mt-0.5">Review your {isEventMode ? 'event' : 'post'} before publishing</p>
                 </div>
               </div>
               <button type="button" onClick={() => setShowConfirm(false)}
@@ -585,6 +608,12 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
                   </div>
                 )}
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-800 leading-tight mb-6">{title}</h1>
+                {isEventMode && (
+                  <p className="text-sm text-gray-500 mb-4">
+                    {eventDate ? new Date(eventDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
+                    {eventTime?.trim() ? ` · ${eventTime.trim()}` : ''}
+                  </p>
+                )}
                 <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
               </div>
             </div>
@@ -616,7 +645,9 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
             <FileText size={17} className="text-white" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-none">{isEditing ? 'Edit post' : 'New post'}</p>
+            <p className="text-white font-bold text-sm leading-none">
+              {isEditing ? (isEventMode ? 'Edit event' : 'Edit post') : (isEventMode ? 'New event' : 'New post')}
+            </p>
             <p className="text-orange-100 text-xs mt-0.5">{words} words · {chars} chars</p>
           </div>
         </div>
@@ -647,10 +678,34 @@ Do NOT include any CSS, <style> blocks, or class attributes.`
         <input
           value={title}
           onChange={e => setTitle(e.target.value)}
-          placeholder="Post title…"
+          placeholder={isEventMode ? 'Event name…' : 'Post title…'}
           className="w-full text-3xl font-bold text-gray-800 placeholder-gray-300 outline-none bg-transparent pb-3"
         />
       </div>
+
+      {isEventMode && (
+        <div className="px-6 py-3 border-b border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label className="flex flex-col gap-1">
+            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Event date</span>
+            <input
+              type="date"
+              value={eventDate}
+              onChange={e => setEventDate(e.target.value)}
+              className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-orange-200"
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Approximate time</span>
+            <input
+              type="text"
+              value={eventTime}
+              onChange={e => setEventTime(e.target.value)}
+              placeholder="e.g. 10:30 AM"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-orange-200"
+            />
+          </label>
+        </div>
+      )}
 
       {/* ── tags ── */}
       <div className="px-6 py-3 border-b border-gray-100">

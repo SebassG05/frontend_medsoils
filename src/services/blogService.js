@@ -8,8 +8,16 @@ function authHeaders() {
   };
 }
 
-export async function fetchBlogs(page = 1, limit = 10) {
-  const res = await fetch(`${API_URL}/blogs?page=${page}&limit=${limit}`, {
+export async function fetchBlogs(page = 1, limit = 10, options = {}) {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+  if (options.type) {
+    params.set('type', options.type);
+  }
+
+  const res = await fetch(`${API_URL}/blogs?${params.toString()}`, {
     headers: authHeaders(),
   });
   const data = await res.json();
@@ -26,11 +34,11 @@ export async function fetchBlogById(id) {
   return data.data;
 }
 
-export async function createBlog({ title, content, tags, coverImage, bannerImage }) {
+export async function createBlog({ title, content, tags, coverImage, bannerImage, type, eventDate, eventTime }) {
   const res = await fetch(`${API_URL}/blogs`, {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ title, content, tags, coverImage, bannerImage }),
+    body: JSON.stringify({ title, content, tags, coverImage, bannerImage, type, eventDate, eventTime }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Failed to create post');
