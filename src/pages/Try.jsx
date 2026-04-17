@@ -840,13 +840,13 @@ const Try = () => {
 
         <div className="p-8 md:p-10">
           {/* Header row */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col items-center mb-8 gap-3">
             <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
               Question {current + 1} <span className="text-gray-300">/ {session.length}</span>
             </span>
 
             {/* Mini progress dots */}
-            <div className="flex gap-1.5 items-center">
+            <div className="flex flex-wrap justify-center gap-1.5 items-center">
               {session.map((_, i) => (
                 <span
                   key={i}
