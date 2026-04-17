@@ -144,7 +144,7 @@ export const ALL_QUESTIONS = [
 ]
 
 /** Number of questions to show per quiz session */
-export const QUESTIONS_PER_SESSION = 10
+export const QUESTIONS_PER_SESSION = ALL_QUESTIONS.length
 
 /**
  * Shuffles an array using the Fisher-Yates algorithm.
