@@ -286,7 +286,7 @@ const AuthGate = () => (
         {/* Divider with features */}
         <div className="w-full max-w-xs mb-10 space-y-2.5">
           {[
-            'Access all 15 quiz questions',
+            'Access all 22 quiz questions',
             'Track your progress over time',
             'Compete with other researchers',
           ].map((feat) => (
@@ -519,7 +519,7 @@ const Try = () => {
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Ready to test yourself?</h2>
             <p className="text-gray-500 mb-10 max-w-md mx-auto">
-              {QUESTIONS_PER_SESSION} randomised questions drawn from a bank of 15. Answers are shuffled on every attempt.
+              {QUESTIONS_PER_SESSION} questions across 4 topics. Answers are shuffled on every attempt.
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-10">

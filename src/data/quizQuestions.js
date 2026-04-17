@@ -1,7 +1,7 @@
 /**
  * Soil Science Quiz — Question Bank
  * 22 questions, each with 1 correct answer and 3 plausible distractors.
- * On each session, 10 random questions are selected and answers are shuffled.
+ * All questions are shown every session and answers are shuffled on every attempt.
  */
 
 export const ALL_QUESTIONS = [

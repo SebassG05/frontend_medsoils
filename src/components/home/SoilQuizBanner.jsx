@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 
 const stats = [
-  { value: '10',  label: 'Questions',  accent: 'bg-orange-500' },
-  { value: '5',   label: 'Topics',     accent: 'bg-cyan-500'   },
-  { value: '~3',  label: 'Minutes',    accent: 'bg-green-500'  },
+  { value: '22',  label: 'Questions',  accent: 'bg-orange-500' },
+  { value: '4',   label: 'Topics',     accent: 'bg-cyan-500'   },
+  { value: '~7',  label: 'Minutes',    accent: 'bg-green-500'  },
 ]
 
 const containerVariants = {
