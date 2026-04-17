@@ -166,8 +166,14 @@ export function shuffle(array) {
  */
 export function buildSession() {
   const selected = shuffle(ALL_QUESTIONS).slice(0, QUESTIONS_PER_SESSION)
-  return selected.map((q) => ({
-    ...q,
-    options: shuffle([q.correct, ...q.distractors]),
-  }))
+  return selected.map((q) => {
+    const all = [q.correct, ...q.distractors]
+    const allAboveIndex = all.findIndex((o) => o.toLowerCase().startsWith('all of the above'))
+    if (allAboveIndex !== -1) {
+      const [allAbove] = all.splice(allAboveIndex, 1)
+      const options = [...shuffle(all), allAbove]
+      return { ...q, options }
+    }
+    return { ...q, options: shuffle(all) }
+  })
 }

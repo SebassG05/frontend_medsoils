@@ -876,9 +876,8 @@ const Try = () => {
 
                   let style = 'border-gray-200 bg-gray-50/50 hover:border-orange-300 hover:bg-orange-50/40 cursor-pointer'
                   if (revealed) {
-                    if (isCorrect)        style = 'border-green-400 bg-green-50 cursor-default'
-                    else if (isSelected)  style = 'border-red-400 bg-red-50 cursor-default'
-                    else                  style = 'border-gray-100 bg-gray-50/30 opacity-40 cursor-default'
+                    if (isSelected)  style = 'border-orange-400 bg-orange-50 cursor-default'
+                    else             style = 'border-gray-100 bg-gray-50/30 opacity-40 cursor-default'
                   }
 
                   return (
@@ -894,10 +893,8 @@ const Try = () => {
                     >
                       <span className="flex items-center gap-3">
                         <span className={`w-7 h-7 flex-shrink-0 rounded-lg flex items-center justify-center text-xs font-bold border transition-colors ${
-                          revealed && isCorrect
-                            ? 'bg-green-500 border-green-500 text-white'
-                            : revealed && isSelected
-                            ? 'bg-red-500 border-red-500 text-white'
+                          revealed && isSelected
+                            ? 'bg-orange-500 border-orange-500 text-white'
                             : 'bg-white border-gray-200 text-gray-400'
                         }`}>
                           {String.fromCharCode(65 + i)}
@@ -905,8 +902,7 @@ const Try = () => {
                         <span className="font-medium text-gray-800">{option}</span>
                       </span>
 
-                      {revealed && isCorrect  && <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />}
-                      {revealed && isSelected && !isCorrect && <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />}
+
                     </motion.button>
                   )
                 })}
@@ -932,20 +928,6 @@ const Try = () => {
                     transition={{ duration: 0.3 }}
                     className="flex items-center justify-between gap-4 flex-wrap"
                   >
-                    <span className={`inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full ${
-                      selected === q.correct
-                        ? 'bg-green-100 text-green-700'
-                        : selected === null
-                        ? 'bg-amber-100 text-amber-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}>
-                      {selected === q.correct
-                        ? <><CheckCircle2 className="w-4 h-4" /> Correct!</>
-                        : selected === null
-                        ? <><Clock className="w-4 h-4" /> Time&rsquo;s up! Correct: <strong className="ml-1">{q.correct}</strong></>
-                        : <><XCircle className="w-4 h-4" /> Correct answer: <strong className="ml-1">{q.correct}</strong></>}
-                    </span>
-
                     <motion.button
                       whileHover={{ scale: 1.04, x: 4 }}
                       whileTap={{ scale: 0.97 }}
