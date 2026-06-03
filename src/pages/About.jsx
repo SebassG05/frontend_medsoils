@@ -108,7 +108,7 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
           backgroundColor: '#ffffff',
           backgroundImage:
             'linear-gradient(rgba(249,115,22,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.12) 1px, transparent 1px)',
-          backgroundSize: '52px 52px',
+          backgroundSize: '72px 72px',
         }}
       >
         <motion.img
