@@ -103,7 +103,14 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
       whileHover="hover"
     >
       {/* ── BACK: revealed partner info ───────────────── */}
-      <div className="absolute inset-0 bg-[#0c1120] flex flex-col items-center justify-center gap-4 px-6 py-8">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 py-8"
+        style={{
+          backgroundColor: '#e8f7fa',
+          backgroundImage:
+            'linear-gradient(rgba(100,210,230,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(100,210,230,0.35) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+        }}
+      >
         <motion.img
           src={logo}
           alt={name}
@@ -120,8 +127,8 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
             hover: { y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.3, ease: 'easeOut' } },
           }}
         >
-          <p className="text-white font-bold text-sm md:text-base leading-snug">{name}</p>
-          <p className="text-orange-400 text-xs md:text-sm mt-1 font-medium">{country}</p>
+          <p className="text-gray-900 font-bold text-sm md:text-base leading-snug">{name}</p>
+          <p className="text-orange-500 text-xs md:text-sm mt-1 font-medium">{country}</p>
         </motion.div>
         <motion.div
           className="absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-orange-500 to-orange-300 rounded-b-2xl"
