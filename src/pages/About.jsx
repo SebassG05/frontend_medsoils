@@ -80,11 +80,14 @@ const fadeRight = {
 // ── PARTNERS DATA ───────────────────────────────────────────────────────────
 const MEDSOILS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp'
 
+const TIMESIS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780475839/logo_timesis-HD-blu-nuovo_trasp_yxe3rj.png'
+
 const PARTNERS = [
-  { id: 1, name: 'Universidad de Extremadura', country: 'Cáceres, Spain',     logo: MEDSOILS_LOGO, coordinator: true },
-  { id: 2, name: 'University of Ljubljana',    country: 'Ljubljana, Slovenia', logo: MEDSOILS_LOGO },
-  { id: 3, name: "Università della Tuscia",    country: 'Viterbo, Italy',      logo: MEDSOILS_LOGO },
-  { id: 4, name: 'Adıyaman Üniversitesi',      country: 'Adıyaman, Turkiye',   logo: MEDSOILS_LOGO },
+  { id: 1, name: 'Timesis Srl',                country: 'San Giuliano Terme, Pisa',               logo: TIMESIS_LOGO,  coordinator: true },
+  { id: 2, name: 'Universidad de Extremadura', country: 'Cáceres, Spain',     logo: MEDSOILS_LOGO },
+  { id: 3, name: 'University of Ljubljana',    country: 'Ljubljana, Slovenia', logo: MEDSOILS_LOGO },
+  { id: 4, name: "Università della Tuscia",    country: 'Viterbo, Italy',      logo: MEDSOILS_LOGO },
+  { id: 5, name: 'Adıyaman Üniversitesi',      country: 'Adıyaman, Turkiye',   logo: MEDSOILS_LOGO },
 ]
 
 // ── PARTNER CARD ─────────────────────────────────────────────────────────────
@@ -96,9 +99,9 @@ const PartnerCard = ({ name, country, logo, coordinator = false, delay = 0 }) =>
     viewport={{ once: true }}
     className="relative"
   >
-    {/* Coordinator badge */}
+    {/* Coordinator badge — bottom */}
     {coordinator && (
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md whitespace-nowrap">
+      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md whitespace-nowrap">
         <span>★</span> Project Coordinator
       </div>
     )}
