@@ -110,50 +110,72 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
           className="w-24 h-24 object-contain"
           variants={{
             rest: { scale: 0.85, opacity: 0, transition: { duration: 0.55, ease: [0.65, 0, 0.35, 1] } },
-            hover: { scale: 1, opacity: 1, transition: { duration: 0.5, delay: 0.2, ease: 'easeOut' } },
+            hover: { scale: 1, opacity: 1, transition: { duration: 0.5, delay: 0.22, ease: 'easeOut' } },
           }}
         />
         <motion.div
           className="text-center"
           variants={{
             rest: { y: 10, opacity: 0, transition: { duration: 0.5, ease: [0.65, 0, 0.35, 1] } },
-            hover: { y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.28, ease: 'easeOut' } },
+            hover: { y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.3, ease: 'easeOut' } },
           }}
         >
           <p className="text-white font-bold text-sm md:text-base leading-snug">{name}</p>
           <p className="text-orange-400 text-xs md:text-sm mt-1 font-medium">{country}</p>
         </motion.div>
-        {/* Bottom progress bar */}
         <motion.div
           className="absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-orange-500 to-orange-300 rounded-b-2xl"
           variants={{
             rest: { width: '0%', transition: { duration: 0.5, ease: [0.65, 0, 0.35, 1] } },
-            hover: { width: '100%', transition: { duration: 0.55, delay: 0.25, ease: 'easeOut' } },
+            hover: { width: '100%', transition: { duration: 0.55, delay: 0.28, ease: 'easeOut' } },
           }}
         />
       </div>
 
-      {/* ── FRONT: full white curtain ─────────────────── */}
+      {/* ── FRONT: top-left white triangle ────────────── */}
       <motion.div
-        className="absolute inset-0 bg-white flex items-center justify-center"
+        className="absolute inset-0 bg-white"
+        style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
         variants={{
           rest: { x: '0%', y: '0%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
           hover: { x: '-101%', y: '-101%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
         }}
+      />
+
+      {/* ── FRONT: bottom-right white triangle ────────── */}
+      <motion.div
+        className="absolute inset-0 bg-white"
+        style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}
+        variants={{
+          rest: { x: '0%', y: '0%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+          hover: { x: '101%', y: '101%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+        }}
+      />
+
+      {/* ── FRONT: diagonal separator line ───────────── */}
+      <motion.div
+        className="absolute pointer-events-none z-10"
+        style={{
+          width: '142%', height: '1.5px',
+          background: 'linear-gradient(90deg, transparent 5%, rgba(249,115,22,0.45) 50%, transparent 95%)',
+          top: '50%', left: '-21%',
+          transform: 'rotate(-45deg)',
+        }}
+        variants={{
+          rest: { opacity: 1, transition: { duration: 0.3 } },
+          hover: { opacity: 0, transition: { duration: 0.2 } },
+        }}
+      />
+
+      {/* ── FRONT: logo centered ──────────────────────── */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
+        variants={{
+          rest: { opacity: 1, transition: { duration: 0.4, ease: [0.65, 0, 0.35, 1] } },
+          hover: { opacity: 0, transition: { duration: 0.18 } },
+        }}
       >
-        {/* Diagonal decorative line */}
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            width: '142%', height: '1px',
-            background: 'linear-gradient(90deg, transparent 5%, rgba(249,115,22,0.3) 50%, transparent 95%)',
-            top: '50%', left: '-21%',
-            rotate: '-45deg',
-            transform: 'rotate(-45deg)',
-          }}
-        />
-        {/* Logo */}
-        <img src={logo} alt="MedSoils" className="w-24 h-24 object-contain relative z-10" />
+        <img src={logo} alt="MedSoils" className="w-24 h-24 object-contain" />
       </motion.div>
     </motion.div>
   </motion.div>
