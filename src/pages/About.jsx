@@ -360,6 +360,44 @@ const About = () => {
         </section>
       </div>
 
+      {/* ── OUR PARTNERS ─────────────────────────────────────────────── */}
+      <section className="relative py-24 px-6 overflow-hidden bg-white">
+
+        {/* Orb top-right */}
+        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 65%)' }} />
+
+        <div className="max-w-6xl mx-auto relative z-10">
+
+          {/* Badge */}
+          <motion.div className="inline-flex items-center gap-2 mb-8"
+            initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, ease }} viewport={{ once: true }}>
+            <span className="h-px w-8 bg-orange-500" />
+            <span className="text-[11px] font-bold tracking-[0.22em] text-orange-500 uppercase">Collaboration</span>
+          </motion.div>
+
+          {/* Title */}
+          <motion.h2
+            className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4"
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, ease }} viewport={{ once: true }}
+          >
+            Our <span className="text-orange-500">Partners</span>
+          </motion.h2>
+
+          {/* Underline accent */}
+          <motion.div className="flex gap-1.5 mb-6"
+            initial={{ opacity: 0, scaleX: 0 }} whileInView={{ opacity: 1, scaleX: 1 }}
+            transition={{ duration: 0.5, delay: 0.2, ease }} viewport={{ once: true }}
+            style={{ originX: 0 }}>
+            <span className="h-1 w-10 rounded-full bg-orange-500" />
+            <span className="h-1 w-4 rounded-full bg-orange-300" />
+          </motion.div>
+
+        </div>
+      </section>
+
       {/* ── Footer accent line ── */}
       <div
         aria-hidden="true"
