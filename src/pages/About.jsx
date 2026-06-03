@@ -176,7 +176,7 @@ const PartnerCard = ({ name, country, logo, coordinator = false, delay = 0 }) =>
           hover: { opacity: 0, transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] } },
         }}
       >
-        <img src={logo} alt="MedSoils" className="w-28 h-28 object-contain" />
+        <img src={MEDSOILS_LOGO} alt="MedSoils" className="w-28 h-28 object-contain" />
       </motion.div>
     </motion.div>
   </motion.div>
