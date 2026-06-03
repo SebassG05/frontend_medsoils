@@ -82,7 +82,7 @@ const MEDSOILS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v177124
 
 const TIMESIS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780475839/logo_timesis-HD-blu-nuovo_trasp_yxe3rj.png'
 const UNITUS_LOGO  = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780476461/UNITUS_02-removebg-preview_jhxsds.png'
-const UL_LOGO      = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780477000/UL_BF_logo_transparent_wyfare.gif'
+const UL_LOGO      = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780476741/Univerza_V_Ljubljani_FF-logoENG-VER-RGB_color_tesm3i.png'
 
 const PARTNERS = [
   { id: 1, name: 'Timesis Srl',                            country: 'San Giuliano Terme, Pisa', logo: TIMESIS_LOGO, coordinator: true },
