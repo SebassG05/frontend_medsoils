@@ -152,7 +152,7 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
         }}
       />
 
-      {/* ── FRONT: logo centered ──────────────────────── */}}
+      {/* ── FRONT: logo centered ──────────────────────── */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
         variants={{
