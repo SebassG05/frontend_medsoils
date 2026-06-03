@@ -114,7 +114,7 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
         <motion.img
           src={logo}
           alt={name}
-          className="w-36 h-36 object-contain"
+          className="w-28 h-28 object-contain"
           variants={{
             rest: { scale: 0.85, opacity: 0, transition: { duration: 0.55, ease: [0.65, 0, 0.35, 1] } },
             hover: { scale: 1, opacity: 1, transition: { duration: 0.5, delay: 0.22, ease: 'easeOut' } },
@@ -167,7 +167,7 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
           hover: { opacity: 0, transition: { duration: 0.18 } },
         }}
       >
-        <img src={logo} alt="MedSoils" className="w-36 h-36 object-contain" />
+        <img src={logo} alt="MedSoils" className="w-32 h-32 object-contain" />
       </motion.div>
     </motion.div>
   </motion.div>
