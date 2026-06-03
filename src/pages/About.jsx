@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Footer from '../components/layout/Footer'
 
@@ -95,7 +96,11 @@ const PARTNERS = [
 ]
 
 // ── PARTNER CARD ─────────────────────────────────────────────────────────────
-const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-4', delay = 0 }) => (
+const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-4', delay = 0 }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [locked, setLocked] = useState(false)
+
+  return (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -113,8 +118,10 @@ const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-
       className="relative overflow-hidden rounded-2xl cursor-pointer shadow-md border border-gray-100"
       style={{ aspectRatio: '3/4' }}
       initial="rest"
-      animate="rest"
-      whileHover="hover"
+      animate={isOpen ? 'hover' : 'rest'}
+      onHoverStart={() => !locked && setIsOpen(true)}
+      onHoverEnd={() => !locked && setIsOpen(false)}
+      onTap={() => { setLocked(true); setIsOpen(true) }}
     >
       {/* ── BACK: revealed partner info ───────────────── */}
       <div className={`absolute inset-0 flex flex-col items-center justify-center ${logoGap} px-6 py-8`}
@@ -185,7 +192,8 @@ const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-
       </motion.div>
     </motion.div>
   </motion.div>
-)
+  )
+}
 
 const About = () => {
   return (
