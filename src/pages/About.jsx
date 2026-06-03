@@ -139,9 +139,29 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
         />
       </div>
 
-      {/* ── FRONT: single white curtain with logo ─────── */}
+      {/* ── FRONT: top-left white triangle ────────────── */}
       <motion.div
-        className="absolute inset-0 bg-white flex items-center justify-center z-10"
+        className="absolute inset-0 bg-white"
+        style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
+        variants={{
+          rest: { x: '0%', y: '0%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+          hover: { x: '-101%', y: '-101%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+        }}
+      />
+
+      {/* ── FRONT: bottom-right white triangle ────────── */}
+      <motion.div
+        className="absolute inset-0 bg-white"
+        style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}
+        variants={{
+          rest: { x: '0%', y: '0%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+          hover: { x: '101%', y: '101%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+        }}
+      />
+
+      {/* ── FRONT: logo — slides with top-left curtain ── */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
         variants={{
           rest: { x: '0%', y: '0%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
           hover: { x: '-101%', y: '-101%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
