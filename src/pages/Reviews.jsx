@@ -46,7 +46,7 @@ function ReviewCard({ r, user, onDelete, deleting, onOpen }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       className="bg-white rounded-xl border border-gray-100 p-8 h-full flex flex-col relative group overflow-hidden hover:shadow-2xl transition-all duration-500"
-      style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)' }}
+      style={{ boxShadow: '0 1px 3px 0 rgba , 0 1px 2px 0 rgba(0, 0, 0, 0.03)' }}
       whileHover={{ y: -8, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)' }}
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
     >
