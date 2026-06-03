@@ -89,11 +89,11 @@ const PARTNERS = [
   { id: 1, name: 'Timesis Srl',                            country: 'San Giuliano Terme, Pisa', logo: TIMESIS_LOGO, coordinator: true },
   { id: 2, name: 'Università degli Studi della Tuscia',    country: 'Viterbo, Italy',           logo: UNITUS_LOGO },
   { id: 3, name: 'Univerza v Ljubljani',                   country: 'Ljubljana, Slovenia',      logo: UL_LOGO },
-  { id: 4, name: 'Evenor-Tech, SLU',                       country: 'Sevilla, Spain',           logo: EVENOR_LOGO },
+  { id: 4, name: 'Evenor-Tech, SLU',                       country: 'Sevilla, Spain',           logo: EVENOR_LOGO,  logoGap: 'gap-1' },
 ]
 
 // ── PARTNER CARD ─────────────────────────────────────────────────────────────
-const PartnerCard = ({ name, country, logo, coordinator = false, delay = 0 }) => (
+const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-4', delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -115,7 +115,7 @@ const PartnerCard = ({ name, country, logo, coordinator = false, delay = 0 }) =>
       whileHover="hover"
     >
       {/* ── BACK: revealed partner info ───────────────── */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 py-8"
+      <div className={`absolute inset-0 flex flex-col items-center justify-center ${logoGap} px-6 py-8`}
         style={{
           backgroundColor: '#ffffff',
           backgroundImage:
