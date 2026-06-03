@@ -124,7 +124,7 @@ const PartnerCard = ({ name, country, logo, coordinator = false, delay = 0 }) =>
         <motion.img
           src={logo}
           alt={name}
-          className="w-28 h-28 object-contain"
+          className="w-40 h-40 object-contain"
           variants={{
             rest: { scale: 0.85, opacity: 0, transition: { duration: 0.75, ease: [0.4, 0, 0.2, 1] } },
             hover: { scale: 1, opacity: 1, transition: { duration: 0.7, delay: 0.35, ease: [0.4, 0, 0.2, 1] } },
