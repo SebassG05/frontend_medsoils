@@ -81,20 +81,27 @@ const fadeRight = {
 const MEDSOILS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp'
 
 const PARTNERS = [
-  { id: 1, name: 'Universidad de Extremadura', country: 'Cáceres, Spain',     logo: MEDSOILS_LOGO },
+  { id: 1, name: 'Universidad de Extremadura', country: 'Cáceres, Spain',     logo: MEDSOILS_LOGO, coordinator: true },
   { id: 2, name: 'University of Ljubljana',    country: 'Ljubljana, Slovenia', logo: MEDSOILS_LOGO },
   { id: 3, name: "Università della Tuscia",    country: 'Viterbo, Italy',      logo: MEDSOILS_LOGO },
   { id: 4, name: 'Adıyaman Üniversitesi',      country: 'Adıyaman, Turkiye',   logo: MEDSOILS_LOGO },
 ]
 
 // ── PARTNER CARD ─────────────────────────────────────────────────────────────
-const PartnerCard = ({ name, country, logo, delay = 0 }) => (
+const PartnerCard = ({ name, country, logo, coordinator = false, delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
     viewport={{ once: true }}
+    className="relative"
   >
+    {/* Coordinator badge */}
+    {coordinator && (
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md whitespace-nowrap">
+        <span>★</span> Project Coordinator
+      </div>
+    )}
     <motion.div
       className="relative overflow-hidden rounded-2xl cursor-pointer shadow-md border border-gray-100"
       style={{ aspectRatio: '3/4' }}
