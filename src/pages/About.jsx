@@ -515,7 +515,7 @@ const About = () => {
           </motion.p>
 
           {/* Partner grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {PARTNERS.map((p, i) => (
               <PartnerCard key={p.id} {...p} delay={i * 0.1} />
             ))}
