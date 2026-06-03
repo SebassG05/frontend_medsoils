@@ -81,12 +81,13 @@ const fadeRight = {
 const MEDSOILS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp'
 
 const TIMESIS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780475839/logo_timesis-HD-blu-nuovo_trasp_yxe3rj.png'
+const UNITUS_LOGO  = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780476461/UNITUS_02-removebg-preview_jhxsds.png'
 
 const PARTNERS = [
-  { id: 1, name: 'Timesis Srl',                country: 'San Giuliano Terme, Pisa',               logo: TIMESIS_LOGO, coordinator: true },
-  { id: 2, name: 'University of Ljubljana',    country: 'Ljubljana, Slovenia', logo: MEDSOILS_LOGO },
-  { id: 3, name: "Università della Tuscia",    country: 'Viterbo, Italy',      logo: MEDSOILS_LOGO },
-  { id: 4, name: 'Adıyaman Üniversitesi',      country: 'Adıyaman, Turkiye',   logo: MEDSOILS_LOGO },
+  { id: 1, name: 'Timesis Srl',                            country: 'San Giuliano Terme, Pisa', logo: TIMESIS_LOGO, coordinator: true },
+  { id: 2, name: 'Università degli Studi della Tuscia',    country: 'Viterbo, Italy',           logo: UNITUS_LOGO },
+  { id: 3, name: 'University of Ljubljana',                country: 'Ljubljana, Slovenia',      logo: MEDSOILS_LOGO },
+  { id: 4, name: 'Adıyaman Üniversitesi',                  country: 'Adıyaman, Turkiye',        logo: MEDSOILS_LOGO },
 ]
 
 // ── PARTNER CARD ─────────────────────────────────────────────────────────────
