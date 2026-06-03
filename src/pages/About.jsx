@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import Footer from '../components/layout/Footer'
+import { PARTNERS, MEDSOILS_LOGO } from '../data/partnersData'
 
 const ease = [0.16, 1, 0.3, 1]
 
@@ -78,27 +80,13 @@ const fadeRight = {
   }),
 }
 
-// ── PARTNERS DATA ───────────────────────────────────────────────────────────
-const MEDSOILS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp'
-
-const TIMESIS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780475839/logo_timesis-HD-blu-nuovo_trasp_yxe3rj.png'
-const UNITUS_LOGO  = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780476461/UNITUS_02-removebg-preview_jhxsds.png'
-const UL_LOGO      = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780476741/Univerza_V_Ljubljani_FF-logoENG-VER-RGB_color_tesm3i.png'
-const EVENOR_LOGO  = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780477178/evenor_english_cpz2wv.png'
-const ADYU_LOGO    = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780478970/Adiyaman_Universitesi__ADYU__Logosu_EN_Mavi-removebg-preview_yxtyiu.png'
-
-const PARTNERS = [
-  { id: 1, name: 'Timesis Srl',                            country: 'San Giuliano Terme, Pisa', logo: TIMESIS_LOGO, coordinator: true },
-  { id: 2, name: 'Università degli Studi della Tuscia',    country: 'Viterbo, Italy',           logo: UNITUS_LOGO },
-  { id: 3, name: 'Univerza v Ljubljani',                   country: 'Ljubljana, Slovenia',      logo: UL_LOGO },
-  { id: 4, name: 'Evenor-Tech, SLU',                       country: 'Sevilla, Spain',           logo: EVENOR_LOGO,  logoGap: 'gap-1' },
-  { id: 5, name: 'Adiyaman University',                    country: 'Adıyaman, Turkiye',        logo: ADYU_LOGO },
-]
+// PARTNERS and logos are imported from ../data/partnersData
 
 // ── PARTNER CARD ─────────────────────────────────────────────────────────────
-const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-4', delay = 0 }) => {
+const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-4', delay = 0, slug }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [locked, setLocked] = useState(false)
+  const navigate = useNavigate()
 
   return (
   <motion.div
@@ -121,7 +109,14 @@ const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-
       animate={isOpen ? 'hover' : 'rest'}
       onHoverStart={() => !locked && setIsOpen(true)}
       onHoverEnd={() => !locked && setIsOpen(false)}
-      onTap={() => { setLocked(true); setIsOpen(true) }}
+      onTap={() => {
+        if (isOpen) {
+          navigate(`/partners/${slug}`)
+        } else {
+          setLocked(true)
+          setIsOpen(true)
+        }
+      }}
     >
       {/* ── BACK: revealed partner info ───────────────── */}
       <div className={`absolute inset-0 flex flex-col items-center justify-center ${logoGap} px-6 py-8`}
@@ -150,6 +145,7 @@ const PartnerCard = ({ name, country, logo, coordinator = false, logoGap = 'gap-
         >
           <p className="text-gray-900 font-bold text-sm md:text-base leading-snug">{name}</p>
           <p className="text-orange-500 text-xs md:text-sm mt-1 font-medium">{country}</p>
+          <p className="text-gray-400 text-[10px] mt-2 font-medium tracking-wide">tap · click to learn more →</p>
         </motion.div>
         <motion.div
           className="absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-orange-500 to-orange-300 rounded-b-2xl"
@@ -519,7 +515,7 @@ const About = () => {
             initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.25, ease }} viewport={{ once: true }}
           >
-            Hover over each card to discover the institutions behind MedSoils.
+            Hover or tap each card to reveal the partner — click again to learn more.
           </motion.p>
 
           {/* Partner grid */}
