@@ -84,12 +84,14 @@ const TIMESIS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780475
 const UNITUS_LOGO  = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780476461/UNITUS_02-removebg-preview_jhxsds.png'
 const UL_LOGO      = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780476741/Univerza_V_Ljubljani_FF-logoENG-VER-RGB_color_tesm3i.png'
 const EVENOR_LOGO  = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780477178/evenor_english_cpz2wv.png'
+const ADYU_LOGO    = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780478970/Adiyaman_Universitesi__ADYU__Logosu_EN_Mavi-removebg-preview_yxtyiu.png'
 
 const PARTNERS = [
   { id: 1, name: 'Timesis Srl',                            country: 'San Giuliano Terme, Pisa', logo: TIMESIS_LOGO, coordinator: true },
   { id: 2, name: 'Università degli Studi della Tuscia',    country: 'Viterbo, Italy',           logo: UNITUS_LOGO },
   { id: 3, name: 'Univerza v Ljubljani',                   country: 'Ljubljana, Slovenia',      logo: UL_LOGO },
   { id: 4, name: 'Evenor-Tech, SLU',                       country: 'Sevilla, Spain',           logo: EVENOR_LOGO,  logoGap: 'gap-1' },
+  { id: 5, name: 'Adiyaman University',                    country: 'Adıyaman, Turkiye',        logo: ADYU_LOGO },
 ]
 
 // ── PARTNER CARD ─────────────────────────────────────────────────────────────
@@ -513,7 +515,7 @@ const About = () => {
           </motion.p>
 
           {/* Partner grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
             {PARTNERS.map((p, i) => (
               <PartnerCard key={p.id} {...p} delay={i * 0.1} />
             ))}
