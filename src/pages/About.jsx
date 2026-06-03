@@ -77,6 +77,143 @@ const fadeRight = {
   }),
 }
 
+// ── PARTNERS DATA ───────────────────────────────────────────────────────────
+const MEDSOILS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp'
+
+const PARTNERS = [
+  { id: 1, name: 'Universidad de Extremadura', country: 'Cáceres, Spain',     logo: MEDSOILS_LOGO },
+  { id: 2, name: 'University of Ljubljana',    country: 'Ljubljana, Slovenia', logo: MEDSOILS_LOGO },
+  { id: 3, name: "Università della Tuscia",    country: 'Viterbo, Italy',      logo: MEDSOILS_LOGO },
+  { id: 4, name: 'Adıyaman Üniversitesi',      country: 'Adıyaman, Turkiye',   logo: MEDSOILS_LOGO },
+]
+
+// ── PARTNER CARD ─────────────────────────────────────────────────────────────
+const PartnerCard = ({ id, name, country, logo, delay = 0 }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
+    viewport={{ once: true }}
+  >
+    <motion.div
+      className="relative overflow-hidden rounded-2xl cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300"
+      style={{ aspectRatio: '4/3' }}
+      initial="rest"
+      animate="rest"
+      whileHover="hover"
+    >
+      {/* ── BACK: revealed partner info ───────────────── */}
+      <div className="absolute inset-0 bg-[#0c1120] flex flex-col items-center justify-center gap-4 px-6 py-8">
+        <motion.img
+          src={logo}
+          alt={name}
+          className="w-20 h-20 object-contain"
+          variants={{
+            rest: { scale: 0.75, opacity: 0 },
+            hover: { scale: 1, opacity: 1, transition: { duration: 0.4, delay: 0.25 } },
+          }}
+        />
+        <motion.div
+          className="text-center"
+          variants={{
+            rest: { y: 14, opacity: 0 },
+            hover: { y: 0, opacity: 1, transition: { duration: 0.4, delay: 0.32 } },
+          }}
+        >
+          <p className="text-white font-bold text-sm md:text-base leading-snug">{name}</p>
+          <p className="text-orange-400 text-xs md:text-sm mt-1 font-medium">{country}</p>
+        </motion.div>
+        {/* Glow ring */}
+        <motion.div
+          className="absolute inset-0 rounded-2xl ring-1 ring-orange-500/40 pointer-events-none"
+          variants={{
+            rest: { opacity: 0 },
+            hover: { opacity: 1, transition: { duration: 0.3, delay: 0.1 } },
+          }}
+        />
+        {/* Bottom progress bar */}
+        <motion.div
+          className="absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-orange-500 to-orange-300 rounded-b-2xl"
+          variants={{
+            rest: { width: '0%' },
+            hover: { width: '100%', transition: { duration: 0.5, delay: 0.3 } },
+          }}
+        />
+      </div>
+
+      {/* ── FRONT: white top-left curtain ─────────────── */}
+      <motion.div
+        className="absolute inset-0 bg-white overflow-hidden"
+        style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
+        variants={{
+          rest: { x: '0%', y: '0%' },
+          hover: { x: '-101%', y: '-101%', transition: { duration: 0.52, ease: [0.76, 0, 0.24, 1] } },
+        }}
+      >
+        {/* Dot pattern */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+          <pattern id={`dp-${id}`} x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.2" fill="#f97316" />
+          </pattern>
+          <rect width="100%" height="100%" fill={`url(#dp-${id})`} />
+        </svg>
+        {/* Shimmer sweep */}
+        <motion.div
+          className="absolute top-0 left-0 h-full w-2/5 pointer-events-none"
+          style={{ background: 'linear-gradient(105deg, transparent 30%, rgba(249,115,22,0.09) 50%, transparent 70%)', skewX: '-15deg' }}
+          animate={{ x: ['-120%', '320%'] }}
+          transition={{ duration: 2.8, repeat: Infinity, repeatDelay: 3.5, ease: 'easeInOut' }}
+        />
+      </motion.div>
+
+      {/* ── FRONT: orange bottom-right curtain ────────── */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600"
+        style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}
+        variants={{
+          rest: { x: '0%', y: '0%' },
+          hover: { x: '101%', y: '101%', transition: { duration: 0.52, ease: [0.76, 0, 0.24, 1] } },
+        }}
+      />
+
+      {/* ── FRONT: diagonal glint line ────────────────── */}
+      <motion.div
+        className="absolute pointer-events-none z-10"
+        style={{
+          width: '142%', height: '2px',
+          background: 'linear-gradient(90deg, transparent 10%, rgba(249,115,22,0.7) 50%, transparent 90%)',
+          top: '50%', left: '-21%',
+          rotate: '-45deg',
+        }}
+        variants={{
+          rest: { opacity: 0.7 },
+          hover: { opacity: 0, transition: { duration: 0.22 } },
+        }}
+      />
+
+      {/* ── FRONT: MedSoils logo centered ─────────────── */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
+        variants={{
+          rest: { opacity: 1, scale: 1 },
+          hover: { opacity: 0, scale: 0.5, transition: { duration: 0.2 } },
+        }}
+      >
+        <div className="relative">
+          <img src={MEDSOILS_LOGO} alt="MedSoils" className="w-14 h-14 object-contain drop-shadow-xl" />
+          {/* Pulsing ring */}
+          <motion.div
+            className="absolute rounded-full border border-orange-400/50"
+            style={{ inset: '-10px' }}
+            animate={{ scale: [1, 1.28, 1], opacity: [0.5, 0, 0.5] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </div>
+      </motion.div>
+    </motion.div>
+  </motion.div>
+)
+
 const About = () => {
   return (
     <>
@@ -361,7 +498,7 @@ const About = () => {
       </div>
 
       {/* ── OUR PARTNERS ─────────────────────────────────────────────── */}
-      <section className="relative py-24 px-6 overflow-hidden bg-white">
+      <section className="relative pt-10 pb-20 px-6 overflow-hidden bg-white">
 
         {/* Orb top-right */}
         <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full pointer-events-none"
@@ -387,13 +524,29 @@ const About = () => {
           </motion.h2>
 
           {/* Underline accent */}
-          <motion.div className="flex gap-1.5 mb-6"
+          <motion.div className="flex gap-1.5 mb-4"
             initial={{ opacity: 0, scaleX: 0 }} whileInView={{ opacity: 1, scaleX: 1 }}
             transition={{ duration: 0.5, delay: 0.2, ease }} viewport={{ once: true }}
             style={{ originX: 0 }}>
             <span className="h-1 w-10 rounded-full bg-orange-500" />
             <span className="h-1 w-4 rounded-full bg-orange-300" />
           </motion.div>
+
+          {/* Subtitle */}
+          <motion.p
+            className="text-gray-400 text-sm mb-12 max-w-lg"
+            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.25, ease }} viewport={{ once: true }}
+          >
+            Hover over each card to discover the institutions behind MedSoils.
+          </motion.p>
+
+          {/* Partner grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {PARTNERS.map((p, i) => (
+              <PartnerCard key={p.id} {...p} delay={i * 0.1} />
+            ))}
+          </div>
 
         </div>
       </section>
