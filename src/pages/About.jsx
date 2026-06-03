@@ -116,15 +116,15 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
           alt={name}
           className="w-28 h-28 object-contain"
           variants={{
-            rest: { scale: 0.85, opacity: 0, transition: { duration: 0.55, ease: [0.65, 0, 0.35, 1] } },
-            hover: { scale: 1, opacity: 1, transition: { duration: 0.5, delay: 0.22, ease: 'easeOut' } },
+            rest: { scale: 0.85, opacity: 0, transition: { duration: 0.75, ease: [0.4, 0, 0.2, 1] } },
+            hover: { scale: 1, opacity: 1, transition: { duration: 0.7, delay: 0.35, ease: [0.4, 0, 0.2, 1] } },
           }}
         />
         <motion.div
           className="text-center"
           variants={{
-            rest: { y: 10, opacity: 0, transition: { duration: 0.5, ease: [0.65, 0, 0.35, 1] } },
-            hover: { y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.3, ease: 'easeOut' } },
+            rest: { y: 12, opacity: 0, transition: { duration: 0.75, ease: [0.4, 0, 0.2, 1] } },
+            hover: { y: 0, opacity: 1, transition: { duration: 0.7, delay: 0.42, ease: [0.4, 0, 0.2, 1] } },
           }}
         >
           <p className="text-gray-900 font-bold text-sm md:text-base leading-snug">{name}</p>
@@ -133,8 +133,8 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
         <motion.div
           className="absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-orange-500 to-orange-300 rounded-b-2xl"
           variants={{
-            rest: { width: '0%', transition: { duration: 0.5, ease: [0.65, 0, 0.35, 1] } },
-            hover: { width: '100%', transition: { duration: 0.55, delay: 0.28, ease: 'easeOut' } },
+            rest: { width: '0%', transition: { duration: 0.75, ease: [0.4, 0, 0.2, 1] } },
+            hover: { width: '100%', transition: { duration: 0.7, delay: 0.4, ease: [0.4, 0, 0.2, 1] } },
           }}
         />
       </div>
@@ -144,8 +144,8 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
         className="absolute inset-0 bg-white"
         style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
         variants={{
-          rest: { x: '0%', y: '0%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
-          hover: { x: '-101%', y: '-101%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+          rest: { x: '0%', y: '0%', transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } },
+          hover: { x: '-101%', y: '-101%', transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } },
         }}
       />
 
@@ -154,8 +154,8 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
         className="absolute inset-0 bg-white"
         style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}
         variants={{
-          rest: { x: '0%', y: '0%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
-          hover: { x: '101%', y: '101%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+          rest: { x: '0%', y: '0%', transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } },
+          hover: { x: '101%', y: '101%', transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } },
         }}
       />
 
@@ -163,8 +163,8 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
       <motion.div
         className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
         variants={{
-          rest: { opacity: 1, transition: { duration: 0.35, ease: [0.65, 0, 0.35, 1] } },
-          hover: { opacity: 0, transition: { duration: 0.35, ease: [0.65, 0, 0.35, 1] } },
+          rest: { opacity: 1, transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] } },
+          hover: { opacity: 0, transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] } },
         }}
       >
         <img src={logo} alt="MedSoils" className="w-28 h-28 object-contain" />
