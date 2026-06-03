@@ -96,8 +96,8 @@ const PartnerCard = ({ id, name, country, logo, delay = 0 }) => (
     viewport={{ once: true }}
   >
     <motion.div
-      className="relative overflow-hidden rounded-2xl cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300"
-      style={{ aspectRatio: '4/3' }}
+      className="relative overflow-hidden rounded-2xl cursor-pointer shadow-md border border-gray-100"
+      style={{ aspectRatio: '3/4' }}
       initial="rest"
       animate="rest"
       whileHover="hover"
@@ -109,106 +109,74 @@ const PartnerCard = ({ id, name, country, logo, delay = 0 }) => (
           alt={name}
           className="w-20 h-20 object-contain"
           variants={{
-            rest: { scale: 0.75, opacity: 0 },
-            hover: { scale: 1, opacity: 1, transition: { duration: 0.4, delay: 0.25 } },
+            rest: { scale: 0.85, opacity: 0 },
+            hover: { scale: 1, opacity: 1, transition: { duration: 0.5, delay: 0.2, ease: 'easeOut' } },
           }}
         />
         <motion.div
           className="text-center"
           variants={{
-            rest: { y: 14, opacity: 0 },
-            hover: { y: 0, opacity: 1, transition: { duration: 0.4, delay: 0.32 } },
+            rest: { y: 10, opacity: 0 },
+            hover: { y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.28, ease: 'easeOut' } },
           }}
         >
           <p className="text-white font-bold text-sm md:text-base leading-snug">{name}</p>
           <p className="text-orange-400 text-xs md:text-sm mt-1 font-medium">{country}</p>
         </motion.div>
-        {/* Glow ring */}
-        <motion.div
-          className="absolute inset-0 rounded-2xl ring-1 ring-orange-500/40 pointer-events-none"
-          variants={{
-            rest: { opacity: 0 },
-            hover: { opacity: 1, transition: { duration: 0.3, delay: 0.1 } },
-          }}
-        />
         {/* Bottom progress bar */}
         <motion.div
           className="absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-orange-500 to-orange-300 rounded-b-2xl"
           variants={{
             rest: { width: '0%' },
-            hover: { width: '100%', transition: { duration: 0.5, delay: 0.3 } },
+            hover: { width: '100%', transition: { duration: 0.55, delay: 0.25, ease: 'easeOut' } },
           }}
         />
       </div>
 
-      {/* ── FRONT: white top-left curtain ─────────────── */}
+      {/* ── FRONT: white curtain (slides up-left diagonally) ── */}
       <motion.div
-        className="absolute inset-0 bg-white overflow-hidden"
+        className="absolute inset-0 bg-white"
         style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
         variants={{
           rest: { x: '0%', y: '0%' },
-          hover: { x: '-101%', y: '-101%', transition: { duration: 0.52, ease: [0.76, 0, 0.24, 1] } },
-        }}
-      >
-        {/* Dot pattern */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
-          <pattern id={`dp-${id}`} x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1.2" fill="#f97316" />
-          </pattern>
-          <rect width="100%" height="100%" fill={`url(#dp-${id})`} />
-        </svg>
-        {/* Shimmer sweep */}
-        <motion.div
-          className="absolute top-0 left-0 h-full w-2/5 pointer-events-none"
-          style={{ background: 'linear-gradient(105deg, transparent 30%, rgba(249,115,22,0.09) 50%, transparent 70%)', skewX: '-15deg' }}
-          animate={{ x: ['-120%', '320%'] }}
-          transition={{ duration: 2.8, repeat: Infinity, repeatDelay: 3.5, ease: 'easeInOut' }}
-        />
-      </motion.div>
-
-      {/* ── FRONT: orange bottom-right curtain ────────── */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600"
-        style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}
-        variants={{
-          rest: { x: '0%', y: '0%' },
-          hover: { x: '101%', y: '101%', transition: { duration: 0.52, ease: [0.76, 0, 0.24, 1] } },
+          hover: { x: '-101%', y: '-101%', transition: { duration: 0.6, ease: [0.65, 0, 0.35, 1] } },
         }}
       />
 
-      {/* ── FRONT: diagonal glint line ────────────────── */}
+      {/* ── FRONT: orange curtain (slides down-right diagonally) ── */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600"
+        style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}
+        variants={{
+          rest: { x: '0%', y: '0%' },
+          hover: { x: '101%', y: '101%', transition: { duration: 0.6, ease: [0.65, 0, 0.35, 1] } },
+        }}
+      />
+
+      {/* ── FRONT: diagonal separator line ───────────── */}
       <motion.div
         className="absolute pointer-events-none z-10"
         style={{
-          width: '142%', height: '2px',
-          background: 'linear-gradient(90deg, transparent 10%, rgba(249,115,22,0.7) 50%, transparent 90%)',
+          width: '142%', height: '1.5px',
+          background: 'linear-gradient(90deg, transparent 5%, rgba(249,115,22,0.55) 50%, transparent 95%)',
           top: '50%', left: '-21%',
           rotate: '-45deg',
         }}
         variants={{
-          rest: { opacity: 0.7 },
-          hover: { opacity: 0, transition: { duration: 0.22 } },
+          rest: { opacity: 1 },
+          hover: { opacity: 0, transition: { duration: 0.25 } },
         }}
       />
 
-      {/* ── FRONT: MedSoils logo centered ─────────────── */}
+      {/* ── FRONT: logo centered ──────────────────────── */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
         variants={{
-          rest: { opacity: 1, scale: 1 },
-          hover: { opacity: 0, scale: 0.5, transition: { duration: 0.2 } },
+          rest: { opacity: 1 },
+          hover: { opacity: 0, transition: { duration: 0.2 } },
         }}
       >
-        <div className="relative">
-          <img src={MEDSOILS_LOGO} alt="MedSoils" className="w-14 h-14 object-contain drop-shadow-xl" />
-          {/* Pulsing ring */}
-          <motion.div
-            className="absolute rounded-full border border-orange-400/50"
-            style={{ inset: '-10px' }}
-            animate={{ scale: [1, 1.28, 1], opacity: [0.5, 0, 0.5] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </div>
+        <img src={MEDSOILS_LOGO} alt="MedSoils" className="w-14 h-14 object-contain drop-shadow-md" />
       </motion.div>
     </motion.div>
   </motion.div>
