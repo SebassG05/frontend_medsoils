@@ -153,19 +153,15 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
       />
 
       {/* ── FRONT: diagonal separator line ───────────── */}
-      <motion.div
-        className="absolute pointer-events-none z-10"
-        style={{
-          width: '142%', height: '1.5px',
-          background: 'linear-gradient(90deg, transparent 5%, rgba(249,115,22,0.45) 50%, transparent 95%)',
-          top: '50%', left: '-21%',
-          transform: 'rotate(-45deg)',
-        }}
+      <motion.svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-10"
         variants={{
           rest: { opacity: 1, transition: { duration: 0.3 } },
           hover: { opacity: 0, transition: { duration: 0.2 } },
         }}
-      />
+      >
+        <line x1="0" y1="100%" x2="100%" y2="0" stroke="rgba(249,115,22,0.45)" strokeWidth="1.5" />
+      </motion.svg>
 
       {/* ── FRONT: logo centered ──────────────────────── */}
       <motion.div
