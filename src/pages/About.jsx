@@ -105,10 +105,10 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
       {/* ── BACK: revealed partner info ───────────────── */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 py-8"
         style={{
-          backgroundColor: '#e8f7fa',
+          backgroundColor: '#ffffff',
           backgroundImage:
-            'linear-gradient(rgba(100,210,230,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(100,210,230,0.35) 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
+            'linear-gradient(rgba(249,115,22,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.12) 1px, transparent 1px)',
+          backgroundSize: '52px 52px',
         }}
       >
         <motion.img
