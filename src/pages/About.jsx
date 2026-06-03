@@ -115,6 +115,7 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
           src={logo}
           alt={name}
           className="w-36 h-36 object-contain"
+          variants={{
             rest: { scale: 0.85, opacity: 0, transition: { duration: 0.55, ease: [0.65, 0, 0.35, 1] } },
             hover: { scale: 1, opacity: 1, transition: { duration: 0.5, delay: 0.22, ease: 'easeOut' } },
           }}
