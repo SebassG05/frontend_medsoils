@@ -159,12 +159,12 @@ const PartnerCard = ({ name, country, logo, delay = 0 }) => (
         }}
       />
 
-      {/* ── FRONT: logo — slides with top-left curtain ── */}
+      {/* ── FRONT: logo — fades out on hover ── */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
         variants={{
-          rest: { x: '0%', y: '0%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
-          hover: { x: '-101%', y: '-101%', transition: { duration: 0.62, ease: [0.65, 0, 0.35, 1] } },
+          rest: { opacity: 1, transition: { duration: 0.35, ease: [0.65, 0, 0.35, 1] } },
+          hover: { opacity: 0, transition: { duration: 0.35, ease: [0.65, 0, 0.35, 1] } },
         }}
       >
         <img src={logo} alt="MedSoils" className="w-28 h-28 object-contain" />
