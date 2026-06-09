@@ -16,6 +16,7 @@ export const PARTNERS = [
     coordinator: true,
     slug: 'timesis',
     flagCode: 'it',
+    coords: [43.751, 10.440],
   },
   {
     id: 2,
@@ -24,6 +25,7 @@ export const PARTNERS = [
     logo: UNITUS_LOGO,
     slug: 'unitus',
     flagCode: 'it',
+    coords: [42.416, 12.107],
   },
   {
     id: 3,
@@ -32,6 +34,7 @@ export const PARTNERS = [
     logo: UL_LOGO,
     slug: 'univerza-v-ljubljani',
     flagCode: 'si',
+    coords: [46.056, 14.506],
   },
   {
     id: 4,
@@ -41,6 +44,7 @@ export const PARTNERS = [
     logoGap: 'gap-1',
     slug: 'evenor-tech',
     flagCode: 'es',
+    coords: [37.383, -5.973],
   },
   {
     id: 5,
@@ -49,5 +53,6 @@ export const PARTNERS = [
     logo: ADYU_LOGO,
     slug: 'adiyaman',
     flagCode: 'tr',
+    coords: [37.764, 38.279],
   },
 ]
