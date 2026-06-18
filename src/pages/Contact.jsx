@@ -129,6 +129,7 @@ const Contact = () => {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [serverError, setServerError] = useState('')
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
 
   const validate = () => {
     const newErrors = {}
@@ -139,6 +140,7 @@ const Contact = () => {
     if (!form.enquiryType) newErrors.enquiryType = 'Please select a type of enquiry.'
     if (form.enquiryType?.value === 'Other' && !form.enquiryOther.trim()) newErrors.enquiryOther = 'Please specify your enquiry type.'
     if (!form.message.trim()) newErrors.message = 'Message cannot be empty.'
+    if (!privacyAccepted) newErrors.privacy = 'You must accept the basic data protection information to continue.'
     return newErrors
   }
 
@@ -172,6 +174,7 @@ const Contact = () => {
     setErrors({})
     setSubmitted(false)
     setServerError('')
+    setPrivacyAccepted(false)
   }
 
   return (
@@ -429,6 +432,43 @@ const Contact = () => {
                       <span className="absolute bottom-3 right-3 text-xs text-gray-300 select-none">
                         {form.message.length} chars
                       </span>
+                    </motion.div>
+
+                    {/* Privacy checkbox */}
+                    <motion.div variants={itemVariants} className="space-y-1.5">
+                      <div className={`flex items-start gap-3 p-4 rounded-xl border transition-colors ${
+                        errors.privacy ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200 hover:border-orange-200'
+                      }`}>
+                        <input
+                          type="checkbox"
+                          id="privacy"
+                          checked={privacyAccepted}
+                          onChange={(e) => {
+                            setPrivacyAccepted(e.target.checked)
+                            if (errors.privacy) setErrors(prev => ({ ...prev, privacy: '' }))
+                          }}
+                          className="mt-0.5 w-4 h-4 rounded border-gray-300 cursor-pointer shrink-0 accent-orange-500"
+                        />
+                        <label htmlFor="privacy" className="text-xs text-gray-600 leading-relaxed cursor-pointer">
+                          <strong className="text-gray-700">I have read and accept</strong> the{' '}
+                          <a href="/politica-privacidad" className="text-orange-500 underline hover:text-orange-600 transition-colors">
+                            basic data protection information
+                          </a>
+                          . <span className="text-gray-500"><strong>Controller:</strong> EVENOR TECH, S.L.U. &middot; <strong>Purpose:</strong> To handle your enquiries and/or requests. &middot; <strong>Rights:</strong> Access, rectify and erase your data, as well as other rights, as explained in the{' '}
+                          <a href="/politica-privacidad" className="text-orange-500 underline hover:text-orange-600 transition-colors">
+                            Privacy Policy
+                          </a>.</span>
+                        </label>
+                      </div>
+                      {errors.privacy && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-xs text-red-500 pl-1"
+                        >
+                          {errors.privacy}
+                        </motion.p>
+                      )}
                     </motion.div>
 
                     {serverError && (

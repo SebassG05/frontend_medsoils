@@ -20,6 +20,9 @@ import AddVideoResource from './pages/AddVideoResource'
 import AddPdfResource from './pages/AddPdfResource'
 import Reviews from './pages/Reviews'
 import PartnerDetail from './pages/PartnerDetail'
+import AvisoLegal from './pages/AvisoLegal'
+import PoliticaPrivacidad from './pages/PoliticaPrivacidad'
+import PoliticaCookies from './pages/PoliticaCookies'
 
 // Bootstrap GA4 Consent Mode v2 immediately (before any render)
 initGA4()
@@ -74,6 +77,9 @@ function App() {
               <Route path="/partners/:slug" element={<ForceResetGuard><PartnerDetail /></ForceResetGuard>} />
               <Route path="/resources/add/video" element={<ForceResetGuard><AddVideoResource /></ForceResetGuard>} />
               <Route path="/resources/add/pdf" element={<ForceResetGuard><AddPdfResource /></ForceResetGuard>} />
+              <Route path="/aviso-legal" element={<AvisoLegal />} />
+              <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+              <Route path="/politica-cookies" element={<PoliticaCookies />} />
               <Route path="*" element={<ForceResetGuard><Home /></ForceResetGuard>} />
             </Routes>
           </main>

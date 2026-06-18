@@ -208,10 +208,37 @@ const Footer = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-200/60"
+          className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-200/60 space-y-3"
         >
+          {/* Legal links */}
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+            {[
+              { to: '/aviso-legal', label: 'Legal Notice' },
+              { to: '/politica-privacidad', label: 'Privacy Policy' },
+              { to: '/politica-cookies', label: 'Cookie Policy' },
+            ].map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className="text-xs text-gray-400 hover:text-orange-500 transition-colors duration-200 underline underline-offset-2"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
           <p className="text-center text-xs sm:text-sm text-gray-500 font-[Nunito Sans]">
             © {new Date().getFullYear()} MedSoils Challenge. All rights reserved.
+          </p>
+          <p className="text-center text-xs text-gray-400 font-[Nunito Sans]">
+            Developed by{' '}
+            <a
+              href="https://evenor-tech.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-orange-500 hover:text-orange-600 transition-colors duration-200 font-semibold"
+            >
+              Evenor-Tech
+            </a>
           </p>
         </motion.div>
       </div>

@@ -123,9 +123,9 @@ export default function CookieBanner() {
             <div>
               <p className="text-sm font-bold text-gray-900 leading-tight">This website uses cookies</p>
               <p className="text-xs text-gray-400 mt-0.5 leading-relaxed max-w-xl">
-                We use cookies to improve your experience, analyse traffic and personalise content.{' '}
+                We use our own and third-party cookies to improve our services and show you advertising related to your preferences, based on a profile built from your browsing habits.{' '}
                 <a
-                  href="/privacy-policy"
+                  href="/politica-cookies"
                   className="font-medium text-orange-500 hover:text-orange-600 underline underline-offset-2 transition-colors"
                 >
                   Cookie Policy
