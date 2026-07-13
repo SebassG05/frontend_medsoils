@@ -8,7 +8,6 @@ import SignUp from './SignUp'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isSignUpOpen, setIsSignUpOpen] = useState(false)
@@ -32,23 +31,11 @@ const Header = () => {
     { name: 'Contact', path: '/contact' },
   ]
 
-  const headerBackground = useTransform(
-    scrollY,
-    [0, 100],
-    ['rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.98)']
-  )
-
   const headerShadow = useTransform(
     scrollY,
     [0, 100],
     ['0px 0px 0px rgba(0,0,0,0)', '0px 4px 20px rgba(0,0,0,0.08)']
   )
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   // Leer usuario de localStorage al montar y al cambiar storage
   useEffect(() => {
@@ -176,7 +163,7 @@ const Header = () => {
     <>
     <motion.header
       style={{
-        backgroundColor: headerBackground,
+        backgroundColor: '#ffffff',
         boxShadow: headerShadow,
       }}
       initial={{ y: -100, opacity: 0 }}
@@ -186,7 +173,7 @@ const Header = () => {
         ease: [0.6, 0.05, 0.01, 0.9],
         opacity: { duration: 0.6 }
       }}
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-gray-100/50"
+      className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100"
     >
       {/* Animated gradient line */}
       <motion.div

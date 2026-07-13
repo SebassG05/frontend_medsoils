@@ -1,8 +1,8 @@
 import React from "react"
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowRight, GraduationCap, Globe, Microscope, Sprout, Lightbulb, Star, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowRight, GraduationCap, Globe, Microscope, Sprout, Lightbulb, Star, MessageSquare, ChevronLeft, ChevronRight, Users, BadgeEuro, MapPinned, ExternalLink } from 'lucide-react'
 import Footer from '../components/layout/Footer'
 import ScrollToTop from '../components/ui/ScrollToTop'
 import BlogCarousel from '../components/home/BlogCarousel'
@@ -10,15 +10,34 @@ import SoilQuizBanner from '../components/home/SoilQuizBanner'
 import IussEndorsement from '../components/home/IussEndorsement'
 import FieldResearch from '../components/home/FieldResearch'
 import { fetchBlogStats } from '../services/blogService'
+import medsoilsHero from '../assets/medsoils-field-research-hero.jpg'
+import soilSamplingHero from '../assets/medsoils-soil-sampling-field.jpg'
+import fieldCampaignHero from '../assets/medsoils-field-campaign.jpg'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5116/api/v1'
 
 const defaultReviews = [
 ]
 
+const heroSlides = [
+  {
+    src: medsoilsHero,
+    alt: 'Soil profile sampling in a Mediterranean olive grove',
+    position: 'object-[63%_center] lg:object-center',
+  },
+  {
+    src: soilSamplingHero,
+    alt: 'Mediterranean soil field observation',
+    position: 'object-[58%_center] lg:object-center',
+  },
+  {
+    src: fieldCampaignHero,
+    alt: 'Field research equipment in a Mediterranean landscape',
+    position: 'object-[62%_center] lg:object-center',
+  },
+]
+
 const Home = () => {
-  const [activeCard, setActiveCard] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
   const borderRectRef = useRef(null)
   const blogCardRef = useRef(null)
   const [reviews, setReviews] = useState(defaultReviews)
@@ -26,6 +45,8 @@ const Home = () => {
   const [reviewsPerPage, setReviewsPerPage] = useState(3)
   const [perimeter, setPerimeter] = useState(3200)
   const [cardSize, setCardSize] = useState({ w: 1200, h: 320 })
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0)
+  const [isHeroPaused, setIsHeroPaused] = useState(false)
   const [blogStats, setBlogStats] = useState({
     totalArticles: 0,
     totalAuthors: 0,
@@ -33,13 +54,21 @@ const Home = () => {
   })
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    heroSlides.forEach(({ src }) => {
+      const image = new Image()
+      image.src = src
+    })
   }, [])
+
+  useEffect(() => {
+    if (isHeroPaused) return undefined
+
+    const timer = window.setInterval(() => {
+      setActiveHeroSlide((current) => (current + 1) % heroSlides.length)
+    }, 6500)
+
+    return () => window.clearInterval(timer)
+  }, [isHeroPaused])
 
   // Fetch reviews from backend
   useEffect(() => {
@@ -133,190 +162,190 @@ const Home = () => {
     },
   }
 
-  const stackCards = [
-    {
-      title: "Impact",
-      description: "The project contributes to increased soil resilience, improved resource efficiency, and enhanced sustainability of agricultural production systems at regional scale.",
-      icon: GraduationCap,
-      bgColor: "from-orange-50 to-orange-100",
-      borderColor: "border-orange-200",
-      iconBg: "bg-orange-500",
-    },
-    {
-      title: "Methodology",
-      description: "The methodology combines controlled field trials, long-term soil monitoring, indicator-based assessment, and comparative evaluation of innovative soil management practices.",
-      icon: Globe,
-      bgColor: "from-cyan-50 to-blue-100",
-      borderColor: "border-cyan-200",
-      iconBg: "bg-cyan-500",
-    },
-    {
-      title: "Research",
-      description: "The project advances applied and interdisciplinary research focused on sustainable soil management across Mediterranean environments, integrating field evidence, laboratory analysis, and modelling approaches.",
-      icon: Microscope,
-      bgColor: "from-orange-50 to-orange-100",
-      borderColor: "border-orange-200",
-      iconBg: "bg-orange-500",
-    },
-    {
-      title: "Objetives",
-      description: "The main objective is to improve soil health, adaptive capacity, and ecosystem performance by promoting science-based management strategies under changing climatic and land-use conditions.",
-      icon: Sprout,
-      bgColor: "from-green-50 to-green-100",
-      borderColor: "border-green-200",
-      iconBg: "bg-green-500",
-    },
-    {
-      title: "Innovation",
-      description: "Promoting innovative practices and technologies that contribute to the future of sustainable soil science and agriculture.",
-      icon: Lightbulb,
-      bgColor: "from-purple-50 to-purple-100",
-      borderColor: "border-purple-200",
-      iconBg: "bg-purple-500",
-    }
-  ]
-
-  const handleCardClick = () => {
-    setActiveCard((prev) => (prev + 1) % stackCards.length)
-  }
-
-  const handleDragEnd = (event, info) => {
-    const swipeThreshold = isMobile ? 30 : 50
-    if (Math.abs(info.offset.x) > swipeThreshold || Math.abs(info.offset.y) > swipeThreshold) {
-      setActiveCard((prev) => (prev + 1) % stackCards.length)
-    }
-  }
+  const deadline = new Date(2026, 6, 24)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const daysUntilDeadline = Math.ceil((deadline - today) / 86400000)
+  const applicationsOpen = daysUntilDeadline >= 0
+  const daysRemaining = Math.max(0, daysUntilDeadline)
 
   return (
     <>
-      {/* Sección Hero - MEDSOILS CHALLENGE */}
-      <section className="relative overflow-hidden bg-white py-12 md:py-16">
-        {/* Fondo decorativo */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-100 rounded-full blur-3xl opacity-30 -mr-48 -mt-48"></div>
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-cyan-50 rounded-full blur-3xl opacity-20 -ml-36 -mb-36"></div>
+      {/* MEDSOILS 2026/27 admissions hero */}
+      <div className="relative bg-white">
+      <section
+        className="relative isolate min-h-[680px] overflow-hidden bg-[#08101f] text-white lg:h-[calc(100svh-9rem)] lg:min-h-[680px] lg:max-h-[780px]"
+        onMouseEnter={() => setIsHeroPaused(true)}
+        onMouseLeave={() => setIsHeroPaused(false)}
+        onFocusCapture={() => setIsHeroPaused(true)}
+        onBlurCapture={() => setIsHeroPaused(false)}
+      >
+        <AnimatePresence initial={false}>
+          <motion.img
+            key={heroSlides[activeHeroSlide].src}
+            src={heroSlides[activeHeroSlide].src}
+            alt={heroSlides[activeHeroSlide].alt}
+            initial={{ opacity: 0, scale: 1.035 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.015 }}
+            transition={{ opacity: { duration: 1.2 }, scale: { duration: 7, ease: 'linear' } }}
+            className={`absolute inset-0 h-full w-full object-cover ${heroSlides[activeHeroSlide].position}`}
+          />
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-[#08101f]/55 lg:bg-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08101f] via-[#08101f]/90 to-[#08101f]/20" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#08101f]/95 to-transparent" />
+
+        <motion.div
+          initial={{ scaleY: 0 }}
+          animate={{ scaleY: 1 }}
+          transition={{ delay: 0.35, duration: 0.8, ease: 'easeOut' }}
+          className="absolute bottom-0 left-0 top-0 hidden w-1 origin-top bg-orange-500 md:block"
+        />
+
+        <div className="absolute right-5 top-5 z-30 flex items-center gap-2 sm:right-8 sm:top-8">
+          <span className="mr-1 hidden text-[11px] font-bold tracking-[0.16em] text-white/70 sm:inline">
+            {String(activeHeroSlide + 1).padStart(2, '0')} / {String(heroSlides.length).padStart(2, '0')}
+          </span>
+          <button
+            type="button"
+            onClick={() => setActiveHeroSlide((current) => (current - 1 + heroSlides.length) % heroSlides.length)}
+            className="flex h-9 w-9 items-center justify-center rounded-md border border-white/25 bg-[#08101f]/45 text-white backdrop-blur-sm transition-colors hover:border-orange-400 hover:bg-orange-500"
+            aria-label="Previous image"
+            title="Previous image"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <div className="flex items-center gap-1.5" aria-label="Choose hero image">
+            {heroSlides.map((slide, index) => (
+              <button
+                key={slide.src}
+                type="button"
+                onClick={() => setActiveHeroSlide(index)}
+                className={`h-1.5 rounded-full transition-all ${activeHeroSlide === index ? 'w-6 bg-orange-500' : 'w-1.5 bg-white/45 hover:bg-white/80'}`}
+                aria-label={`Show image ${index + 1}`}
+                aria-current={activeHeroSlide === index ? 'true' : undefined}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveHeroSlide((current) => (current + 1) % heroSlides.length)}
+            className="flex h-9 w-9 items-center justify-center rounded-md border border-white/25 bg-[#08101f]/45 text-white backdrop-blur-sm transition-colors hover:border-orange-400 hover:bg-orange-500"
+            aria-label="Next image"
+            title="Next image"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="container mx-auto px-4 relative z-10 max-w-6xl"
+          animate="visible"
+          className="container relative z-10 mx-auto flex min-h-[680px] max-w-7xl flex-col justify-between px-5 pb-24 pt-8 sm:px-8 md:pb-28 md:pt-12 lg:h-full lg:min-h-0 lg:px-12"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Contenido Izquierdo */}
-            <motion.div variants={itemVariants} className="max-w-lg mx-auto lg:mx-0">
-              <motion.p
-                variants={itemVariants}
-                className="text-sm font-semibold text-orange-500 uppercase tracking-widest mb-4"
-              >
-                ABOUT
-              </motion.p>
-              <motion.h1
-                variants={itemVariants}
-                className="text-5xl md:text-6xl font-bold text-gray-900 mb-6"
-              >
-                <span className="text-orange-500">MEDSOILS</span>
-                <br />
-                CHALLENGE
-              </motion.h1>
-              <motion.p
-                variants={itemVariants}
-                className="text-lg text-gray-600 leading-relaxed mb-8 max-w-xl text-justify"
-              >
-                Aims to develop a new generation of soil experts through a Joint International Master's programme to tackle soil challenges in the Mediterranean region exacerbated by climate change.
-              </motion.p>
-              <motion.div
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  to="/about"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-full font-semibold hover:shadow-lg transition-shadow group"
-                >
-                  More Info
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
+          <div className="grid flex-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-16">
+            <div className="max-w-3xl">
+              <motion.div variants={itemVariants} className="mb-5 flex flex-wrap items-center gap-3">
+                <span className="inline-flex items-center gap-2 rounded-sm border border-orange-400/40 bg-orange-500/15 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-orange-300 backdrop-blur-sm">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-70" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-orange-400" />
+                  </span>
+                  {applicationsOpen ? 'Applications open' : 'Applications closed'}
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">Academic year 2026/27</span>
               </motion.div>
-            </motion.div>
 
-            {/* Decoración Derecha - Stacked Cards */}
-            <motion.div
-              variants={imageVariants}
-              className="relative h-[300px] sm:h-[320px] lg:h-[350px] mt-4 lg:mt-0"
-            >
-              <div className="relative w-full h-full flex items-center justify-center">
-                {/* Tarjetas apiladas */}
-                {stackCards.map((card, index) => {
-                  const position = (index - activeCard + stackCards.length) % stackCards.length
-                  
-                  // Posiciones y rotaciones para efecto fan/disperso
-                  // Versión móvil con desplazamientos más pequeños
-                  const mobilePositions = [
-                    { x: 0, y: 0, rotate: 0 },       // Tarjeta activa
-                    { x: 20, y: 12, rotate: 4 },     // Segunda tarjeta
-                    { x: -25, y: 20, rotate: -5 },   // Tercera tarjeta
-                    { x: 35, y: 28, rotate: 7 },     // Cuarta tarjeta
-                    { x: -40, y: 35, rotate: -8 },   // Quinta tarjeta
-                  ]
-                  
-                  // Versión desktop con más amplitud
-                  const desktopPositions = [
-                    { x: 0, y: 0, rotate: 0 },       // Tarjeta activa - sin cambios
-                    { x: 35, y: 20, rotate: 6 },     // Segunda tarjeta
-                    { x: -45, y: 35, rotate: -8 },   // Tercera tarjeta
-                    { x: 60, y: 50, rotate: 12 },    // Cuarta tarjeta
-                    { x: -70, y: 65, rotate: -14 },  // Quinta tarjeta
-                  ]
-                  
-                  const positions = isMobile ? mobilePositions : desktopPositions
-                  const currentPos = positions[position] || positions[4]
-                  const scaleDecrement = isMobile ? 0.04 : 0.03
-                  
-                  return (
-                    <motion.div
-                      key={index}
-                      drag
-                      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                      dragElastic={0.7}
-                      onDragEnd={position === 0 ? handleDragEnd : undefined}
-                      animate={{
-                        scale: 1 - position * scaleDecrement,
-                        x: currentPos.x,
-                        y: currentPos.y,
-                        rotate: currentPos.rotate,
-                        opacity: position < 5 ? 1 : 0,
-                        zIndex: stackCards.length - position,
-                      }}
-                      transition={{ 
-                        type: "spring", 
-                        stiffness: 200, 
-                        damping: 25,
-                        mass: 0.8,
-                      }}
-                      onClick={position === 0 ? handleCardClick : undefined}
-                      className={`absolute w-72 h-56 sm:w-80 sm:h-64 lg:w-96 lg:h-72 p-5 sm:p-6 lg:p-7 rounded-2xl border cursor-grab active:cursor-grabbing transition-all bg-gradient-to-br ${card.bgColor} ${card.borderColor} shadow-lg flex items-center justify-center`}
-                      style={{ touchAction: 'none' }}
-                    >
-                      <div className="flex items-center justify-between gap-3 text-center">
-                        <div className="flex flex-col items-center gap-2 sm:gap-3 flex-1">
-                          <div className={`w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 rounded-xl ${card.iconBg} flex items-center justify-center flex-shrink-0`}>
-                            <card.icon className="text-white w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-gray-900 text-lg sm:text-xl lg:text-2xl">{card.title}</h3>
-                            <p className="text-gray-600 text-xs sm:text-sm lg:text-base">{card.description}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-              </div>
-            </motion.div>
+              <motion.h1 variants={itemVariants} className="max-w-3xl text-4xl font-black leading-[0.96] text-white sm:text-6xl lg:text-7xl">
+                MEDSOILS
+                <span className="mt-2 block text-orange-500">Master's Diploma</span>
+              </motion.h1>
+
+              <motion.p variants={itemVariants} className="mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:mt-6 sm:text-lg">
+                Applied Soil Science in Mediterranean Areas. Build advanced expertise online, then put it into practice through international field weeks in Turkey, Spain, Slovenia, and Italy.
+              </motion.p>
+
+              <motion.div variants={itemVariants} className="mt-5 hidden items-center gap-3 text-sm font-semibold text-white/80 sm:flex">
+                <MapPinned className="h-5 w-5 shrink-0 text-orange-400" />
+                <span>Online learning · Four countries · One international cohort</span>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center">
+                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                  <Link
+                    to="/admission"
+                    className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-orange-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-black/20 transition-colors hover:bg-orange-600 sm:w-auto"
+                  >
+                    Start your application
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </motion.div>
+                <a
+                  href="https://www.unitus.it/post-laurea/master/master-i-livello/medsoils/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/5 px-6 py-4 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:border-white/45 hover:bg-white/10 sm:w-auto"
+                >
+                  Official programme
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </motion.div>
+            </div>
+
+            <motion.aside variants={itemVariants} className="hidden border-l border-white/20 pl-8 lg:block">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-300">
+                {applicationsOpen ? 'Application closes in' : 'Application deadline'}
+              </p>
+              {applicationsOpen ? (
+                <div className="mt-3 flex items-end gap-3">
+                  <motion.span
+                    key={daysRemaining}
+                    initial={{ y: 12, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="text-7xl font-black leading-none text-white"
+                  >
+                    {daysRemaining}
+                  </motion.span>
+                  <span className="pb-2 text-lg font-semibold text-white/60">days</span>
+                </div>
+              ) : (
+                <p className="mt-3 text-5xl font-black text-white">Closed</p>
+              )}
+              <div className="mt-5 h-px w-16 bg-orange-500" />
+              <p className="mt-5 text-xl font-bold text-white">24 July 2026</p>
+              <p className="mt-1 text-sm text-white/55">Submit before the official deadline.</p>
+            </motion.aside>
           </div>
+
+          <motion.div variants={itemVariants} className="mt-6 grid grid-cols-4 border-t border-white/20 pt-4 sm:mt-8 sm:pt-6">
+            {[
+              { value: 'EUR 0', label: 'Enrollment fee', icon: BadgeEuro },
+              { value: '30', label: 'Places available', icon: Users },
+              { value: '60', label: 'ECTS', icon: GraduationCap },
+              { value: '16', label: 'Mobility grants', icon: MapPinned },
+            ].map(({ value, label, icon: Icon }, index) => (
+              <div
+                key={label}
+                className={`flex min-h-16 items-center justify-center py-2 text-center sm:min-h-20 sm:justify-start sm:gap-3 sm:py-3 sm:text-left ${index > 0 ? 'border-l border-white/15 sm:pl-6' : ''}`}
+              >
+                <Icon className="hidden h-5 w-5 shrink-0 text-orange-400 sm:block" />
+                <div>
+                  <p className="text-lg font-black text-white sm:text-2xl">{value}</p>
+                  <p className="text-[10px] font-medium leading-tight text-white/55 sm:text-sm">{label}</p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </motion.div>
       </section>
+      <div className="pointer-events-none relative z-20 -mt-40 h-56" aria-hidden="true">
+        <div className="absolute inset-0 backdrop-blur-[12px] [mask-image:linear-gradient(to_bottom,transparent_0%,black_34%,black_82%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(255,255,255,0.06)_28%,rgba(255,255,255,0.78)_72%,white_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-white blur-xl" />
+      </div>
+      </div>
 
       {/* Sección About us - Multinational Educational Collaboration */}
       <section className="relative bg-gradient-to-b from-white to-gray-50 py-20 md:py-32 overflow-hidden">
