@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Footer from '../components/layout/Footer'
 
@@ -107,7 +106,7 @@ const Admission = () => {
           <div className="relative z-10 max-w-6xl mx-auto px-6 py-14 md:py-20 flex flex-col md:flex-row items-center gap-16">
 
             {/* Left column — text */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
               {/* Badge */}
               <motion.div
                 className="inline-flex items-center gap-2 mb-7"
@@ -116,7 +115,7 @@ const Admission = () => {
                 transition={{ duration: 0.6, ease }}
               >
                 <span className="h-px w-8 bg-orange-500" />
-                <span className="text-[13px] font-bold tracking-[0.22em] text-orange-500 uppercase">Admission Requirements</span>
+                <span className="text-[13px] font-bold tracking-[0.22em] text-orange-500 uppercase">2026/27 Admissions</span>
               </motion.div>
 
               <motion.h2
@@ -131,10 +130,10 @@ const Admission = () => {
                   className="relative inline-block"
                   style={{ WebkitTextStroke: '2px #f97316', color: 'transparent' }}
                 >
-                  enroll?
+                  apply?
                 </span>
                 <br />
-                <span className="text-orange-500">We hope to meet you soon</span>
+                <span className="text-orange-500">Join MEDSOILS</span>
               </motion.h2>
 
               <motion.div
@@ -154,9 +153,10 @@ const Admission = () => {
                 initial="hidden"
                 animate="visible"
               >
-                  The <strong className="text-gray-900">MEDSOILS CHALLENGE</strong> Joint Master Programme is open to
-                motivated students from around the world who are passionate about{' '}
-                <strong className="text-orange-500">soil science, sustainable land management and climate resilience in Mediterranean regions</strong>.
+                The international Level I Master's Diploma in{' '}
+                <strong className="text-gray-900">Applied Soil Science in Mediterranean Areas (MEDSOILS)</strong>{' '}
+                welcomes candidates who want to specialise in{' '}
+                <strong className="text-orange-500">pedology, soil monitoring and digital soil technologies</strong>.
               </motion.p>
 
               <motion.p
@@ -166,8 +166,8 @@ const Admission = () => {
                 initial="hidden"
                 animate="visible"
               >
-                The programme attracts candidates with diverse academic backgrounds committed to addressing
-                soil degradation and environmental protection through an interdisciplinary approach.
+                Hosted by DAFNE at the University of Tuscia, this annual 60 ECTS programme combines online
+                teaching with intensive practical weeks in Turkey, Spain, Slovenia and Italy.
               </motion.p>
             </div>
 
@@ -180,9 +180,9 @@ const Admission = () => {
               animate="visible"
             >
               {[
-                { value: '4', label: 'Partner Universities', sub: 'across Europe & Mediterranean' },
-                { value: 'B2+', label: 'English Level Required', sub: 'CEFR / IELTS / TOEFL accepted' },
-                { value: '100%', label: 'International Programme', sub: 'Open to students worldwide' },
+                { value: '24 JUL', label: 'Application Deadline', sub: '24 July 2026' },
+                { value: '8-30', label: 'Available Places', sub: 'minimum 8, maximum 30' },
+                { value: 'EUR 0', label: 'Enrollment Fee', sub: 'pilot edition fully funded' },
               ].map(({ value, label, sub }, i) => (
                 <motion.div
                   key={label}
@@ -239,7 +239,7 @@ const Admission = () => {
             <div className="flex flex-col lg:flex-row items-center gap-16">
 
               {/* LEFT — text */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 w-full lg:w-auto">
                 <motion.h3
                   className="text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-gray-900 leading-[1.1] mb-5"
                   variants={fadeUp}
@@ -270,7 +270,8 @@ const Admission = () => {
                   whileInView="visible"
                   viewport={{ once: true }}
                 >
-                  Applicants must meet the following general requirements to be considered for admission:
+                  Applications are open to candidates of any age or nationality who meet the official academic
+                  and language requirements for the selection process:
                 </motion.p>
 
                 <motion.ul
@@ -282,16 +283,19 @@ const Admission = () => {
                 >
                   {[
                     {
-                      label: "Bachelor's Degree",
-                      desc: "Or equivalent qualification in a relevant field such as Environmental Science, Agriculture, Forestry, Geography, Geology, Biology, or related disciplines.",
+                      num: '01',
+                      label: "Bachelor's Degree and Relevant Field",
+                      desc: "A recognised three-year Bachelor's degree (EQF Level 6) in agricultural or forest sciences, natural or environmental sciences, geology or Earth sciences, environmental engineering, geography, archaeology or archaeometry, landscape, spatial or environmental planning, or a closely related discipline. The official form also accepts candidates expected to graduate by 15 September 2026.",
                     },
                     {
+                      num: '02',
                       label: "English Language Proficiency",
-                      desc: "Minimum B2 level according to CEFR, or equivalent certification such as TOEFL, IELTS, or similar.",
+                      desc: "At least B2 level under the CEFR. A formal certificate is not mandatory at the application stage; candidates may submit a signed self-declaration of their English level.",
                     },
                     {
-                      label: "Strong Motivation",
-                      desc: "Genuine commitment to an international, interdisciplinary master focused on the Mediterranean region and climate change adaptation.",
+                      num: '03',
+                      label: "Open International Eligibility",
+                      desc: "There is no age or nationality restriction. Students already enrolled in a Master's degree or PhD programme may also apply, provided they can meet the attendance requirements.",
                     },
                   ].map(({ num, label, desc }) => (
                     <motion.li
@@ -323,7 +327,8 @@ const Admission = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                   </svg>
                   <p className="text-orange-600 text-[13px] font-medium italic leading-relaxed">
-                    Additional selection criteria will be detailed in the full application call.
+                    Fundamental knowledge of soil science, agriculture, forestry or geography is expected.
+                    Attendance is mandatory: at least 75% of online teaching and all in-person activities.
                   </p>
                 </motion.div>
               </div>
@@ -448,7 +453,7 @@ const Admission = () => {
               viewport={{ once: true }}
             >
               <span className="h-px w-8 bg-orange-500" />
-              <span className="text-[11px] font-bold tracking-[0.22em] text-orange-500 uppercase">Dates</span>
+              <span className="text-[11px] font-bold tracking-[0.22em] text-orange-500 uppercase">Applications</span>
             </motion.div>
 
             {/* Title — blur clears while rising */}
@@ -459,7 +464,7 @@ const Admission = () => {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.62 }}
               viewport={{ once: true, amount: 0.3 }}
             >
-              Application <span className="text-orange-500">Timeline</span>
+              Application <span className="text-orange-500">Process</span>
             </motion.h3>
 
             {/* Underline bars — draw from left */}
@@ -483,8 +488,12 @@ const Admission = () => {
                 transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.85 }}
                 viewport={{ once: true }}
               >
-                The application period for the first edition of the{' '}
-                <strong className="text-gray-900">MEDSOILS CHALLENGE</strong> Master will open soon.
+                Submit the official application form by{' '}
+                <strong className="text-gray-900">24 July 2026</strong> to{' '}
+                <a className="font-semibold text-orange-500 hover:text-orange-600" href="mailto:simone.priori@unitus.it">simone.priori@unitus.it</a>{' '}
+                and{' '}
+                <a className="font-semibold text-orange-500 hover:text-orange-600" href="mailto:dafne@unitus.it">dafne@unitus.it</a>.
+                Lectures begin in October 2026.
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 22 }}
@@ -492,11 +501,10 @@ const Admission = () => {
                 transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.96 }}
                 viewport={{ once: true }}
               >
-                Subscribe to our newsletter and be the first to receive important updates about the{' '}
-                <strong className="text-gray-900">MEDSOILS CHALLENGE</strong> Master.
-                <br />
-                We'll send you all the key information, including application deadlines, scholarship
-                opportunities, events, and more.
+                Include a motivation letter, updated CV, degree certificate and exam record, a signed copy
+                of your ID or passport, and any supporting qualifications. European degree holders should
+                add the Diploma Supplement; non-European degree holders should add the Declaration of Value.
+                Non-EU applicants residing in Italy must also include their residence permit.
               </motion.p>
               <motion.p
                 className="font-semibold text-orange-500"
@@ -505,7 +513,19 @@ const Admission = () => {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 1.08 }}
                 viewport={{ once: true }}
               >
-                → Don't miss your chance to join the next generation of soil experts.
+                Eligible candidates will be invited to an online interview. The 60-point assessment covers
+                academic merit (10), Soil Science credits (10), degree recency (10, with one point deducted per
+                year after three years), relevant experience (5), other qualifications (5), and motivation and
+                English proficiency at interview (20). Admission requires at least 25 points; the final ranking
+                is published within seven days of the interviews on the{' '}
+                <a
+                  className="underline decoration-orange-300 underline-offset-4 hover:text-orange-600"
+                  href="https://www.unitus.it/post-laurea/master/master-i-livello/medsoils/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Unitus Master's page
+                </a>.
               </motion.p>
             </div>
           </div>
@@ -542,7 +562,7 @@ const Admission = () => {
           <div className="max-w-6xl mx-auto relative z-10 flex flex-col lg:flex-row items-center gap-16">
 
             {/* ── LEFT: Text ── */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 w-full lg:w-auto">
 
               {/* Badge */}
               <motion.div
@@ -564,7 +584,7 @@ const Admission = () => {
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
                 viewport={{ once: true }}
               >
-                Erasmus+{' '}
+                Fees & Mobility{' '}
                 <span className="text-orange-500">Scholarships</span>
               </motion.h3>
 
@@ -589,9 +609,11 @@ const Admission = () => {
                 transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
                 viewport={{ once: true }}
               >
-                A limited number of{' '}
-                <strong className="text-gray-900">Erasmus+ scholarships</strong> will be available to
-                support the participation of the most outstanding candidates. These grants may cover:
+                The first pilot edition has <strong className="text-gray-900">no enrollment fee</strong>; programme
+                enrollment is fully funded by Erasmus+ Medsoils-Challenge. The call reserves 16 mobility
+                scholarships, four in each group: Italy/Unitus, Slovenia/Ljubljana, Spain/Extremadura and
+                Turkey/Adiyaman. Each group covers nationals of that country or international students
+                currently enrolled at the corresponding university.
               </motion.p>
 
               {/* Footnote */}
@@ -602,8 +624,9 @@ const Admission = () => {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.85 }}
                 viewport={{ once: true }}
               >
-                Further details about eligibility and conditions will be included in the official call
-                for applications.
+                All candidates share one evaluation ranking. Country allocations may be adjusted according
+                to student availability, and any additional grants are assigned after evaluation. Each mobility
+                grant is paid by the student's home university.
               </motion.p>
             </div>
 
@@ -611,7 +634,8 @@ const Admission = () => {
             <div className="flex-1 w-full flex flex-col gap-5">
               {[
                 {
-                  label: 'Tuition fees',
+                  num: '01',
+                  label: '16 mobility scholarships in the official call',
                   icon: (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z"/>
@@ -621,7 +645,8 @@ const Admission = () => {
                   delay: 0.45,
                 },
                 {
-                  label: 'Travel and installation costs',
+                  num: '02',
+                  label: '4 reserved places for each partner-country group',
                   icon: (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -630,7 +655,8 @@ const Admission = () => {
                   delay: 0.58,
                 },
                 {
-                  label: 'Monthly living allowance',
+                  num: '03',
+                  label: "Paid by each student's home university",
                   icon: (
                     <svg viewBox="2 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-6 h-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -777,7 +803,7 @@ const Admission = () => {
             >
               <span className="h-px w-6 bg-orange-500/60" />
               <span className="bg-orange-500/15 text-orange-400 text-[11px] font-bold tracking-[0.22em] uppercase px-4 py-1.5 rounded-full border border-orange-500/25">
-                Open Applications
+                Deadline: 24 July 2026
               </span>
               <span className="h-px w-6 bg-orange-500/60" />
             </motion.div>
@@ -790,9 +816,9 @@ const Admission = () => {
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
               viewport={{ once: true }}
             >
-              Ready to join the{' '}
-              <span className="text-orange-500">MEDSOILS CHALLENGE</span>{' '}
-              Master?
+              Apply to the{' '}
+              <span className="text-orange-500">MEDSOILS</span>{' '}
+              Master's Diploma
             </motion.h2>
 
             {/* Divider line with diamond */}
@@ -811,13 +837,35 @@ const Admission = () => {
 
             {/* Description */}
             <motion.p
-              className="text-slate-400 text-base md:text-lg lg:text-xl mb-12 max-w-xl leading-relaxed"
+              className="text-slate-400 text-base md:text-lg lg:text-xl mb-12 max-w-2xl leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
               viewport={{ once: true }}
             >
-              Get in touch to register your interest or request more information. Our team will guide you through every step of the process.
+              Review the{' '}
+              <a
+                className="font-semibold text-orange-400 hover:text-orange-300"
+                href="https://www.unitus.it/wp-content/uploads/2026/07/Master-Medsoils-Call-for-application-_signed.pdf"
+                target="_blank"
+                rel="noreferrer"
+              >
+                official call
+              </a>{' '}
+              and{' '}
+              <a
+                className="font-semibold text-orange-400 hover:text-orange-300"
+                href="https://www.unitus.it/wp-content/uploads/2026/07/Master-Medsoils-program-detailed.pdf"
+                target="_blank"
+                rel="noreferrer"
+              >
+                detailed programme
+              </a>{' '}
+              before applying. For administrative enquiries, contact Dr Lorena Remondini at{' '}
+              <a className="text-slate-300 hover:text-white" href="mailto:remondini@unitus.it">remondini@unitus.it</a>{' '}
+              or +39 0761 357286. The programme coordinator is Prof Simone Priori:{' '}
+              <a className="text-slate-300 hover:text-white" href="mailto:simone.priori@unitus.it">simone.priori@unitus.it</a>,{' '}
+              +39 0761 357327.
             </motion.p>
 
             {/* Button */}
@@ -827,23 +875,24 @@ const Admission = () => {
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.72 }}
               viewport={{ once: true }}
             >
-              <Link
-                to="/contact"
-                state={{ enquiryType: { value: 'Application / Admission', label: 'Application / Admission' } }}
+              <a
+                href="https://www.unitus.it/post-laurea/master/master-i-livello/medsoils/"
+                target="_blank"
+                rel="noreferrer"
               >
                 <motion.button
                   whileHover={{ scale: 1.05, boxShadow: '0 0 50px rgba(249,115,22,0.5), 0 0 100px rgba(249,115,22,0.2)' }}
                   whileTap={{ scale: 0.97 }}
                   className="relative inline-flex items-center gap-3 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg lg:text-xl px-12 lg:px-16 py-5 lg:py-6 rounded-full shadow-2xl transition-colors duration-200 overflow-hidden group"
                 >
-                  <span className="cursor-pointer relative z-10">Apply Now — Contact Us</span>
+                  <span className="cursor-pointer relative z-10">Apply on Unitus</span>
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 relative z-10 group-hover:translate-x-1.5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                   {/* Shimmer sweep */}
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
                 </motion.button>
-              </Link>
+              </a>
             </motion.div>
 
           </div>
