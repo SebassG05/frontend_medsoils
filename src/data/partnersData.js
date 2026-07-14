@@ -49,7 +49,7 @@ export const PARTNERS = [
   {
     id: 5,
     name: 'Adiyaman University',
-    country: 'Adıyaman, Turkiye',
+    country: 'Adıyaman, Türkiye',
     logo: ADYU_LOGO,
     slug: 'adiyaman',
     flagCode: 'tr',

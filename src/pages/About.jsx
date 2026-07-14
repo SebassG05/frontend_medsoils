@@ -22,8 +22,8 @@ const Flag = ({ code, alt }) => (
 
 const mobilityRows = [
   {
-    flag: <Flag code="tr" alt="Turkey" />,
-    place: 'Adıyaman, Turkiye',
+    flag: <Flag code="tr" alt="Türkiye" />,
+    place: 'Adıyaman, Türkiye',
     when: 'October 2026',
     notes: '—',
   },
@@ -384,7 +384,7 @@ const About = () => {
               {/* Right column — staggered paragraphs */}
               <div className="space-y-5">
                 {[
-                  <>The journey begins in <strong className="inline-flex items-center gap-1 text-orange-500">Turkey <Flag code="tr" alt="Turkey" /></strong> (January 2027), where students will engage in <strong className="text-gray-900">hands-on fieldwork</strong>, including erosion assessments, sampling techniques and data collection in rural settings.</>,
+                  <>The journey begins in <strong className="inline-flex items-center gap-1 text-orange-500">Türkiye <Flag code="tr" alt="Türkiye" /></strong> (January 2027), where students will engage in <strong className="text-gray-900">hands-on fieldwork</strong>, including erosion assessments, sampling techniques and data collection in rural settings.</>,
                   <>The second mobility takes place in <strong className="inline-flex items-center gap-1 text-orange-500">Spain <Flag code="es" alt="Spain" /></strong> (February 2027), focusing on <strong className="text-gray-900">agro-environmental indicators and land evaluation</strong>. Participants visit farms, conduct soil lab analyses and work alongside local experts.</>,
                   <>In March, the group moves to <strong className="inline-flex items-center gap-1 text-orange-500">Slovenia <Flag code="si" alt="Slovenia" /></strong>, where attention shifts to <strong className="text-gray-900">soil governance, policy development and sustainable management practices</strong>, including seminars with policymakers and applied case studies.</>,
                   <>Finally, in <strong className="inline-flex items-center gap-1 text-orange-500">Italy <Flag code="it" alt="Italy" /></strong> (June 2027), students attend the closing conference, defend their final group projects, and participate in innovation-focused workshops hosted by the Università della Tuscia.</>,

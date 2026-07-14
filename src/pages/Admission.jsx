@@ -167,7 +167,7 @@ const Admission = () => {
                 animate="visible"
               >
                 Hosted by DAFNE at the University of Tuscia, this annual 60 ECTS programme combines online
-                teaching with intensive practical weeks in Turkey, Spain, Slovenia and Italy.
+                teaching with intensive practical weeks in Türkiye, Spain, Slovenia and Italy.
               </motion.p>
             </div>
 
@@ -612,7 +612,7 @@ const Admission = () => {
                 The first pilot edition has <strong className="text-gray-900">no enrollment fee</strong>; programme
                 enrollment is fully funded by Erasmus+ Medsoils-Challenge. The call reserves 16 mobility
                 scholarships, four in each group: Italy/Unitus, Slovenia/Ljubljana, Spain/Extremadura and
-                Turkey/Adiyaman. Each group covers nationals of that country or international students
+                Türkiye/Adiyaman. Each group covers nationals of that country or international students
                 currently enrolled at the corresponding university.
               </motion.p>
 

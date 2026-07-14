@@ -264,7 +264,7 @@ const Home = () => {
               </motion.h1>
 
               <motion.p variants={itemVariants} className="mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:mt-6 sm:text-lg">
-                Applied Soil Science in Mediterranean Areas. Build advanced expertise online, then put it into practice through international field weeks in Turkey, Spain, Slovenia, and Italy.
+                Applied Soil Science in Mediterranean Areas. Build advanced expertise online, then put it into practice through international field weeks in Türkiye, Spain, Slovenia, and Italy.
               </motion.p>
 
               <motion.div variants={itemVariants} className="mt-5 hidden items-center gap-3 text-sm font-semibold text-white/80 sm:flex">
