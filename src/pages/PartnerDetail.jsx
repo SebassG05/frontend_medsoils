@@ -104,6 +104,14 @@ const DETAIL = {
     role:
       'Adıyaman University hosts the first mobility week of the MEDSOILS CHALLENGE programme (October 2026), providing students with direct exposure to soil challenges typical of the eastern Mediterranean climate zone. The team leads hands-on fieldwork sessions covering erosion assessment, soil sampling methodologies, and data collection in rural and agricultural settings, offering a unique perspective on dryland soil management.',
   },
+
+  'universidad-extremadura': {
+    website: 'https://www.unex.es',
+    about:
+      'The Universidad de Extremadura (UEx) is a public university with campuses in Badajoz, Cáceres, Mérida, and Plasencia. Its School of Agricultural Engineering in Badajoz combines teaching and research across agricultural, environmental, and forestry sciences, with a strong focus on sustainable production, Mediterranean landscapes, and the conservation of soil, water, and sediment resources.',
+    role:
+      'UEx contributes its expertise in Mediterranean agricultural systems, soil conservation, and applied field research to the MEDSOILS CHALLENGE programme. Together with the Spanish partners, the university supports the practical mobility component in Extremadura, connecting students with regional agrarian landscapes, field observation, sampling activities, and real soil-management challenges.',
+  },
 }
 
 // ── Animations ────────────────────────────────────────────────────────────────

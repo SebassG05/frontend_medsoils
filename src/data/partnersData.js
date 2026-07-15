@@ -1,3 +1,5 @@
+import uexLogo from '../assets/partners/uex-logo.webp'
+
 // ── Shared logos ──────────────────────────────────────────────────────────────
 export const MEDSOILS_LOGO = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1771245130/Medsoil_Challenge_lrkqnt.webp'
 export const TIMESIS_LOGO  = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780475839/logo_timesis-HD-blu-nuovo_trasp_yxe3rj.png'
@@ -5,6 +7,7 @@ export const UNITUS_LOGO   = 'https://res.cloudinary.com/dktr2wcto/image/upload/
 export const UL_LOGO       = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780476741/Univerza_V_Ljubljani_FF-logoENG-VER-RGB_color_tesm3i.png'
 export const EVENOR_LOGO   = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780477178/evenor_english_cpz2wv.png'
 export const ADYU_LOGO     = 'https://res.cloudinary.com/dktr2wcto/image/upload/v1780478970/Adiyaman_Universitesi__ADYU__Logosu_EN_Mavi-removebg-preview_yxtyiu.png'
+export const UEX_LOGO      = uexLogo
 
 // ── Partners list (used in About.jsx cards + PartnerDetail routing) ───────────
 export const PARTNERS = [
@@ -54,5 +57,15 @@ export const PARTNERS = [
     slug: 'adiyaman',
     flagCode: 'tr',
     coords: [37.764, 38.279],
+  },
+  {
+    id: 6,
+    name: 'Universidad de Extremadura',
+    country: 'Badajoz, Spain',
+    logo: UEX_LOGO,
+    logoGap: 'gap-2',
+    slug: 'universidad-extremadura',
+    flagCode: 'es',
+    coords: [38.883, -7.007],
   },
 ]
