@@ -162,7 +162,7 @@ const Home = () => {
     },
   }
 
-  const deadline = new Date(2026, 6, 24)
+  const deadline = new Date(2026, 6, 31)
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const daysUntilDeadline = Math.ceil((deadline - today) / 86400000)
@@ -314,7 +314,7 @@ const Home = () => {
                 <p className="mt-3 text-5xl font-black text-white">Closed</p>
               )}
               <div className="mt-5 h-px w-16 bg-orange-500" />
-              <p className="mt-5 text-xl font-bold text-white">24 July 2026</p>
+              <p className="mt-5 text-xl font-bold text-white">31 July 2026</p>
               <p className="mt-1 text-sm text-white/55">Submit before the official deadline.</p>
             </motion.aside>
           </div>
