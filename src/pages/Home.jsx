@@ -7,7 +7,7 @@ import Footer from '../components/layout/Footer'
 import ScrollToTop from '../components/ui/ScrollToTop'
 import BlogCarousel from '../components/home/BlogCarousel'
 import SoilQuizBanner from '../components/home/SoilQuizBanner'
-import HomeHero from '../components/home/hero/HomeHero'
+import HeroField from '../components/home/hero/HeroField'
 import IussEndorsement from '../components/home/IussEndorsement'
 import FieldResearch from '../components/home/FieldResearch'
 import { fetchBlogStats } from '../services/blogService'
@@ -125,7 +125,7 @@ const Home = () => {
 
   return (
     <>
-      <HomeHero />
+      <HeroField />
 
       {/* Sección About us - Multinational Educational Collaboration */}
       <section className="relative bg-gradient-to-b from-white to-gray-50 py-20 md:py-32 overflow-hidden">
