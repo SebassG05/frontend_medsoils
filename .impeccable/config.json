@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/components/home/hero/HeroField.jsx"
+        ],
+        "createdAt": "2026-11-04T13:23:24.549Z",
+        "reason": "User confirmed: the orange bar comes from the live-site reference they asked to follow, and they chose this hero with it visible. It is a full-height section edge, not a card."
+      }
+    ]
+  }
+}
