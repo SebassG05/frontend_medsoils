@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* ── MEDSOILS brand tokens, sampled from the logo animation ── */
+@theme {
+  --color-earth: #6c3a1f;
+  --color-earth-mid: #8a562f;
+  --color-earth-light: #a87445;
+  --color-earth-deep: #2a150a;
+  --color-leaf: #6dae30;
+  --font-display: 'Source Serif 4 Variable', ui-serif, Georgia, serif;
+}
+
 /* ── Global button cursor ─────────────────────────────────── */
 button {
   cursor: pointer;
@@ -55,6 +65,12 @@ button {
 .footer-item:hover {
 	transform: translateY(-6px) scale(1.02);
 	box-shadow: 0 8px 20px rgba(15,23,42,0.12);
+}
+
+/* The group stands in the lower 23.25vw of the bottom-aligned hero photo.
+   Keep room above their heads for the title on wide, short screens. */
+:root {
+	--hero-photo-min: calc(23.25vw + 10.5rem);
 }
 
 .footer-wrapper {
