@@ -76,9 +76,4 @@ export const COPY = {
     const s = String(Math.round(seconds % 60)).padStart(2, '0')
     return `${m}:${s}`
   },
-  durationSpoken: seconds => {
-    const m = Math.floor(seconds / 60)
-    const s = Math.round(seconds % 60)
-    return [m && plural(m, 'minute', 'minutes'), s && plural(s, 'second', 'seconds')].filter(Boolean).join(' ')
-  },
 }

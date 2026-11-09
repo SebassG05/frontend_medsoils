@@ -9,7 +9,8 @@ import { imageSources } from '../../utils/media'
  * `priority` is for the one image that is likely the LCP element.
  */
 export default function MediaImage({ media, sizes, priority = false, alt, className = '', imgClassName = '' }) {
-  const [loaded, setLoaded] = useState(false)
+  // The priority image is the LCP candidate: paint it as soon as it decodes, no fade.
+  const [loaded, setLoaded] = useState(priority)
   const src = media.type === 'video' ? media.poster : media.src
   const { avif, webp, fallback } = imageSources(src)
 

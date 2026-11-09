@@ -113,7 +113,7 @@ function Toolbar() {
               }`}
             >
               {labelFor[f]}
-              <span className={`text-xs tabular-nums ${filter === f ? 'text-white/85' : 'text-gray-500'}`}>{countFor[f]}</span>
+              <span className={`text-xs tabular-nums ${filter === f ? 'text-white' : 'text-gray-500'}`}>{countFor[f]}</span>
             </button>
           ))}
         </div>
@@ -133,7 +133,7 @@ function Tile({ item }) {
       data-media-id={item.id}
       onPointerEnter={loadLightbox}
       onFocus={loadLightbox}
-      aria-label={COPY.gallery.openItem(numberOf(item), media.length, item.alt) + (isVideo ? `, ${COPY.durationSpoken(item.duration)}` : '')}
+      aria-label={COPY.gallery.openItem(numberOf(item), media.length, item.alt) + (isVideo ? `, ${COPY.duration(item.duration)}` : '')}
       className="group relative block h-full w-full overflow-hidden rounded-xl outline-none
         focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
     >
