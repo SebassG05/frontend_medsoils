@@ -14,7 +14,8 @@ const HOVER_ZOOM =
 
 function MosaicTile({ media, className, sizes, layoutId }) {
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    // `className` must set the positioning (relative or absolute); two position utilities would conflict.
+    <div className={`overflow-hidden ${className}`}>
       {layoutId ? (
         <CoverFill media={media} layoutId={layoutId} sizes={sizes} imgClassName={HOVER_ZOOM} />
       ) : (
@@ -63,7 +64,7 @@ export default function DayCard({ collection, day, returning = false }) {
         >
           {lead && (
             <div className="grid h-full grid-cols-3 grid-rows-3 gap-1">
-              <MosaicTile media={lead} layoutId={layoutIds.dayCoverImage(collection.slug, day.slug)} sizes="(min-width: 1024px) 22vw, (min-width: 640px) 33vw, 66vw" className={rest.length ? 'col-span-2 row-span-3' : 'col-span-3 row-span-3'} />
+              <MosaicTile media={lead} layoutId={layoutIds.dayCoverImage(collection.slug, day.slug)} sizes="(min-width: 1024px) 22vw, (min-width: 640px) 33vw, 66vw" className={`relative ${rest.length ? 'col-span-2 row-span-3' : 'col-span-3 row-span-3'}`} />
               {rest.map(m => (
                 <motion.div key={m.id} {...after} className="col-span-1 row-span-1 relative">
                   <MosaicTile media={m} sizes="(min-width: 1024px) 11vw, 33vw" className="absolute inset-0" />
