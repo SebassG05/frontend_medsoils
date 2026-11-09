@@ -31,7 +31,7 @@ export default function CoverHeader({ layoutId, imageLayoutId, media, eyebrow, t
       </motion.div>
 
       <motion.div {...textIn} className="absolute inset-x-0 bottom-0 z-20 p-5 sm:p-8 lg:p-10">
-        {eyebrow && <p className="text-[15px] font-semibold text-orange-300">{eyebrow}</p>}
+        {eyebrow && <p className="text-[15px] font-semibold text-orange-200">{eyebrow}</p>}
         <h1 className="mt-1 font-headline text-[34px] sm:text-[44px] lg:text-[56px] font-bold leading-[1.05] tracking-[-0.025em] text-white text-balance">
           {title}
         </h1>

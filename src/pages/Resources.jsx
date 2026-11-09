@@ -588,7 +588,7 @@ export default function Resources() {
             >
               {cat}
               {showCounts && (
-                <span className={`tabular-nums text-xs ${activeCategory === cat ? 'text-white/80' : 'text-gray-400'}`}>
+                <span className={`tabular-nums text-xs ${activeCategory === cat ? 'text-white' : 'text-gray-500'}`}>
                   {categoryCount(cat)}
                 </span>
               )}
@@ -649,7 +649,7 @@ export default function Resources() {
             <p className="text-sm text-gray-500">Check your connection and try again.</p>
             <button
               onClick={load}
-              className="mt-2 px-5 py-2 rounded-full text-sm font-semibold bg-orange-500 text-white shadow-sm hover:bg-orange-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+              className="mt-2 px-5 py-2 rounded-full text-sm font-semibold bg-orange-700 text-white shadow-sm hover:bg-orange-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
             >
               Try again
             </button>

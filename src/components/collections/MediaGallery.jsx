@@ -108,7 +108,7 @@ function Toolbar() {
               className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors duration-[var(--motion-fast)]
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 ${
                 filter === f
-                  ? 'border-orange-500 bg-orange-500 text-white shadow-sm'
+                  ? 'border-orange-700 bg-orange-700 text-white shadow-sm'
                   : 'border-gray-200 bg-white text-gray-700 hover:border-orange-300 hover:text-orange-600'
               }`}
             >
@@ -173,7 +173,7 @@ function StateMessage({ icon: Icon, title, body, action, role }) {
   )
 }
 
-const actionButton = 'mt-3 inline-flex min-h-11 items-center rounded-full bg-orange-500 px-5 text-sm font-semibold text-white shadow-sm transition-colors duration-[var(--motion-fast)] hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2'
+const actionButton = 'mt-3 inline-flex min-h-11 items-center rounded-full bg-orange-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors duration-[var(--motion-fast)] hover:bg-orange-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2'
 
 function Grid() {
   const { media, items, status, onRetry, filter, setFilter } = useGallery()

@@ -17,7 +17,7 @@ export default function Breadcrumbs({ items }) {
                 <>
                   <Link
                     to={item.to}
-                    className="rounded-md hover:text-orange-600 transition-colors duration-[var(--motion-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+                    className="inline-flex -my-3 py-3 rounded-md hover:text-orange-600 transition-colors duration-[var(--motion-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
                   >
                     {item.label}
                   </Link>

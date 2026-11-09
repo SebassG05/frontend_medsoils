@@ -85,7 +85,7 @@ export default function DayCard({ collection, day, returning = false }) {
             aria-hidden="true"
             className="grid size-11 shrink-0 place-items-center rounded-full bg-orange-50 text-orange-600
               transition-[transform,background-color,color] duration-[var(--motion-base)] ease-out-expo
-              pointer-fine:group-hover:translate-x-1 pointer-fine:group-hover:bg-orange-500 pointer-fine:group-hover:text-white motion-reduce:transform-none"
+              pointer-fine:group-hover:translate-x-1 pointer-fine:group-hover:bg-orange-600 pointer-fine:group-hover:text-white motion-reduce:transform-none"
           >
             <ArrowRight size={20} />
           </span>

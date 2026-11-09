@@ -9,7 +9,7 @@ export default function NotFoundPanel({ title, body, cta, to }) {
       <p className="text-gray-600">{body}</p>
       <Link
         to={to}
-        className="mt-3 inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold bg-orange-500 text-white shadow-sm hover:bg-orange-600 transition-colors duration-[var(--motion-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+        className="mt-3 inline-flex min-h-11 items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold bg-orange-700 text-white shadow-sm hover:bg-orange-800 transition-colors duration-[var(--motion-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
       >
         <ArrowLeft size={16} aria-hidden="true" />
         {cta}

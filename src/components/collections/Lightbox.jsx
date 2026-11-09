@@ -34,6 +34,17 @@ function fitBox(item, vp) {
   return { w, h, x: (vp.w - w) / 2, y: TOP + (maxH - h) / 2 }
 }
 
+/**
+ * Everything behind the viewer, minus the cookie-consent banner: that banner
+ * sits above all layers and must stay usable (e.g. first visit via a shared ?m= link).
+ */
+function backgroundRegions() {
+  const app = document.getElementById('root')?.firstElementChild
+  if (!app) return []
+  return [...app.children].filter(el => !el.matches('[aria-label="Cookie consent"]'))
+}
+const setBackgroundInert = on => backgroundRegions().forEach(el => (on ? el.setAttribute('inert', '') : el.removeAttribute('inert')))
+
 const tileOf = id => document.querySelector(`[data-media-id="${CSS.escape(id)}"]`)
 
 /** Transform that makes `box` sit exactly on the item's thumbnail. */
@@ -172,25 +183,24 @@ export default function Lightbox({ item, fromTile }) {
   // Lock page scroll and hide the rest of the app from AT while open.
   useLayoutEffect(() => {
     const html = document.documentElement
-    const root = document.getElementById('root')
     const scrollbar = window.innerWidth - html.clientWidth
     const prevOverflow = html.style.overflow
     const prevPadding = document.body.style.paddingRight
     html.style.overflow = 'hidden'
     if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`
-    root?.setAttribute('inert', '')
+    setBackgroundInert(true)
     closeRef.current?.focus({ preventScroll: true })
     return () => {
       html.style.overflow = prevOverflow
       document.body.style.paddingRight = prevPadding
-      root?.removeAttribute('inert')
+      setBackgroundInert(false)
     }
   }, [])
 
   // As soon as closing starts the page is interactive again, so focus can
   // return to the thumbnail when the fly-back ends (inert would block it).
   useLayoutEffect(() => {
-    if (!isPresent) document.getElementById('root')?.removeAttribute('inert')
+    if (!isPresent) setBackgroundInert(false)
   }, [isPresent])
 
   useEffect(() => { preload(next); preload(prev) }, [next, prev])

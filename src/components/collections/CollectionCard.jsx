@@ -8,9 +8,9 @@ import { COPY } from '../../data/collections/copy'
 import { collectionPath } from '../../utils/collectionRoutes'
 import { AFTER_MORPH, DURATION, fadeRise, layoutTransition } from '../../utils/motion'
 
-/** Warm scrim from the brand's deepest earth tone; ≥ 62 % where text sits keeps white text AA on any photo. */
+/** Warm scrim from the brand's deepest earth tone; ≥ 0.6 alpha where text sits keeps white text AA on any photo. */
 export const SCRIM =
-  'linear-gradient(to top, rgb(42 21 10 / 0.86) 0%, rgb(42 21 10 / 0.66) 38%, rgb(42 21 10 / 0.18) 72%, rgb(42 21 10 / 0) 100%)'
+  'linear-gradient(to top, rgb(42 21 10 / 0.86) 0%, rgb(42 21 10 / 0.72) 40%, rgb(42 21 10 / 0.22) 75%, rgb(42 21 10 / 0) 100%)'
 
 /** Cover is likely in the first viewport only on tall desktop windows. */
 const coverIsAboveFold = () =>
@@ -91,7 +91,7 @@ export default function CollectionCard({ collection, returning = false }) {
           </div>
           <span
             aria-hidden="true"
-            className="grid size-11 shrink-0 place-items-center rounded-full bg-orange-500 text-white shadow-md
+            className="grid size-11 shrink-0 place-items-center rounded-full bg-orange-600 text-white shadow-md
               transition-transform duration-[var(--motion-base)] ease-out-expo pointer-fine:group-hover:translate-x-1 motion-reduce:transform-none"
           >
             <ArrowRight size={20} />
