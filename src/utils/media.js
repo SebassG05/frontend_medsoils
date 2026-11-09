@@ -1,24 +1,28 @@
 /**
- * Resolves collection media paths (e.g. "adiyaman/dia-1/photo-01") to URLs.
+ * Resolves collection media to URLs. Two kinds of `src` are supported:
  *
- * Hosting is still undecided, so everything goes through VITE_MEDIA_BASE_URL.
- * Expected files for a photo "<src>":
- *   <src>-480.avif  <src>-960.avif  <src>-1600.avif
- *   <src>-480.webp  <src>-960.webp  <src>-1600.webp
- *   <src>-1600.jpg  (fallback)
- * and for a video "<src>": <src>.mp4 (+ optional <src>.<lang>.vtt).
+ * 1. Cloudinary URLs (https://res.cloudinary.com/<cloud>/image|video/upload/…),
+ *    the hosting used today. Sizes and formats come from URL transformations:
+ *    photos and video posters get an AVIF/WebP srcset, videos are delivered as
+ *    H.264 ≤ 1280 px (phones record 4K HEVC, which many browsers can't play).
  *
- * In development, when VITE_MEDIA_BASE_URL is unset, the Vite dev server
- * serves generated placeholders from /__dev-media (see vite.config.js and
- * scripts/generate-dev-media.mjs). Production builds without a base URL
- * report media as unconfigured and the Field trips section stays hidden.
+ * 2. Relative paths (e.g. "adiyaman/dia-2/photo-01") under VITE_MEDIA_BASE_URL,
+ *    for self-hosted media. Expected files for a photo "<src>":
+ *      <src>-480|960|1600.avif, <src>-480|960|1600.webp, <src>-1600.jpg
+ *    and for a video "<src>": <src>.mp4 (+ optional <src>.<lang>.vtt).
+ *    In development, when VITE_MEDIA_BASE_URL is unset, the Vite dev server
+ *    serves generated placeholders from /__dev-media
+ *    (see vite.config.js and scripts/generate-dev-media.mjs).
  */
 
-const ENV_BASE = (import.meta.env.VITE_MEDIA_BASE_URL || '').replace(/\/$/, '')
+const ENV_BASE = (import.meta.env?.VITE_MEDIA_BASE_URL || '').replace(/\/$/, '')
 const DEV_BASE = '/__dev-media'
 
-export const MEDIA_BASE = ENV_BASE || (import.meta.env.DEV ? DEV_BASE : '')
+export const MEDIA_BASE = ENV_BASE || (import.meta.env?.DEV ? DEV_BASE : '')
 export const isMediaConfigured = Boolean(MEDIA_BASE)
+
+/** Absolute URLs (Cloudinary today) don't depend on VITE_MEDIA_BASE_URL. */
+export const isRemote = src => /^https?:\/\//.test(src ?? '')
 
 export const IMAGE_WIDTHS = [480, 960, 1600]
 
@@ -26,20 +30,35 @@ const url = path => `${MEDIA_BASE}/${path}`
 
 const srcSet = (src, ext) => IMAGE_WIDTHS.map(w => `${url(`${src}-${w}.${ext}`)} ${w}w`).join(', ')
 
-/*
- * Images already hosted on Cloudinary (absolute res.cloudinary.com URLs) are
- * resized and re-encoded on the fly with URL transformations, so they get the
- * same AVIF/WebP srcset without uploading several sizes.
- */
-const CLOUDINARY = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)(.+)$/
+/* ── Cloudinary ─────────────────────────────────────────────────────────── */
+
+const CLOUDINARY = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/(?:image|video)\/upload\/)(.+)$/
 const CLOUDINARY_WIDTHS = [480, 960, 1600, 1920]
 
-function cloudinarySources(match) {
-  const [, base, rest] = match
-  const at = (fmt, w) => `${base}f_${fmt},q_auto,w_${w},c_limit/${rest}`
+/** Delivery for videos: H.264, ≤ 1280 px on the long side, automatic quality. */
+export const CLOUDINARY_VIDEO = 'vc_h264,q_auto,w_1280,h_1280,c_limit'
+
+/**
+ * Splits "so_1/v123/name.jpg" into a leading transformation ("so_1", e.g. the
+ * frame of a video poster) and the rest, so ours can be merged into it.
+ */
+function splitLeadingTransform(rest) {
+  const m = /^([a-z]+_[^/]+)\/(.+)$/.exec(rest)
+  return m ? [`${m[1]},`, m[2]] : ['', rest]
+}
+
+function cloudinarySources([, base, rest]) {
+  const [lead, path] = splitLeadingTransform(rest)
+  const at = (fmt, w) => `${base}${lead}f_${fmt},q_auto,w_${w},c_limit/${path}`
   const set = fmt => CLOUDINARY_WIDTHS.map(w => `${at(fmt, w)} ${w}w`).join(', ')
   return { avif: set('avif'), webp: set('webp'), fallback: at('jpg', 1600) }
 }
+
+/** Poster (frame at 1 s) for a Cloudinary video URL. */
+export const cloudinaryPoster = videoSrc =>
+  videoSrc.replace('/video/upload/', '/video/upload/so_1/').replace(/\.\w+$/, '.jpg')
+
+/* ── Public API ─────────────────────────────────────────────────────────── */
 
 /** Sources for a <picture>: AVIF, then WebP, then a JPEG fallback. */
 export function imageSources(src) {
@@ -52,6 +71,9 @@ export function imageSources(src) {
   }
 }
 
-export const posterUrl = src => url(`${src}-1600.jpg`)
-export const videoUrl = src => url(`${src}.mp4`)
-export const trackUrl = path => url(path)
+export const posterUrl = src => (CLOUDINARY.test(src) ? imageSources(src).fallback : url(`${src}-1600.jpg`))
+
+export const videoUrl = src =>
+  CLOUDINARY.test(src) ? src.replace('/video/upload/', `/video/upload/${CLOUDINARY_VIDEO}/`) : url(`${src}.mp4`)
+
+export const trackUrl = path => (isRemote(path) ? path : url(path))

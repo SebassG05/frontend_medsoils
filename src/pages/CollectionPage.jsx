@@ -12,7 +12,6 @@ import { CARD_COVER_SIZES, MetaChips } from '../components/collections/Collectio
 import { collectionCover, collectionStats, formatDates, getCollection, layoutIds } from '../data/collections'
 import { COPY } from '../data/collections/copy'
 import { RESOURCES_PATH } from '../utils/collectionRoutes'
-import { isMediaConfigured } from '../utils/media'
 import { AFTER_MORPH, fadeRise, revealOnce, staggerChildren } from '../utils/motion'
 import usePageTitle from '../utils/usePageTitle'
 
@@ -22,7 +21,7 @@ export default function CollectionPage() {
   const { collectionSlug } = useParams()
   const reduce = useReducedMotion()
   const [daysInitial] = useState(() => revealOnce(`days-${collectionSlug}`))
-  const collection = isMediaConfigured ? getCollection(collectionSlug) : null
+  const collection = getCollection(collectionSlug)
   usePageTitle(collection?.title ?? COPY.collection.notFoundTitle)
 
   if (!collection) {

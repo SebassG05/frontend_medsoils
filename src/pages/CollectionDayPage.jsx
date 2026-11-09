@@ -10,7 +10,6 @@ import { DAY_LEAD_SIZES } from '../components/collections/DayCard'
 import { dayMosaic, formatDay, getCollection, getDay, layoutIds } from '../data/collections'
 import { COPY } from '../data/collections/copy'
 import { RESOURCES_PATH, collectionPath } from '../utils/collectionRoutes'
-import { isMediaConfigured } from '../utils/media'
 import { AFTER_MORPH, fadeRise } from '../utils/motion'
 import useDayMedia from '../utils/useDayMedia'
 import usePageTitle from '../utils/usePageTitle'
@@ -20,7 +19,7 @@ const container = 'max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12'
 export default function CollectionDayPage() {
   const { collectionSlug, daySlug } = useParams()
   const reduce = useReducedMotion()
-  const collection = isMediaConfigured ? getCollection(collectionSlug) : null
+  const collection = getCollection(collectionSlug)
   const day = getDay(collection, daySlug)
   const { status, media, retry } = useDayMedia(day)
   usePageTitle(day ? `${COPY.day.cardTitle(day.number, day.title)} · ${collection.title}` : COPY.day.notFoundTitle)

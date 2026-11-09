@@ -85,6 +85,7 @@ const queue = []
 for (const c of COLLECTIONS) {
   for (const d of c.days) {
     for (const m of d.media) {
+      if (/^https?:\/\//.test(m.src)) continue // hosted remotely (Cloudinary): nothing to generate
       mkdirSync(dirname(join(OUT, m.src)), { recursive: true })
       const text = `Placeholder · Day ${d.number} · ${m.id}`
       if (m.type === 'photo') queue.push(() => stills(m, m.src, text))

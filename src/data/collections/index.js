@@ -3,6 +3,7 @@
  * Add a new trip by creating `<slug>.js` next to this file and listing it here.
  */
 import adiyaman from './adiyaman.js'
+import { isMediaConfigured, isRemote } from '../../utils/media.js'
 
 export const COLLECTIONS = [adiyaman]
 
@@ -20,8 +21,20 @@ if (import.meta.env?.DEV) {
   }
 }
 
+/**
+ * A collection can be shown when its media resolve to real URLs: either every
+ * src is absolute (Cloudinary) or a VITE_MEDIA_BASE_URL is configured.
+ */
+export function isCollectionAvailable(collection) {
+  if (isMediaConfigured) return true
+  const all = [collection.cover, ...collection.days.flatMap(d => d.media)].filter(m => m?.src)
+  return all.every(m => isRemote(m.src))
+}
+
+export const AVAILABLE_COLLECTIONS = COLLECTIONS.filter(isCollectionAvailable)
+
 export const getCollection = slug =>
-  RESERVED_SLUGS.has(slug) ? null : COLLECTIONS.find(c => c.slug === slug) ?? null
+  RESERVED_SLUGS.has(slug) ? null : AVAILABLE_COLLECTIONS.find(c => c.slug === slug) ?? null
 
 export const getDay = (collection, daySlug) =>
   collection?.days.find(d => d.slug === daySlug) ?? null

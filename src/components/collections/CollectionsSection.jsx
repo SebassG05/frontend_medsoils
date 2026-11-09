@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import CollectionCard from './CollectionCard'
-import { COLLECTIONS } from '../../data/collections'
+import { AVAILABLE_COLLECTIONS } from '../../data/collections'
 import { COPY } from '../../data/collections/copy'
-import { isMediaConfigured } from '../../utils/media'
 import { fadeRise, revealOnce, staggerChildren } from '../../utils/motion'
 
 /** "Field trips" block shown above the resource filters on /resources. */
 export default function CollectionsSection() {
   const reduce = useReducedMotion()
   const [initial] = useState(() => revealOnce('field-trips'))
-  if (!isMediaConfigured || COLLECTIONS.length === 0) return null
+  if (AVAILABLE_COLLECTIONS.length === 0) return null
 
   return (
     <section aria-labelledby="field-trips-heading" className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-6 pb-4">
@@ -28,7 +27,7 @@ export default function CollectionsSection() {
         viewport={{ once: true, amount: 0.2 }}
         className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        {COLLECTIONS.map(c => <CollectionCard key={c.slug} collection={c} returning={initial === false} />)}
+        {AVAILABLE_COLLECTIONS.map(c => <CollectionCard key={c.slug} collection={c} returning={initial === false} />)}
       </motion.ul>
     </section>
   )

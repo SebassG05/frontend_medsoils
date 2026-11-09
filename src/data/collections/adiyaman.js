@@ -1,59 +1,34 @@
 /**
  * Field trip: Visit to Adıyaman.
  *
- * To add a day, append an object to `days` (see the README note at the bottom
- * of this file). Counts on the cards are derived from `media`, never typed.
+ * Counts on the cards ("1 day · 14 photos · 6 videos") are derived from the
+ * media lists, never typed. Media are hosted on Cloudinary; see ./media.js for
+ * the cloudPhoto / cloudVideo helpers and what each argument means.
  *
- * Media fields
- *   id       unique within its day
- *   type     'photo' | 'video'
- *   src      path under VITE_MEDIA_BASE_URL, without size/extension (see utils/media.js)
- *   width, height   intrinsic pixel size — reserves space, drives the justified grid
- *   color    dominant colour shown while the image loads
- *   alt      what the photo shows (required for photos; for videos it describes the poster)
- *   caption  optional text under the item in the viewer
- *   duration seconds (videos)
- *   tracks   optional subtitles: [{ src: 'adiyaman/dia-1/video-01.en.vtt', srclang: 'en', label: 'English' }]
- *
- * PLACEHOLDERS: the media below are generated dev placeholders. Replace each
- * entry with the real file, its real size, colour, alt text and caption.
+ * Adding a day: append an object to `days` (template at the bottom).
  */
+import { cloudPhoto as photo, cloudVideo as video } from './media.js'
 
-/** Helpers bound to one day's folder, so each entry stays a one-liner. */
-const mediaFor = folder => ({
-  photo: (id, width, height, color, extra = {}) => ({
-    id, type: 'photo', src: `${folder}/${id}`, width, height, color,
-    alt: `Placeholder photo ${id.replace('p', '')}`, caption: '', ...extra,
-  }),
-  video: (id, width, height, color, duration, extra = {}) => ({
-    id, type: 'video', src: `${folder}/${id}`, poster: `${folder}/${id}-poster`, width, height, color, duration,
-    alt: `Placeholder video ${id.replace('v', '')}`, caption: '', tracks: [], ...extra,
-  }),
-})
-
-const { photo, video } = mediaFor('adiyaman/dia-1')
+const IMG = 'https://res.cloudinary.com/dktr2wcto/image/upload'
+const VID = 'https://res.cloudinary.com/dktr2wcto/video/upload'
 
 const adiyaman = {
   slug: 'adiyaman',
   title: 'Visit to Adıyaman',
   place: 'Adıyaman, Türkiye',
-  // PENDING: real trip dates, e.g. { start: '2026-10-12', end: '2026-10-15' }
+  // PENDING: trip dates once the other days are in, e.g. { start: '2026-11-02', end: '2026-11-05' }
   dates: null,
   // PENDING: confirm wording with the team.
   description:
     'Photos and videos from the MEDSOILS Challenge visit to Adıyaman, in south-eastern Türkiye.',
   partner: { name: 'Adiyaman University', slug: 'adiyaman' },
   // Cover for the Field trips card and the collection header. Either a full
-  // media object (as here) or a reference to a day's media: { day: 'dia-1', media: 'p01' }.
+  // media object (as here) or a reference to a day's media: { day: 'dia-1', media: '<id>' }.
   cover: {
+    ...photo(`${IMG}/v1794231106/adiyaman-see-desktop-kapak_gp7ntw.jpg`, 1920, 1080, '#624a37',
+      'Ancient stone heads on the summit terrace of Mount Nemrut, Adıyaman, in late-afternoon light'),
     id: 'cover',
-    type: 'photo',
-    src: 'https://res.cloudinary.com/dktr2wcto/image/upload/v1794231106/adiyaman-see-desktop-kapak_gp7ntw.jpg',
-    width: 1920,
-    height: 1080,
-    color: '#624a37',
     focus: { x: 0.72, y: 0.55 }, // the large stone head, so narrow crops keep it
-    alt: 'Ancient stone heads on the summit terrace of Mount Nemrut, Adıyaman, in late-afternoon light',
   },
 
   days: [
@@ -61,47 +36,62 @@ const adiyaman = {
       slug: 'dia-1',
       number: 1,
       title: 'Photos & videos',
-      date: null, // PENDING: 'YYYY-MM-DD'
-      mosaic: ['p01', 'p04', 'v01', 'p09'],
+      date: '2026-11-02',
+      // First id = cover of the day (day card mosaic lead + day header).
+      mosaic: ['akyoz3', 'gku3ar', 'os5esb', 'ufd7gd'],
+      // Chronological, as shot.
       media: [
-        photo('p01', 1600, 1067, '#8a562f', { caption: 'Placeholder caption for the opening photo.' }),
-        photo('p02', 1067, 1600, '#6c3a1f'),
-        photo('p03', 1600, 1067, '#a87445'),
-        photo('p04', 1600, 1200, '#5b7f3a'),
-        video('v01', 1920, 1080, '#3f5f6b', 42, {
-          caption: 'Placeholder video caption.',
-          tracks: [{ src: 'adiyaman/dia-1/v01.en.vtt', srclang: 'en', label: 'English' }],
-        }),
-        photo('p05', 1600, 900, '#b08a5a'),
-        photo('p06', 1067, 1600, '#7a4a2a'),
-        photo('p07', 1600, 1600, '#94683f'),
-        photo('p08', 1600, 1067, '#6dae30'),
-        photo('p09', 1600, 1067, '#c08552'),
-        photo('p10', 1200, 1600, '#4f6d3a'),
-        photo('p11', 1600, 1067, '#8a6a4a'),
-        video('v02', 1080, 1920, '#5a4636', 27),
-        photo('p12', 1600, 1200, '#a0522d'),
-        photo('p13', 1600, 1067, '#6b8e23'),
-        photo('p14', 1067, 1600, '#8b5a2b'),
-        photo('p15', 1600, 900, '#9c7a54'),
-        photo('p16', 1600, 1067, '#704214'),
-        photo('p17', 1600, 1600, '#7f8f4f'),
-        photo('p18', 1600, 1067, '#b5835a'),
-        video('v03', 1920, 1080, '#4a5a3a', 95),
-        photo('p19', 1067, 1600, '#6c3a1f'),
-        photo('p20', 1600, 1067, '#a87445'),
-        photo('p21', 1600, 1200, '#557a3b'),
-        photo('p22', 1600, 1067, '#8a562f'),
-        photo('p23', 1600, 900, '#9b6b43'),
-        photo('p24', 1600, 1067, '#6e8b3d'),
+        photo(`${IMG}/v1794232546/PXL_20261102_072217436_fdfifm.jpg`, 8160, 4590, '#79777c',
+          'Participants gathered in a field for the morning briefing, a backhoe waiting behind them'),
+        photo(`${IMG}/v1794232528/PXL_20261102_072220267_rgtsvb.jpg`, 8160, 4590, '#827f84',
+          'An instructor in a red jacket explains the plan for the day to the group'),
+        photo(`${IMG}/v1794232530/PXL_20261102_073842703_akyoz3.jpg`, 8160, 4590, '#7a6d63',
+          'A backhoe digs a soil pit while students and researchers watch'),
+        video(`${VID}/v1794232549/PXL_20261102_073844611_httifl.mp4`, 1280, 720, '#9d8273', 15.5,
+          'The backhoe opens the soil pit as the group looks on'),
+        photo(`${IMG}/v1794232530/PXL_20261102_073919265_mbmreg.jpg`, 8160, 4590, '#746c68',
+          'Freshly dug soil piled beside the new pit, with the group standing behind the backhoe'),
+        video(`${VID}/v1794232539/PXL_20261102_080726239_peodwb.mp4`, 1280, 720, '#86645d', 7.8,
+          'Participants in and around the pit start examining the soil profile'),
+        video(`${VID}/v1794232548/PXL_20261102_080738909_qqrnbb.mp4`, 720, 1280, '#8b6661', 14.1,
+          'Looking down into the pit as students study the exposed soil layers'),
+        video(`${VID}/v1794232549/PXL_20261102_080800381_os5esb.mp4`, 1280, 720, '#896c63', 19.1,
+          'Students climb into the pit to look at the soil horizons up close'),
+        photo(`${IMG}/v1794232531/PXL_20261102_083127076_rttaga.jpg`, 4590, 8160, '#755f5b',
+          'Top-down view of students in the pit next to a measuring tape and horizon markers'),
+        video(`${VID}/v1794232541/PXL_20261102_083853245_qk2mhh.mp4`, 1280, 720, '#8f6b5b', 8.6,
+          'Students inside the pit describe the reddish-brown soil horizons'),
+        photo(`${IMG}/v1794232532/PXL_20261102_084130427_h8unvt.jpg`, 8160, 4590, '#65534a',
+          'Students work inside the pit, with horizon markers and a measuring tape on the pit wall'),
+        photo(`${IMG}/v1794232527/PXL_20261102_104859392_iurrb0.jpg`, 8160, 4590, '#706b6b',
+          'Indoor session: participants seated around a meeting room listening to a speaker'),
+        photo(`${IMG}/v1794232528/PXL_20261102_122034591_gku3ar.jpg`, 4590, 8160, '#726d68',
+          'Close-up of a soil profile with a measuring tape marking depth'),
+        video(`${VID}/v1794232544/PXL_20261102_124234663_htrrcb.mp4`, 1280, 720, '#938577', 9.9,
+          'Participants sit around a second soil pit dug in an orchard'),
+        photo(`${IMG}/v1794232531/PXL_20261102_135605913_qbwkqn.jpg`, 4590, 8160, '#52493f',
+          'Participants fill in field description sheets at a table under a shelter'),
+        photo(`${IMG}/v1794232527/PXL_20261102_135610833_hnaq0r.jpg`, 8160, 4590, '#564a3f',
+          'Two participants work through their field sheets at an outdoor table'),
+        photo(`${IMG}/v1794232528/PXL_20261102_135620724_z5qare.jpg`, 8160, 4590, '#75665a',
+          'A group discusses results at picnic tables under a shelter, greenhouses in the background'),
+        photo(`${IMG}/v1794232528/PXL_20261102_135622016_ixj2jt.jpg`, 8160, 4590, '#726459',
+          'The group talks over the day’s results in the late-afternoon light'),
+        photo(`${IMG}/v1794232528/PXL_20261102_135631899_ufd7gd.jpg`, 8160, 4590, '#7c6d60',
+          'Participants compare notes around a table at sunset'),
+        photo(`${IMG}/v1794232527/PXL_20261102_135636765_rl9ctd.jpg`, 8160, 4590, '#725e50',
+          'A team gathered over field notes at an outdoor table'),
       ],
     },
     /*
-     * Adding Day 2 (with `const d2 = mediaFor('adiyaman/dia-2')` above):
+     * Adding Day 2:
      * {
-     *   slug: 'dia-2', number: 2, title: 'Photos & videos', date: null,
-     *   mosaic: ['p01', 'p02', 'p03', 'p04'],   // ids from this day's media; optional
-     *   media: [ d2.photo('p01', 1600, 1067, '#8a562f', { alt: '…' }), d2.video(...) ],
+     *   slug: 'dia-2', number: 2, title: 'Photos & videos', date: '2026-11-03',
+     *   mosaic: ['<id>', '<id>', '<id>', '<id>'],   // optional; first = cover of the day
+     *   media: [
+     *     photo(`${IMG}/v…/PXL_…_abc123.jpg`, 8160, 4590, '#7a6d63', 'What the photo shows'),
+     *     video(`${VID}/v…/PXL_…_def456.mp4`, 1280, 720, '#896c63', 12.3, 'What the clip shows'),
+     *   ],
      * },
      */
   ],
