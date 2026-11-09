@@ -25,3 +25,8 @@ dist-ssr
 
 # Knowledge graph (regenerated locally)
 graphify-out
+
+# Environment variables
+.env
+.env.local
+.env.*.local
