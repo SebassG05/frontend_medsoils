@@ -463,14 +463,16 @@ export default function Resources() {
   const [activeCategory, setActiveCategory] = useState('All')
   const [searchQuery,    setSearchQuery]    = useState('')
   const [toast,          setToast]          = useState(null)
+  const [loadError,      setLoadError]      = useState(null)
 
   const load = useCallback(async () => {
     setLoading(true)
+    setLoadError(null)
     try {
       const data = await fetchResources()
       setResources(data)
     } catch (err) {
-      setToast({ msg: err.message, ok: false })
+      setLoadError(err)
     } finally {
       setLoading(false)
     }
@@ -487,11 +489,9 @@ export default function Resources() {
     return typeFilter && textFilter
   })
 
-  const stats = [
-    { label: 'Videos', count: resources.filter(r => r.type === 'video').length, icon: PlayCircle, color: 'text-orange-500' },
-    { label: 'PDFs',   count: resources.filter(r => r.type === 'pdf').length,   icon: FileText,   color: 'text-amber-500'  },
-    { label: 'Images', count: resources.filter(r => r.type === 'image').length, icon: Image,      color: 'text-teal-500'   },
-  ]
+  const categoryCount = cat =>
+    cat === 'All' ? resources.length : resources.filter(r => r.type === CAT_TO_TYPE[cat]).length
+  const showCounts = !loading && !loadError
 
   const handleCreated = resource => {
     setResources(prev => [resource, ...prev])
@@ -514,7 +514,7 @@ export default function Resources() {
 
       {/* ── Hero ── */}
       <section
-        className="relative overflow-hidden pt-24 pb-40"
+        className="relative overflow-hidden pt-24 pb-32"
         style={{ background: 'linear-gradient(135deg, #dcf6f8 0%, #edfcfd 50%, #dcf6f8 100%)', overflow: 'clip' }}
       >
         <div className="relative max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
@@ -557,29 +557,6 @@ export default function Resources() {
               </button>
             )}
           </motion.div>
-
-          {/* Stats */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.32 }}
-            className="mt-16 flex items-center justify-center gap-16 sm:gap-24"
-          >
-            {stats.map(({ label, count, icon: Icon, color }) => (
-              <div 
-                key={label} 
-                className="flex flex-col items-center gap-4 group"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-white/80 backdrop-blur-sm shadow-md border border-gray-100 flex items-center justify-center shrink-0 group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
-                  <Icon size={32} className={color} strokeWidth={1.5} />
-                </div>
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-gray-900 mb-1">{count}</p>
-                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{label}</p>
-                </div>
-              </div>
-            ))}
-          </motion.div>
         </div>
 
         {/* Wave shape at bottom */}
@@ -598,13 +575,19 @@ export default function Resources() {
           {CATEGORIES.map(cat => (
             <button
               key={cat} onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
+              aria-pressed={activeCategory === cat}
+              className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 ${
                 activeCategory === cat
                   ? 'bg-orange-500 text-white border-orange-500 shadow-sm'
                   : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-500'
               }`}
             >
               {cat}
+              {showCounts && (
+                <span className={`tabular-nums text-xs ${activeCategory === cat ? 'text-white/80' : 'text-gray-400'}`}>
+                  {categoryCount(cat)}
+                </span>
+              )}
             </button>
           ))}
           {searchQuery && (
@@ -654,6 +637,18 @@ export default function Resources() {
           <div className="flex items-center justify-center py-20 text-gray-400 gap-3">
             <Loader2 size={28} className="animate-spin text-orange-400" />
             <span>Loading resources…</span>
+          </div>
+        ) : loadError ? (
+          <div role="alert" className="flex flex-col items-center justify-center py-20 gap-3 text-center">
+            <AlertCircle size={40} strokeWidth={1.3} className="text-gray-400" />
+            <p className="text-lg font-medium text-gray-700">We couldn&rsquo;t load the resources.</p>
+            <p className="text-sm text-gray-500">Check your connection and try again.</p>
+            <button
+              onClick={load}
+              className="mt-2 px-5 py-2 rounded-full text-sm font-semibold bg-orange-500 text-white shadow-sm hover:bg-orange-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+            >
+              Try again
+            </button>
           </div>
         ) : (
           <AnimatePresence mode="wait">
