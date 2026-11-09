@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import Header from './components/layout/Header'
 import CookieBanner from './components/cookies/CookieBanner'
@@ -15,7 +15,8 @@ import ResetPassword from './pages/ResetPassword'
 import Try from './pages/Try'
 import AboutProgram from './pages/AboutProgram'
 import LoginPage from './pages/LoginPage'
-import Resources from './pages/Resources'
+import ResourcesSection from './pages/ResourcesSection'
+import { isResourcesSectionPath } from './utils/collectionRoutes'
 import AddVideoResource from './pages/AddVideoResource'
 import AddPdfResource from './pages/AddPdfResource'
 import Reviews from './pages/Reviews'
@@ -29,7 +30,12 @@ initGA4()
 
 function ScrollToTop() {
   const { pathname } = useLocation()
+  const prevPathname = useRef(pathname)
   useEffect(() => {
+    const from = prevPathname.current
+    prevPathname.current = pathname
+    // Inside /resources ↔ field trips, ResourcesSection animates and restores scroll itself.
+    if (from !== pathname && isResourcesSectionPath(from) && isResourcesSectionPath(pathname)) return
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [pathname])
   return null
@@ -72,7 +78,8 @@ function App() {
               <Route path="/try" element={<ForceResetGuard><Try /></ForceResetGuard>} />
               <Route path="/about-program" element={<ForceResetGuard><AboutProgram /></ForceResetGuard>} />
               <Route path="/login" element={<ForceResetGuard><LoginPage /></ForceResetGuard>} />
-              <Route path="/resources" element={<ForceResetGuard><Resources /></ForceResetGuard>} />
+              {/* /resources, /resources/:collection, /resources/:collection/:day (static /resources/add/* below still wins) */}
+              <Route path="/resources/*" element={<ForceResetGuard><ResourcesSection /></ForceResetGuard>} />
               <Route path="/reviews" element={<ForceResetGuard><Reviews /></ForceResetGuard>} />
               <Route path="/partners/:slug" element={<ForceResetGuard><PartnerDetail /></ForceResetGuard>} />
               <Route path="/resources/add/video" element={<ForceResetGuard><AddVideoResource /></ForceResetGuard>} />
