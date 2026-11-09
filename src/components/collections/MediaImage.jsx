@@ -25,7 +25,8 @@ export default function MediaImage({ media, sizes, priority = false, alt, classN
         sizes={sizes}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        fetchPriority={priority ? 'high' : 'auto'}
+        // React 18 only forwards the lowercase attribute
+        fetchpriority={priority ? 'high' : 'auto'}
         onLoad={() => setLoaded(true)}
         draggable={false}
         className={`block h-full w-full object-cover transition-opacity duration-[var(--motion-slow)] ease-out-expo motion-reduce:transition-none ${loaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}

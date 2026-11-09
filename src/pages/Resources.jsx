@@ -7,6 +7,7 @@ import {
   CheckCircle, AlertCircle, ChevronRight, Tag,
 } from 'lucide-react'
 import Footer from '../components/layout/Footer'
+import CollectionsSection from '../components/collections/CollectionsSection'
 import { fetchResources, deleteResource } from '../services/resourceService'
 
 /* ─── animation helpers ─── */
@@ -568,6 +569,9 @@ export default function Resources() {
           </svg>
         </div>
       </section>
+
+      {/* ── Field trips ── */}
+      <CollectionsSection />
 
       {/* ── Toolbar ── */}
       <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-10 pb-4 flex items-center justify-between gap-4 flex-wrap">
