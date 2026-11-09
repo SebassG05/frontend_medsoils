@@ -91,7 +91,7 @@ export default function CollectionPage() {
           variants={staggerChildren(reduce, AFTER_MORPH + 0.06)} initial={daysInitial} animate="show"
           className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {collection.days.map(day => <DayCard key={day.slug} collection={collection} day={day} />)}
+          {collection.days.map(day => <DayCard key={day.slug} collection={collection} day={day} returning={daysInitial === false} />)}
         </motion.ul>
       </section>
 
