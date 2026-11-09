@@ -2,11 +2,11 @@ import { useId } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import MediaImage from './MediaImage'
+import CoverFill from './CoverFill'
 import { collectionCover, collectionStats, formatDates, layoutIds } from '../../data/collections'
 import { COPY } from '../../data/collections/copy'
 import { collectionPath } from '../../utils/collectionRoutes'
-import { fadeRise, layoutTransition } from '../../utils/motion'
+import { AFTER_MORPH, DURATION, fadeRise, layoutTransition } from '../../utils/motion'
 
 /** Warm scrim from the brand's deepest earth tone; ≥ 62 % where text sits keeps white text AA on any photo. */
 export const SCRIM =
@@ -35,7 +35,7 @@ export function MetaChips({ stats, tone = 'onImage' }) {
  * Field-trip card (variant A, "editorial cover"). The whole card is one link.
  * The cover box carries a layoutId so it grows into the collection header.
  */
-export default function CollectionCard({ collection }) {
+export default function CollectionCard({ collection, returning = false }) {
   const reduce = useReducedMotion()
   const titleId = useId()
   const cover = collectionCover(collection)
@@ -55,25 +55,31 @@ export default function CollectionCard({ collection }) {
       >
         <motion.div
           layoutId={layoutIds.cover(collection.slug)}
+          layoutCrossfade={false}
           transition={layoutTransition(reduce)}
           style={{ borderRadius: 24 }}
-          className="relative aspect-[4/5] sm:aspect-[16/11] overflow-hidden shadow-card
+          className="relative z-10 aspect-[4/5] sm:aspect-[16/11] overflow-hidden shadow-card
             transition-shadow duration-[var(--motion-base)] pointer-fine:group-hover:shadow-card-hover"
         >
           {cover && (
-            <MediaImage
+            <CoverFill
               media={cover}
-              alt=""
+              layoutId={layoutIds.coverImage(collection.slug)}
+              layoutCrossfade={false}
               priority={coverIsAboveFold()}
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-              className="absolute inset-0"
               imgClassName="scale-100 transition-transform duration-[var(--motion-cover)] ease-out-expo pointer-fine:group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
           )}
           <div aria-hidden="true" className="absolute inset-0" style={{ background: SCRIM }} />
         </motion.div>
 
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-6">
+        {/* Coming back, the cover morphs into this card first; the text follows. */}
+        <motion.div
+          initial={returning ? { opacity: 0 } : false}
+          animate={{ opacity: 1, transition: { duration: DURATION.base, delay: reduce ? 0 : AFTER_MORPH } }}
+          className="absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-4 p-5 sm:p-6"
+        >
           <div className="min-w-0">
             <h3 id={titleId} className="font-headline text-[26px] sm:text-[28px] font-bold leading-tight tracking-[-0.02em] text-white">
               {collection.title}
@@ -90,7 +96,7 @@ export default function CollectionCard({ collection }) {
           >
             <ArrowRight size={20} />
           </span>
-        </div>
+        </motion.div>
       </Link>
     </motion.li>
   )

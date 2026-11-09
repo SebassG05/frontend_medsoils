@@ -36,14 +36,29 @@ export function fadeRise(reduce, delay = 0) {
     show: {
       opacity: 1,
       y: 0,
-      transition: { duration: reduce ? DURATION.fast : DURATION.slow, ease: EASE.out, delay },
+      transition: { duration: reduce ? DURATION.fast : DURATION.slow, ease: EASE.out, delay: reduce ? 0 : delay },
     },
   }
 }
 
-export function staggerChildren(reduce) {
-  return { hidden: {}, show: { transition: { staggerChildren: reduce ? 0 : STAGGER } } }
+export function staggerChildren(reduce, delayChildren = 0) {
+  return { hidden: {}, show: { transition: { staggerChildren: reduce ? 0 : STAGGER, delayChildren: reduce ? 0 : delayChildren } } }
 }
+
+/**
+ * Entrance animations that should play only the first time a list is shown.
+ * Coming back (Back button) the card is the target of a shared-element morph
+ * and must already be visible, so later mounts start in the final state.
+ */
+const revealed = new Set()
+export function revealOnce(key) {
+  const first = !revealed.has(key)
+  revealed.add(key)
+  return first ? 'hidden' : false
+}
+
+/** Delay for content that enters next to a shared-element morph, so the morph leads. */
+export const AFTER_MORPH = 0.14
 
 /** Transition for layoutId morphs: spring normally, short fade-only when reduced. */
 export function layoutTransition(reduce) {

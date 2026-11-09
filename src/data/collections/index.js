@@ -65,9 +65,12 @@ export const formatDay = iso => (iso ? dateFmt.format(new Date(`${iso}T12:00:00`
 
 /** Stable ids for Motion shared-element transitions. */
 export const layoutIds = {
+  /** Clipping box of the collection card ↔ collection header. */
   cover: slug => `collection-cover-${slug}`,
-  title: slug => `collection-title-${slug}`,
+  /** The photo inside it (keeps its own aspect ratio, see CoverFill). */
+  coverImage: slug => `collection-cover-image-${slug}`,
+  /** Mosaic box of the day card ↔ day header. */
   dayCover: (slug, day) => `day-cover-${slug}-${day}`,
-  dayTitle: (slug, day) => `day-title-${slug}-${day}`,
-  media: (slug, day, id) => `media-${slug}-${day}-${id}`,
+  /** The mosaic's lead photo ↔ the day header photo. */
+  dayCoverImage: (slug, day) => `day-cover-image-${slug}-${day}`,
 }

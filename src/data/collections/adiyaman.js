@@ -41,7 +41,7 @@ const adiyaman = {
   dates: null,
   // PENDING: confirm wording with the team.
   description:
-    'Photos and videos from the MEDSOILS Challenge visit to Adıyaman, home of our partner Adiyaman University.',
+    'Photos and videos from the MEDSOILS Challenge visit to Adıyaman, in south-eastern Türkiye.',
   partner: { name: 'Adiyaman University', slug: 'adiyaman' },
   cover: { day: 'dia-1', media: 'p01' },
 
