@@ -8,7 +8,7 @@ import { DURATION, EASE, ENTER_OFFSET, layoutTransition } from '../../utils/moti
  * with the card that opened it, so the card grows into this header.
  * The cover image is the page's LCP candidate, hence `priority`.
  */
-export default function CoverHeader({ layoutId, imageLayoutId, media, eyebrow, title, subtitle, children, aspect }) {
+export default function CoverHeader({ layoutId, imageLayoutId, media, underlaySizes, eyebrow, title, subtitle, children, aspect }) {
   const reduce = useReducedMotion()
   const textIn = {
     initial: { opacity: 0, y: reduce ? 0 : ENTER_OFFSET },
@@ -25,7 +25,7 @@ export default function CoverHeader({ layoutId, imageLayoutId, media, eyebrow, t
         className={`relative z-10 overflow-hidden shadow-card ${aspect}`}
       >
         {media && (
-          <CoverFill media={media} layoutId={imageLayoutId} priority sizes="(min-width: 1536px) 1440px, 100vw" />
+          <CoverFill media={media} layoutId={imageLayoutId} priority underlaySizes={underlaySizes} sizes="(min-width: 1536px) 1440px, 100vw" />
         )}
         <div aria-hidden="true" className="absolute inset-0" style={{ background: SCRIM }} />
       </motion.div>

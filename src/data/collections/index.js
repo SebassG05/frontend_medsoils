@@ -41,6 +41,7 @@ export function collectionStats(collection) {
 }
 
 export function collectionCover(collection) {
+  if (collection.cover?.src) return collection.cover
   const day = getDay(collection, collection.cover?.day) ?? collection.days[0]
   return findMedia(day, collection.cover?.media) ?? day?.media[0] ?? null
 }

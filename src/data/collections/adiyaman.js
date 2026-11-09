@@ -43,7 +43,18 @@ const adiyaman = {
   description:
     'Photos and videos from the MEDSOILS Challenge visit to Adıyaman, in south-eastern Türkiye.',
   partner: { name: 'Adiyaman University', slug: 'adiyaman' },
-  cover: { day: 'dia-1', media: 'p01' },
+  // Cover for the Field trips card and the collection header. Either a full
+  // media object (as here) or a reference to a day's media: { day: 'dia-1', media: 'p01' }.
+  cover: {
+    id: 'cover',
+    type: 'photo',
+    src: 'https://res.cloudinary.com/dktr2wcto/image/upload/v1794231106/adiyaman-see-desktop-kapak_gp7ntw.jpg',
+    width: 1920,
+    height: 1080,
+    color: '#624a37',
+    focus: { x: 0.72, y: 0.55 }, // the large stone head, so narrow crops keep it
+    alt: 'Ancient stone heads on the summit terrace of Mount Nemrut, Adıyaman, in late-afternoon light',
+  },
 
   days: [
     {

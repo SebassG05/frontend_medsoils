@@ -12,6 +12,9 @@ import { AFTER_MORPH, DURATION, fadeRise, layoutTransition } from '../../utils/m
 const HOVER_ZOOM =
   'transition-transform duration-[var(--motion-cover)] ease-out-expo pointer-fine:group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100'
 
+/** `sizes` of the mosaic's lead photo; the day header reuses it for its cached underlay. */
+export const DAY_LEAD_SIZES = '(min-width: 1024px) 22vw, (min-width: 640px) 33vw, 66vw'
+
 function MosaicTile({ media, className, sizes, layoutId }) {
   return (
     // `className` must set the positioning (relative or absolute); two position utilities would conflict.
@@ -64,7 +67,7 @@ export default function DayCard({ collection, day, returning = false }) {
         >
           {lead && (
             <div className="grid h-full grid-cols-3 grid-rows-3 gap-1">
-              <MosaicTile media={lead} layoutId={layoutIds.dayCoverImage(collection.slug, day.slug)} sizes="(min-width: 1024px) 22vw, (min-width: 640px) 33vw, 66vw" className={`relative ${rest.length ? 'col-span-2 row-span-3' : 'col-span-3 row-span-3'}`} />
+              <MosaicTile media={lead} layoutId={layoutIds.dayCoverImage(collection.slug, day.slug)} sizes={DAY_LEAD_SIZES} className={`relative ${rest.length ? 'col-span-2 row-span-3' : 'col-span-3 row-span-3'}`} />
               {rest.map(m => (
                 <motion.div key={m.id} {...after} className="col-span-1 row-span-1 relative">
                   <MosaicTile media={m} sizes="(min-width: 1024px) 11vw, 33vw" className="absolute inset-0" />

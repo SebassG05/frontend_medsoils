@@ -12,6 +12,9 @@ import { AFTER_MORPH, DURATION, fadeRise, layoutTransition } from '../../utils/m
 export const SCRIM =
   'linear-gradient(to top, rgb(42 21 10 / 0.86) 0%, rgb(42 21 10 / 0.72) 40%, rgb(42 21 10 / 0.22) 75%, rgb(42 21 10 / 0) 100%)'
 
+/** `sizes` of the card cover; the collection header reuses it for its cached underlay. */
+export const CARD_COVER_SIZES = '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
+
 /** Cover is likely in the first viewport only on tall desktop windows. */
 const coverIsAboveFold = () =>
   typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px) and (min-height: 820px)').matches
@@ -67,7 +70,7 @@ export default function CollectionCard({ collection, returning = false }) {
               layoutId={layoutIds.coverImage(collection.slug)}
               layoutCrossfade={false}
               priority={coverIsAboveFold()}
-              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+              sizes={CARD_COVER_SIZES}
               imgClassName="scale-100 transition-transform duration-[var(--motion-cover)] ease-out-expo pointer-fine:group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
           )}

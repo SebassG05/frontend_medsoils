@@ -8,7 +8,7 @@ import SkyBand from '../components/collections/SkyBand'
 import NotFoundPanel from '../components/collections/NotFoundPanel'
 import CoverHeader from '../components/collections/CoverHeader'
 import DayCard from '../components/collections/DayCard'
-import { MetaChips } from '../components/collections/CollectionCard'
+import { CARD_COVER_SIZES, MetaChips } from '../components/collections/CollectionCard'
 import { collectionCover, collectionStats, formatDates, getCollection, layoutIds } from '../data/collections'
 import { COPY } from '../data/collections/copy'
 import { RESOURCES_PATH } from '../utils/collectionRoutes'
@@ -52,6 +52,7 @@ export default function CollectionPage() {
             <CoverHeader
               layoutId={layoutIds.cover(collection.slug)}
               imageLayoutId={layoutIds.coverImage(collection.slug)}
+              underlaySizes={CARD_COVER_SIZES}
               media={collectionCover(collection)}
               eyebrow={COPY.section.title}
               title={collection.title}

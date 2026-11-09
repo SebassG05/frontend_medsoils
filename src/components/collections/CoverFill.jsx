@@ -11,8 +11,13 @@ import { layoutTransition } from '../../utils/motion'
  * CoverFill with the same `layoutId`, Motion only has to translate and scale
  * it uniformly, so the photo never distorts while its clipping box (card →
  * header) changes shape around it.
+ *
+ * `underlaySizes`: the `sizes` the previous screen used for this photo. That
+ * (already cached) version is painted underneath, so the box never morphs
+ * empty while the larger file downloads; on a direct visit it acts as a
+ * low-res preview.
  */
-export default function CoverFill({ media, layoutId, sizes, priority, imgClassName }) {
+export default function CoverFill({ media, layoutId, sizes, underlaySizes, priority, imgClassName }) {
   const ref = useRef(null)
   const [box, setBox] = useState(null)
   const reduce = useReducedMotion()
@@ -27,13 +32,18 @@ export default function CoverFill({ media, layoutId, sizes, priority, imgClassNa
       if (!cw || !ch) return
       const ar = media.width / media.height
       const [w, h] = cw / ch > ar ? [cw, cw / ar] : [ch * ar, ch]
-      setBox(prev => (prev && Math.abs(prev.w - w) < 0.5 && Math.abs(prev.h - h) < 0.5 ? prev : { w, h, x: (cw - w) / 2, y: (ch - h) / 2 }))
+      // `media.focus` ({ x, y } in 0–1) keeps the subject in frame when cropping; centre by default.
+      const fx = media.focus?.x ?? 0.5
+      const fy = media.focus?.y ?? 0.5
+      const x = Math.min(0, Math.max(cw - w, cw / 2 - w * fx))
+      const y = Math.min(0, Math.max(ch - h, ch / 2 - h * fy))
+      setBox(prev => (prev && Math.abs(prev.w - w) < 0.5 && Math.abs(prev.h - h) < 0.5 && Math.abs(prev.x - x) < 0.5 ? prev : { w, h, x, y }))
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(el)
     return () => ro.disconnect()
-  }, [media.width, media.height])
+  }, [media.width, media.height, media.focus?.x, media.focus?.y])
 
   return (
     <div ref={ref} className="absolute inset-0" style={{ backgroundColor: media.color }}>
@@ -45,7 +55,14 @@ export default function CoverFill({ media, layoutId, sizes, priority, imgClassNa
           className="absolute"
           style={{ width: box.w, height: box.h, left: box.x, top: box.y }}
         >
-          <MediaImage media={media} alt="" sizes={sizes} priority={priority} className="h-full w-full" imgClassName={imgClassName} />
+          {underlaySizes && (
+            <MediaImage media={media} alt="" sizes={underlaySizes} priority className="absolute inset-0 h-full w-full" />
+          )}
+          <MediaImage
+            media={media} alt="" sizes={sizes} priority={priority}
+            className={underlaySizes ? 'absolute inset-0 h-full w-full !bg-transparent' : 'h-full w-full'}
+            imgClassName={imgClassName}
+          />
         </motion.div>
       )}
     </div>

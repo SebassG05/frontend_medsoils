@@ -6,6 +6,7 @@ import SkyBand from '../components/collections/SkyBand'
 import NotFoundPanel from '../components/collections/NotFoundPanel'
 import CoverHeader from '../components/collections/CoverHeader'
 import MediaGallery from '../components/collections/MediaGallery'
+import { DAY_LEAD_SIZES } from '../components/collections/DayCard'
 import { dayMosaic, formatDay, getCollection, getDay, layoutIds } from '../data/collections'
 import { COPY } from '../data/collections/copy'
 import { RESOURCES_PATH, collectionPath } from '../utils/collectionRoutes'
@@ -63,6 +64,7 @@ export default function CollectionDayPage() {
             <CoverHeader
               layoutId={layoutIds.dayCover(collection.slug, day.slug)}
               imageLayoutId={layoutIds.dayCoverImage(collection.slug, day.slug)}
+              underlaySizes={DAY_LEAD_SIZES}
               media={dayMosaic(day)[0]}
               eyebrow={collection.title}
               title={COPY.day.cardTitle(day.number, day.title)}

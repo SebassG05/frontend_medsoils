@@ -26,8 +26,25 @@ const url = path => `${MEDIA_BASE}/${path}`
 
 const srcSet = (src, ext) => IMAGE_WIDTHS.map(w => `${url(`${src}-${w}.${ext}`)} ${w}w`).join(', ')
 
+/*
+ * Images already hosted on Cloudinary (absolute res.cloudinary.com URLs) are
+ * resized and re-encoded on the fly with URL transformations, so they get the
+ * same AVIF/WebP srcset without uploading several sizes.
+ */
+const CLOUDINARY = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)(.+)$/
+const CLOUDINARY_WIDTHS = [480, 960, 1600, 1920]
+
+function cloudinarySources(match) {
+  const [, base, rest] = match
+  const at = (fmt, w) => `${base}f_${fmt},q_auto,w_${w},c_limit/${rest}`
+  const set = fmt => CLOUDINARY_WIDTHS.map(w => `${at(fmt, w)} ${w}w`).join(', ')
+  return { avif: set('avif'), webp: set('webp'), fallback: at('jpg', 1600) }
+}
+
 /** Sources for a <picture>: AVIF, then WebP, then a JPEG fallback. */
 export function imageSources(src) {
+  const cloud = CLOUDINARY.exec(src)
+  if (cloud) return cloudinarySources(cloud)
   return {
     avif: srcSet(src, 'avif'),
     webp: srcSet(src, 'webp'),
