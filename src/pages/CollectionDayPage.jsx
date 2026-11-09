@@ -83,6 +83,7 @@ export default function CollectionDayPage() {
           <div className="mt-6">
             <MediaGallery.Grid />
           </div>
+          <MediaGallery.Lightbox />
         </MediaGallery.Root>
       </motion.section>
 

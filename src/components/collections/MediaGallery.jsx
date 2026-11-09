@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useMemo } from 'react'
+import { createContext, lazy, Suspense, useCallback, useContext, useMemo, useRef } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import { AlertCircle, Images, Play } from 'lucide-react'
 import JustifiedGrid from './JustifiedGrid'
 import MediaImage from './MediaImage'
@@ -12,6 +13,7 @@ import { COPY } from '../../data/collections/copy'
  *   <MediaGallery.Root media={day.media} status={status} onRetry={retry}>
  *     <MediaGallery.Toolbar />
  *     <MediaGallery.Grid />
+ *     <MediaGallery.Lightbox />
  *   </MediaGallery.Root>
  *
  * State lives in the URL so it can be shared and survives reload/Back:
@@ -28,6 +30,10 @@ export function useGallery() {
 }
 
 const FILTERS = ['all', 'photos', 'videos']
+
+// The viewer is only downloaded when needed; hovering or focusing a tile warms it up.
+const loadLightbox = () => import('./Lightbox')
+const LazyLightbox = lazy(loadLightbox)
 const matches = (filter, m) => filter === 'all' || (filter === 'videos' ? m.type === 'video' : m.type === 'photo')
 
 
@@ -88,7 +94,7 @@ function Toolbar() {
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
       <div>
-        <h2 id="gallery-heading" className="sr-only">{COPY.gallery.heading}</h2>
+        <h2 id="gallery-heading" tabIndex={-1} className="sr-only">{COPY.gallery.heading}</h2>
         {ready && <p className="text-[17px] text-gray-600 tabular-nums">{COPY.gallery.summary(counts.photos, counts.videos)}</p>}
       </div>
       {ready && counts.photos > 0 && counts.videos > 0 && (
@@ -125,6 +131,8 @@ function Tile({ item }) {
       state={{ lightbox: true }}
       preventScrollReset
       data-media-id={item.id}
+      onPointerEnter={loadLightbox}
+      onFocus={loadLightbox}
       aria-label={COPY.gallery.openItem(numberOf(item), media.length, item.alt) + (isVideo ? `, ${COPY.durationSpoken(item.duration)}` : '')}
       className="group relative block h-full w-full overflow-hidden rounded-xl outline-none
         focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
@@ -132,7 +140,7 @@ function Tile({ item }) {
       <MediaImage
         media={item}
         alt=""
-        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 40vw, 50vw"
+        sizes={TILE_SIZES}
         className="h-full w-full"
         imgClassName="transition-transform duration-[var(--motion-cover)] ease-out-expo pointer-fine:group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
       />
@@ -216,5 +224,36 @@ function Grid() {
   )
 }
 
-const MediaGallery = { Root, Toolbar, Grid }
+/** Same `sizes` the viewer uses for its placeholder layer (keep in sync with Lightbox). */
+const TILE_SIZES = '(min-width: 1024px) 30vw, (min-width: 640px) 40vw, 50vw'
+
+/**
+ * Mounts the viewer while ?m= points at an item. Keeps the last item during
+ * the closing animation, then returns focus to that item's thumbnail.
+ */
+function Lightbox() {
+  const { current } = useGallery()
+  const location = useLocation()
+  const last = useRef(null)
+  if (current) last.current = current
+  const fromTile = Boolean(location.state?.lightbox)
+
+  const restoreFocus = () => {
+    const id = last.current?.id
+    const tile = id && document.querySelector(`[data-media-id="${CSS.escape(id)}"]`)
+    ;(tile || document.getElementById('gallery-heading'))?.focus({ preventScroll: true })
+  }
+
+  return (
+    <AnimatePresence onExitComplete={restoreFocus}>
+      {current && (
+        <Suspense key="viewer" fallback={null}>
+          <LazyLightbox item={current} fromTile={fromTile} />
+        </Suspense>
+      )}
+    </AnimatePresence>
+  )
+}
+
+const MediaGallery = { Root, Toolbar, Grid, Lightbox }
 export default MediaGallery
