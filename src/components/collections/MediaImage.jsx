@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { imageSources } from '../../utils/media'
 
 /**
@@ -11,6 +11,13 @@ import { imageSources } from '../../utils/media'
 export default function MediaImage({ media, sizes, priority = false, alt, className = '', imgClassName = '' }) {
   // The priority image is the LCP candidate: paint it as soon as it decodes, no fade.
   const [loaded, setLoaded] = useState(priority)
+  // A cached image is complete before the first paint: show it straight away
+  // instead of fading in from transparent (that fade read as a flash).
+  const imgRef = useRef(null)
+  useLayoutEffect(() => {
+    const img = imgRef.current
+    if (img?.complete && img.naturalWidth > 0) setLoaded(true)
+  }, [])
   const src = media.type === 'video' ? media.poster : media.src
   const { avif, webp, fallback } = imageSources(src)
 
@@ -19,6 +26,7 @@ export default function MediaImage({ media, sizes, priority = false, alt, classN
       <source type="image/avif" srcSet={avif} sizes={sizes} />
       <source type="image/webp" srcSet={webp} sizes={sizes} />
       <img
+        ref={imgRef}
         src={fallback}
         alt={alt ?? media.alt}
         width={media.width}

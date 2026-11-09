@@ -65,11 +65,12 @@ function towardsTile(id, box, { scrollIntoView = false } = {}) {
   }
 }
 
-function preload(item) {
+/** Warm the cache with exactly what the slide will request (AVIF, same `sizes`). */
+function preload(item, vp) {
   if (!item || item.type !== 'photo') return
   const img = new Image()
-  img.sizes = '100vw'
-  img.srcset = imageSources(item.src).webp
+  img.sizes = `${Math.round(fitBox(item, vp).w)}px`
+  img.srcset = imageSources(item.src).avif
 }
 
 /** Same `sizes` as the grid tiles, so the browser reuses the cached thumbnail. */
@@ -85,7 +86,8 @@ function Slide({ item, box, direction, zoomFromTile, closing, onClosed, onSwipe,
     open: () => (openFromTile && towardsTile(item.id, box)) || { opacity: 0, scale: 0.96 },
     enter: dir => ({ x: dir * 80, opacity: 0 }),
     center: { x: 0, y: 0, scale: 1, opacity: 1, borderRadius: 8 },
-    exit: dir => ({ x: dir * -80, opacity: 0, transition: { duration: DURATION.base, ease: EASE.out } }),
+    // Short exit so the outgoing and incoming slides are barely translucent together.
+    exit: dir => ({ x: dir * -80, opacity: 0, transition: { duration: DURATION.fast, ease: EASE.out } }),
   }
   const initial = reduce ? { opacity: 0 } : isFirst ? 'open' : 'enter'
 
@@ -117,13 +119,13 @@ function Slide({ item, box, direction, zoomFromTile, closing, onClosed, onSwipe,
         if (offset.x < -60 || velocity.x < -400) onSwipe(1)
         else if (offset.x > 60 || velocity.x > 400) onSwipe(-1)
       }}
-      className="absolute overflow-hidden bg-black/20 touch-pan-y"
-      style={{ left: box.x, top: box.y, width: box.w, height: box.h, transformOrigin: '50% 50%' }}
+      className="absolute overflow-hidden touch-pan-y"
+      style={{ left: box.x, top: box.y, width: box.w, height: box.h, transformOrigin: '50% 50%', backgroundColor: item.color }}
     >
       {isPhoto ? (
         <>
           {/* Cached thumbnail underneath so the zoom never shows an empty box */}
-          <MediaImage media={item} sizes={TILE_SIZES} className="absolute inset-0 h-full w-full" />
+          <MediaImage media={item} sizes={TILE_SIZES} priority className="absolute inset-0 h-full w-full" />
           <MediaImage media={item} sizes={`${Math.round(box.w)}px`} priority className="absolute inset-0 h-full w-full !bg-transparent" />
         </>
       ) : (
@@ -185,14 +187,16 @@ export default function Lightbox({ item, fromTile }) {
     const html = document.documentElement
     const scrollbar = window.innerWidth - html.clientWidth
     const prevOverflow = html.style.overflow
-    const prevPadding = document.body.style.paddingRight
+    // The fixed site header spans the viewport, so it needs the same compensation as body.
+    const padded = [document.body, ...document.querySelectorAll('#root header')]
+    const prevPadding = padded.map(el => el.style.paddingRight)
     html.style.overflow = 'hidden'
-    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`
+    if (scrollbar > 0) padded.forEach(el => { el.style.paddingRight = `${scrollbar}px` })
     setBackgroundInert(true)
     closeRef.current?.focus({ preventScroll: true })
     return () => {
       html.style.overflow = prevOverflow
-      document.body.style.paddingRight = prevPadding
+      padded.forEach((el, i) => { el.style.paddingRight = prevPadding[i] })
       setBackgroundInert(false)
     }
   }, [])
@@ -203,7 +207,7 @@ export default function Lightbox({ item, fromTile }) {
     if (!isPresent) setBackgroundInert(false)
   }, [isPresent])
 
-  useEffect(() => { preload(next); preload(prev) }, [next, prev])
+  useEffect(() => { preload(next, vp); preload(prev, vp) }, [next, prev, vp])
 
   // Keyboard: ← → navigate, Esc closes, Tab stays inside.
   useEffect(() => {
@@ -247,14 +251,16 @@ export default function Lightbox({ item, fromTile }) {
     >
       <motion.div
         aria-hidden="true"
-        className="absolute inset-0 bg-[#0b0908]/95"
+        // Opaque: the page must never show through while slides cross-fade.
+        className="absolute inset-0 bg-[#0b0908]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: DURATION.base } }}
         exit={{ opacity: 0, transition: { duration: DURATION.base, ease: EASE.inOut } }}
         onClick={close}
       />
 
-      <AnimatePresence initial={false} custom={direction}>
+      {/* No initial={false}: the first slide's `initial` is the zoom from its thumbnail. */}
+      <AnimatePresence custom={direction}>
         <Slide
           key={item.id}
           item={item}
