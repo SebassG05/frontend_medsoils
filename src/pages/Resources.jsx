@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   PlayCircle, FileText, Image, Download,
   ExternalLink, Search, X, Trash2, Loader2,
@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import Footer from '../components/layout/Footer'
 import CollectionsSection from '../components/collections/CollectionsSection'
+import { collectionResources } from '../data/collections'
 import { fetchResources, deleteResource } from '../services/resourceService'
 
 /* ─── animation helpers ─── */
@@ -79,8 +80,16 @@ function formatMeta(type, raw) {
   return v
 }
 
+/** Field-trip items link inside the site (viewer); API resources open in a new tab. */
+function CardLink({ resource, ...props }) {
+  return resource.source === 'collection'
+    ? <Link to={resource.url} {...props} />
+    : <a href={resource.url} target="_blank" rel="noopener noreferrer" {...props} />
+}
+
 function ResourceCard({ resource, isSuperadmin, onDelete }) {
   const { icon: Icon, bg, text, border } = TYPE_META[resource.type] || TYPE_META.pdf
+  const fromCollection = resource.source === 'collection'
   const hasThumb = Boolean(resource.thumbnail)
   const rawMeta  = resource.duration || resource.pages || resource.count || ''
   const meta     = formatMeta(resource.type, rawMeta)
@@ -93,7 +102,7 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
       className={`flex flex-col bg-white rounded-3xl border ${border} overflow-hidden group relative shadow-lg hover:shadow-2xl`}
     >
       {/* delete btn (superadmin only) */}
-      {isSuperadmin && (
+      {isSuperadmin && !fromCollection && (
         <button
           onClick={() => onDelete(resource._id)}
           className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
@@ -109,6 +118,7 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
           <>
             <img
               src={resource.thumbnail} alt={resource.title}
+              loading="lazy" decoding="async"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
@@ -137,10 +147,8 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
 
         {/* video play button */}
         {resource.type === 'video' && (
-          <a
-            href={resource.url}
-            target="_blank"
-            rel="noopener noreferrer"
+          <CardLink
+            resource={resource}
             onClick={e => e.stopPropagation()}
             className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover:bg-black/10 transition-colors"
             aria-label={`Watch ${resource.title}`}
@@ -148,7 +156,7 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
             <div className="w-16 h-16 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all hover:bg-white">
               <PlayCircle size={32} className="text-orange-500" strokeWidth={2} />
             </div>
-          </a>
+          </CardLink>
         )}
 
         <div className="absolute top-4 left-4"><TypeBadge type={resource.type} /></div>
@@ -170,17 +178,17 @@ function ResourceCard({ resource, isSuperadmin, onDelete }) {
         <p className="text-base text-gray-600 leading-relaxed line-clamp-3 flex-1 mb-5">
           {resource.description}
         </p>
-        <a
-          href={resource.url}
-          target="_blank"
-          rel="noopener noreferrer"
+        <CardLink
+          resource={resource}
           className={`inline-flex items-center justify-center gap-2 text-sm font-bold ${text} hover:bg-opacity-10 ${bg} py-3 px-4 rounded-xl transition-all hover:gap-3`}
           onClick={e => e.stopPropagation()}
         >
           {resource.type === 'video' ? <><PlayCircle size={16} strokeWidth={2.5} /> Watch Video</>
-           : resource.type === 'image' ? <><ExternalLink size={16} strokeWidth={2.5} /> View Gallery</>
+           : resource.type === 'image' ? (fromCollection
+             ? <><Image size={16} strokeWidth={2.5} /> View Photo</>
+             : <><ExternalLink size={16} strokeWidth={2.5} /> View Gallery</>)
            : <><Download size={16} strokeWidth={2.5} /> Download PDF</>}
-        </a>
+        </CardLink>
       </div>
     </motion.article>
   )
@@ -481,7 +489,11 @@ export default function Resources() {
 
   useEffect(() => { load() }, [load])
 
-  const filtered = resources.filter(r => {
+  // API resources first, then every field-trip photo and video.
+  const fieldTripItems = useMemo(collectionResources, [])
+  const allResources = useMemo(() => [...resources, ...fieldTripItems], [resources, fieldTripItems])
+
+  const filtered = allResources.filter(r => {
     const typeFilter = activeCategory === 'All' || r.type === CAT_TO_TYPE[activeCategory]
     const textFilter = !searchQuery ||
       r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -491,7 +503,7 @@ export default function Resources() {
   })
 
   const categoryCount = cat =>
-    cat === 'All' ? resources.length : resources.filter(r => r.type === CAT_TO_TYPE[cat]).length
+    cat === 'All' ? allResources.length : allResources.filter(r => r.type === CAT_TO_TYPE[cat]).length
   const showCounts = !loading && !loadError
 
   const handleCreated = resource => {
