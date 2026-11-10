@@ -77,27 +77,32 @@ export function formatDates(dates) {
 
 export const formatDay = iso => (iso ? dateFmt.format(new Date(`${iso}T12:00:00`)) : null)
 
-/**
- * Every photo and video of the field trips as items shaped like the API's
- * resources, so the /resources list, filters and counts include them.
- * `source: 'collection'` marks them: they open in the site's viewer and
- * can't be deleted from the admin (they live in the collection data).
- */
-export function collectionResources() {
-  return AVAILABLE_COLLECTIONS.flatMap(c => c.days.flatMap(d => d.media.map((m, i) => ({
+/** A field-trip photo/video shaped like an API resource, for ResourceCard. */
+function toResource(c, d, m) {
+  return {
     _id: `${c.slug}/${d.slug}/${m.id}`,
-    source: 'collection',
+    source: 'collection', // opens in the site's viewer; not deletable from the admin
+    collectionSlug: c.slug,
     type: m.type === 'video' ? 'video' : 'image',
     title: m.alt,
     description: [c.title, `Day ${d.number}`, formatDay(d.date)].filter(Boolean).join(' · '),
     tag: 'Field trip',
     duration: m.type === 'video' ? fmtDuration(m.duration) : '',
-    url: `/resources/${c.slug}/${d.slug}?m=${i + 1}`,
+    url: `/resources/${c.slug}/${d.slug}?m=${d.media.indexOf(m) + 1}`,
     thumbnail: thumbnailUrl(m.type === 'video' ? m.poster : m.src),
-  }))))
+  }
 }
 
 const fmtDuration = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`
+
+/** The hand-picked highlights (each collection's `featured`), at most `limit`. */
+export function featuredResources(limit = 3) {
+  return AVAILABLE_COLLECTIONS.flatMap(c => (c.featured ?? []).map(ref => {
+    const day = getDay(c, ref.day)
+    const media = findMedia(day, ref.media)
+    return day && media ? toResource(c, day, media) : null
+  })).filter(Boolean).slice(0, limit)
+}
 
 /** Stable ids for Motion shared-element transitions. */
 export const layoutIds = {

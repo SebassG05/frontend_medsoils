@@ -13,6 +13,12 @@ export const COPY = {
     intro: 'Photo and video journals from MEDSOILS Challenge visits.',
   },
 
+  recommended: {
+    title: 'Recommended',
+    intro: 'Highlights from our field trips.',
+    seeAll: 'See all photos & videos',
+  },
+
   breadcrumbs: {
     label: 'Breadcrumb',
     root: 'Resources',

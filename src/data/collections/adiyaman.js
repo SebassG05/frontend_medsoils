@@ -31,6 +31,13 @@ const adiyaman = {
     focus: { x: 0.72, y: 0.55 }, // the large stone head, so narrow crops keep it
   },
 
+  // Highlights shown under "Recommended" on /resources (first 3 across collections).
+  featured: [
+    { day: 'dia-1', media: 'httifl' }, // video: the backhoe opens the soil pit
+    { day: 'dia-1', media: 'f0idkn' }, // photo: labelled soil profile wall
+    { day: 'dia-1', media: 'qk2mhh' }, // video: describing the horizons
+  ],
+
   days: [
     {
       slug: 'dia-1',

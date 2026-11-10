@@ -4,11 +4,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
   PlayCircle, FileText, Image, Download,
   ExternalLink, Search, X, Trash2, Loader2,
-  CheckCircle, AlertCircle, ChevronRight, Tag,
+  CheckCircle, AlertCircle, ChevronRight, Tag, ArrowRight,
 } from 'lucide-react'
 import Footer from '../components/layout/Footer'
 import CollectionsSection from '../components/collections/CollectionsSection'
-import { collectionResources } from '../data/collections'
+import { featuredResources } from '../data/collections'
+import { COPY } from '../data/collections/copy'
 import { fetchResources, deleteResource } from '../services/resourceService'
 
 /* ─── animation helpers ─── */
@@ -489,11 +490,9 @@ export default function Resources() {
 
   useEffect(() => { load() }, [load])
 
-  // API resources first, then every field-trip photo and video.
-  const fieldTripItems = useMemo(collectionResources, [])
-  const allResources = useMemo(() => [...resources, ...fieldTripItems], [resources, fieldTripItems])
+  const recommended = useMemo(() => featuredResources(3), [])
 
-  const filtered = allResources.filter(r => {
+  const filtered = resources.filter(r => {
     const typeFilter = activeCategory === 'All' || r.type === CAT_TO_TYPE[activeCategory]
     const textFilter = !searchQuery ||
       r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -503,8 +502,11 @@ export default function Resources() {
   })
 
   const categoryCount = cat =>
-    cat === 'All' ? allResources.length : allResources.filter(r => r.type === CAT_TO_TYPE[cat]).length
+    cat === 'All' ? resources.length : resources.filter(r => r.type === CAT_TO_TYPE[cat]).length
   const showCounts = !loading && !loadError
+  // With no resources in the database, hide the filters and the empty list
+  // (they would only read "All 0"); a search still shows its results.
+  const showList = loading || Boolean(loadError) || resources.length > 0 || Boolean(searchQuery)
 
   const handleCreated = resource => {
     setResources(prev => [resource, ...prev])
@@ -585,8 +587,37 @@ export default function Resources() {
       {/* ── Field trips ── */}
       <CollectionsSection />
 
+      {/* ── Recommended: hand-picked field-trip highlights ── */}
+      {recommended.length > 0 && (
+        <section aria-labelledby="recommended-heading" className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-12 pb-4">
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+            <div>
+              <h2 id="recommended-heading" className="font-headline text-[28px] sm:text-[32px] font-bold tracking-[-0.02em] text-gray-900">
+                {COPY.recommended.title}
+              </h2>
+              <p className="mt-1 text-[17px] text-gray-600">{COPY.recommended.intro}</p>
+            </div>
+            <Link
+              to={`/resources/${recommended[0].collectionSlug}`}
+              className="group inline-flex min-h-11 items-center gap-1.5 rounded-md text-[16px] font-semibold text-orange-700 hover:text-orange-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+            >
+              {COPY.recommended.seeAll}
+              <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+          <motion.div
+            variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}
+            className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {recommended.map(r => (
+              <ResourceCard key={r._id} resource={r} isSuperadmin={isSuperadmin} onDelete={handleDelete} />
+            ))}
+          </motion.div>
+        </section>
+      )}
+
       {/* ── Toolbar ── */}
-      <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-10 pb-4 flex items-center justify-between gap-4 flex-wrap">
+      {showList && <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 pt-10 pb-4 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
           {CATEGORIES.map(cat => (
             <button
@@ -614,7 +645,7 @@ export default function Resources() {
         </div>
 
 
-      </section>
+      </section>}
 
       {/* ── Superadmin panel ── */}
       {isSuperadmin && (
@@ -648,7 +679,7 @@ export default function Resources() {
       )}
 
       {/* ── Grid ── */}
-      <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-8 min-h-[40vh]">
+      {showList && <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-8 min-h-[40vh]">
         {loading ? (
           <div className="flex items-center justify-center py-20 text-gray-400 gap-3">
             <Loader2 size={28} className="animate-spin text-orange-400" />
@@ -700,7 +731,7 @@ export default function Resources() {
             )}
           </AnimatePresence>
         )}
-      </section>
+      </section>}
 
       {/* ── Toast ── */}
       <AnimatePresence>
