@@ -3,7 +3,7 @@
  * Add a new trip by creating `<slug>.js` next to this file and listing it here.
  */
 import adiyaman from './adiyaman.js'
-import { isMediaConfigured, isRemote } from '../../utils/media.js'
+import { isMediaConfigured, isRemote, thumbnailUrl } from '../../utils/media.js'
 
 export const COLLECTIONS = [adiyaman]
 
@@ -76,6 +76,28 @@ export function formatDates(dates) {
 }
 
 export const formatDay = iso => (iso ? dateFmt.format(new Date(`${iso}T12:00:00`)) : null)
+
+/**
+ * Every photo and video of the field trips as items shaped like the API's
+ * resources, so the /resources list, filters and counts include them.
+ * `source: 'collection'` marks them: they open in the site's viewer and
+ * can't be deleted from the admin (they live in the collection data).
+ */
+export function collectionResources() {
+  return AVAILABLE_COLLECTIONS.flatMap(c => c.days.flatMap(d => d.media.map((m, i) => ({
+    _id: `${c.slug}/${d.slug}/${m.id}`,
+    source: 'collection',
+    type: m.type === 'video' ? 'video' : 'image',
+    title: m.alt,
+    description: [c.title, `Day ${d.number}`, formatDay(d.date)].filter(Boolean).join(' · '),
+    tag: 'Field trip',
+    duration: m.type === 'video' ? fmtDuration(m.duration) : '',
+    url: `/resources/${c.slug}/${d.slug}?m=${i + 1}`,
+    thumbnail: thumbnailUrl(m.type === 'video' ? m.poster : m.src),
+  }))))
+}
+
+const fmtDuration = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`
 
 /** Stable ids for Motion shared-element transitions. */
 export const layoutIds = {

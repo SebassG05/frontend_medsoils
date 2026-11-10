@@ -76,4 +76,13 @@ export const posterUrl = src => (CLOUDINARY.test(src) ? imageSources(src).fallba
 export const videoUrl = src =>
   CLOUDINARY.test(src) ? src.replace('/video/upload/', `/video/upload/${CLOUDINARY_VIDEO}/`) : url(`${src}.mp4`)
 
+/** Single image of ~`w` px for small previews (resource cards). */
+export function thumbnailUrl(src, w = 960) {
+  const cloud = CLOUDINARY.exec(src)
+  if (!cloud) return url(`${src}-960.webp`)
+  const [, base, rest] = cloud
+  const [lead, path] = splitLeadingTransform(rest)
+  return `${base}${lead}f_auto,q_auto,w_${w},c_limit/${path}`
+}
+
 export const trackUrl = path => (isRemote(path) ? path : url(path))
