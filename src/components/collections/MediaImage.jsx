@@ -1,0 +1,45 @@
+import { useLayoutEffect, useRef, useState } from 'react'
+import { imageSources } from '../../utils/media'
+
+/**
+ * <picture> for a collection photo or a video poster: AVIF → WebP → JPEG,
+ * responsive srcset, intrinsic width/height (no CLS) and the media's dominant
+ * colour behind it until the image has decoded.
+ *
+ * `priority` is for the one image that is likely the LCP element.
+ */
+export default function MediaImage({ media, sizes, priority = false, alt, className = '', imgClassName = '' }) {
+  // The priority image is the LCP candidate: paint it as soon as it decodes, no fade.
+  const [loaded, setLoaded] = useState(priority)
+  // A cached image is complete before the first paint: show it straight away
+  // instead of fading in from transparent (that fade read as a flash).
+  const imgRef = useRef(null)
+  useLayoutEffect(() => {
+    const img = imgRef.current
+    if (img?.complete && img.naturalWidth > 0) setLoaded(true)
+  }, [])
+  const src = media.type === 'video' ? media.poster : media.src
+  const { avif, webp, fallback } = imageSources(src)
+
+  return (
+    <picture className={`block ${className}`} style={{ backgroundColor: media.color }}>
+      <source type="image/avif" srcSet={avif} sizes={sizes} />
+      <source type="image/webp" srcSet={webp} sizes={sizes} />
+      <img
+        ref={imgRef}
+        src={fallback}
+        alt={alt ?? media.alt}
+        width={media.width}
+        height={media.height}
+        sizes={sizes}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+        // React 18 only forwards the lowercase attribute
+        fetchpriority={priority ? 'high' : 'auto'}
+        onLoad={() => setLoaded(true)}
+        draggable={false}
+        className={`block h-full w-full object-cover transition-opacity duration-[var(--motion-slow)] ease-out-expo motion-reduce:transition-none ${loaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
+      />
+    </picture>
+  )
+}

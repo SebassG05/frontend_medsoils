@@ -8,6 +8,20 @@
   --color-earth-deep: #2a150a;
   --color-leaf: #6dae30;
   --font-headline: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Surface + motion tokens (used by the collections feature; mirrored in src/utils/motion.js) */
+  --radius-card: 1.5rem;
+  --shadow-card: 0 1px 2px rgb(42 21 10 / 0.06), 0 8px 24px -12px rgb(42 21 10 / 0.18);
+  --shadow-card-hover: 0 2px 4px rgb(42 21 10 / 0.06), 0 22px 44px -18px rgb(42 21 10 / 0.32);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  --motion-fast: 150ms;
+  --motion-base: 240ms;
+  --motion-slow: 400ms;
+  --motion-cover: 900ms;
 }
 
 /* ── Global button cursor ─────────────────────────────────── */

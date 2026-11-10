@@ -30,3 +30,6 @@ graphify-out
 .env
 .env.local
 .env.*.local
+
+# Generated collection placeholders (npm run media:dev). Never commit media.
+dev-media
