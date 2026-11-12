@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import devMedia from './scripts/vite-dev-media.js'
+import disseminationPages from './scripts/vite-dissemination-pages.js'
 
 export default defineConfig({
   base: '/',
@@ -17,6 +18,7 @@ export default defineConfig({
   plugins: [
     react(),
     devMedia(), // dev only: serves ./dev-media placeholders at /__dev-media
+    disseminationPages(), // build only: static /dissemination pages with link-preview tags
     VitePWA({
       registerType: 'prompt',
       // ✅ AÑADIR: Estrategia de generación del SW

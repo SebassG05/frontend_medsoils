@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import Header from './components/layout/Header'
 import CookieBanner from './components/cookies/CookieBanner'
@@ -17,6 +17,9 @@ import AboutProgram from './pages/AboutProgram'
 import LoginPage from './pages/LoginPage'
 import ResourcesSection from './pages/ResourcesSection'
 import { isResourcesSectionPath } from './utils/collectionRoutes'
+import { isDisseminationSectionPath } from './utils/disseminationRoutes'
+import ChunkErrorBoundary from './components/ui/ChunkErrorBoundary'
+import InterviewSkeleton from './components/dissemination/InterviewSkeleton'
 import AddVideoResource from './pages/AddVideoResource'
 import AddPdfResource from './pages/AddPdfResource'
 import Reviews from './pages/Reviews'
@@ -24,6 +27,9 @@ import PartnerDetail from './pages/PartnerDetail'
 import AvisoLegal from './pages/AvisoLegal'
 import PoliticaPrivacidad from './pages/PoliticaPrivacidad'
 import PoliticaCookies from './pages/PoliticaCookies'
+
+// Split into its own chunk so the home bundle doesn't grow with this section.
+const DisseminationSection = lazy(() => import('./pages/DisseminationSection'))
 
 // Bootstrap GA4 Consent Mode v2 immediately (before any render)
 initGA4()
@@ -36,6 +42,8 @@ function ScrollToTop() {
     prevPathname.current = pathname
     // Inside /resources ↔ field trips, ResourcesSection animates and restores scroll itself.
     if (from !== pathname && isResourcesSectionPath(from) && isResourcesSectionPath(pathname)) return
+    // Same inside /dissemination ↔ interview (DisseminationSection).
+    if (from !== pathname && isDisseminationSectionPath(from) && isDisseminationSectionPath(pathname)) return
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [pathname])
   return null
@@ -80,6 +88,19 @@ function App() {
               <Route path="/login" element={<ForceResetGuard><LoginPage /></ForceResetGuard>} />
               {/* /resources, /resources/:collection, /resources/:collection/:day (static /resources/add/* below still wins) */}
               <Route path="/resources/*" element={<ForceResetGuard><ResourcesSection /></ForceResetGuard>} />
+              {/* /dissemination and /dissemination/:slug (lazy chunk) */}
+              <Route
+                path="/dissemination/*"
+                element={
+                  <ForceResetGuard>
+                    <ChunkErrorBoundary>
+                      <Suspense fallback={<div className="min-h-screen pt-48"><InterviewSkeleton count={6} featured /></div>}>
+                        <DisseminationSection />
+                      </Suspense>
+                    </ChunkErrorBoundary>
+                  </ForceResetGuard>
+                }
+              />
               <Route path="/reviews" element={<ForceResetGuard><Reviews /></ForceResetGuard>} />
               <Route path="/partners/:slug" element={<ForceResetGuard><PartnerDetail /></ForceResetGuard>} />
               <Route path="/resources/add/video" element={<ForceResetGuard><AddVideoResource /></ForceResetGuard>} />
