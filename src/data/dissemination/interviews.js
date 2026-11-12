@@ -20,7 +20,7 @@
 export const INTERVIEWS = [
   {
     slug: 'manuel-pulido-mediterranean-basin',
-    title: 'Manuel Pulido on soils in the Mediterranean basin',
+    title: 'Manuel Pulido on the MEDSOILS Challenge approach',
     type: 'video',
     interviewee: {
       name: 'Manuel Pulido',
