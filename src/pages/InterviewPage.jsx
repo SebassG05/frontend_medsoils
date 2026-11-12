@@ -1,11 +1,84 @@
 import { useParams } from 'react-router-dom'
+import Footer from '../components/layout/Footer'
+import SkyBand from '../components/collections/SkyBand'
+import Breadcrumbs from '../components/collections/Breadcrumbs'
+import NotFoundPanel from '../components/collections/NotFoundPanel'
+import InterviewSkeleton from '../components/dissemination/InterviewSkeleton'
+import LoadError from '../components/dissemination/LoadError'
+import InterviewHeader from '../components/dissemination/InterviewHeader'
+import InterviewMedia from '../components/dissemination/InterviewMedia'
+import TranscriptQA from '../components/dissemination/TranscriptQA'
+import ShareActions from '../components/dissemination/ShareActions'
+import RelatedInterviews from '../components/dissemination/RelatedInterviews'
+import useInterviews from '../hooks/useInterviews'
+import { getBySlug, related } from '../data/dissemination'
+import { DISSEMINATION_PATH } from '../utils/disseminationRoutes'
+import { COPY } from '../data/dissemination/copy'
 
-/** /dissemination/:slug — interview detail. Placeholder until the detail task lands. */
+const NARROW = 'mx-auto max-w-5xl px-4 sm:px-6'
+const READING = 'mx-auto max-w-3xl px-4 sm:px-6'
+
+/** /dissemination/:slug — one interview. */
 export default function InterviewPage() {
   const { slug } = useParams()
+  const { status, interviews, retry } = useInterviews()
+  const interview = status === 'ready' ? getBySlug(interviews, slug) : null
+
+  let content
+  if (status === 'loading') content = <div className="pt-8 pb-24"><InterviewSkeleton count={3} /></div>
+  else if (status === 'error') content = <LoadError onRetry={retry} />
+  else if (!interview) {
+    content = (
+      <div className={NARROW}>
+        <NotFoundPanel title={COPY.detail.notFoundTitle} body={COPY.detail.notFoundBody} cta={COPY.detail.notFoundCta} to={DISSEMINATION_PATH} />
+      </div>
+    )
+  } else {
+    content = (
+      <>
+        <article className="pb-20">
+          <div className={`${NARROW} space-y-10`}>
+            <InterviewHeader interview={interview} />
+            <InterviewMedia interview={interview} />
+          </div>
+
+          <div className={`${READING} mt-12 space-y-10`}>
+            <p className="text-xl leading-relaxed text-gray-700 text-pretty">{interview.summary}</p>
+            {interview.quote && interview.type !== 'text' && (
+              <blockquote className="border-l-[3px] border-orange-500 pl-5 font-headline text-2xl font-medium leading-snug text-gray-900 text-pretty">
+                “{interview.quote}”
+              </blockquote>
+            )}
+            {interview.transcript?.length > 0 && (
+              <section aria-label={COPY.detail.transcript}>
+                <TranscriptQA transcript={interview.transcript} interviewee={interview.interviewee} collapsible={interview.type !== 'text'} />
+              </section>
+            )}
+            <div className="border-t border-gray-100 pt-8">
+              <ShareActions title={interview.title} />
+            </div>
+          </div>
+        </article>
+
+        <div className="border-t border-gray-100 pt-16 pb-28">
+          <RelatedInterviews interviews={related(interviews, interview.slug)} />
+        </div>
+      </>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <h1 className="text-4xl font-extrabold text-gray-900 text-center pt-24">{slug}</h1>
+      <SkyBand>
+        <div className={`${NARROW} pt-10 pb-8`}>
+          <Breadcrumbs
+            label={COPY.detail.breadcrumbLabel}
+            items={[{ label: COPY.detail.breadcrumb, to: DISSEMINATION_PATH }, { label: interview?.title ?? '…' }]}
+          />
+        </div>
+        {content}
+      </SkyBand>
+      <Footer />
     </div>
   )
 }
