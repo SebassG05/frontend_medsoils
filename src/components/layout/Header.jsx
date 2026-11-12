@@ -27,6 +27,8 @@ const Header = () => {
     { name: 'Admission', path: '/admission' },
     { name: 'Blog', path: '/blog' },
     { name: 'Resources', path: '/resources' },
+    // matchPrefix: also active on /dissemination/:slug (only this item, so other links keep their behaviour)
+    { name: 'Dissemination', path: '/dissemination', matchPrefix: true },
     { name: 'Reviews', path: '/reviews' },
     { name: 'Contact', path: '/contact' },
   ]
@@ -131,7 +133,8 @@ const Header = () => {
     })
   }
 
-  const isActive = (path) => location.pathname === path
+  const isActive = (item) =>
+    location.pathname === item.path || (item.matchPrefix && location.pathname.startsWith(item.path + '/'))
 
   const handleLogout = async () => {
     try {
@@ -207,7 +210,7 @@ const Header = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="hidden lg:flex items-center space-x-12"
+            className="hidden lg:flex items-center gap-x-6 xl:gap-x-8 2xl:gap-x-12"
           >
             {navItems.map((item, index) => (
               <motion.div
@@ -225,7 +228,7 @@ const Header = () => {
                   className="relative group"
                 >
                   <span className={`text-base font-medium tracking-wide transition-colors duration-300 ${
-                    isActive(item.path)
+                    isActive(item)
                       ? 'text-orange-500'
                       : 'text-gray-700 hover:text-orange-400'
                   }`}>
@@ -235,7 +238,7 @@ const Header = () => {
                   {/* Underline animation */}
                   <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-300 group-hover:w-full" />
                   
-                  {isActive(item.path) && (
+                  {isActive(item) && (
                     <motion.span
                       layoutId="activeIndicator"
                       className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-400 to-orange-600"
@@ -405,7 +408,7 @@ const Header = () => {
                       to={item.path}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`block px-5 py-4 rounded-2xl text-base font-medium transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] ${
-                        isActive(item.path)
+                        isActive(item)
                           ? 'bg-gradient-to-r from-orange-50 to-orange-50/50 text-orange-500 shadow-lg shadow-orange-100/50 border border-orange-100'
                           : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-50/50 hover:shadow-md hover:shadow-gray-100/30'
                       }`}
