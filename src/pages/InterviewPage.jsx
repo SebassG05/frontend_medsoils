@@ -12,7 +12,9 @@ import TranscriptQA from '../components/dissemination/TranscriptQA'
 import ShareActions from '../components/dissemination/ShareActions'
 import RelatedInterviews from '../components/dissemination/RelatedInterviews'
 import useInterviews from '../hooks/useInterviews'
-import { getBySlug, related } from '../data/dissemination'
+import { SHARE_FALLBACK_IMAGE, buildInterviewMeta, getBySlug, related } from '../data/dissemination'
+import { MEDIA_BASE } from '../utils/media'
+import usePageMeta from '../utils/usePageMeta'
 import { DISSEMINATION_PATH } from '../utils/disseminationRoutes'
 import { COPY } from '../data/dissemination/copy'
 import { AFTER_MORPH, fadeRise } from '../utils/motion'
@@ -26,6 +28,13 @@ export default function InterviewPage() {
   const { status, interviews, retry } = useInterviews()
   const interview = status === 'ready' ? getBySlug(interviews, slug) : null
   const reduce = useReducedMotion()
+  usePageMeta(
+    interview
+      ? buildInterviewMeta(interview, { origin: window.location.origin, mediaBase: MEDIA_BASE, fallbackImage: SHARE_FALLBACK_IMAGE })
+      : status === 'ready'
+        ? { title: COPY.detail.notFoundTitle, description: COPY.detail.notFoundBody, url: `${window.location.origin}${DISSEMINATION_PATH}`, type: 'website' }
+        : null,
+  )
   // Everything except the player waits for the cover morph to lead.
   const follow = { variants: fadeRise(reduce, AFTER_MORPH), initial: 'hidden', animate: 'show' }
 

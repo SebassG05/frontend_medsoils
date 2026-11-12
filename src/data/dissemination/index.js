@@ -113,3 +113,5 @@ export function readingMinutes(transcript = []) {
 export const layoutIds = {
   cover: slug => `interview-cover-${slug}`,
 }
+
+export { buildInterviewMeta, buildListingMeta, SHARE_FALLBACK_IMAGE } from './meta'

@@ -11,7 +11,8 @@ import InterviewFilters from '../components/dissemination/InterviewFilters'
 import LoadError from '../components/dissemination/LoadError'
 import useInterviews from '../hooks/useInterviews'
 import useInterviewFilters from '../hooks/useInterviewFilters'
-import { availableLanguages, countByType, filterInterviews, pickFeatured } from '../data/dissemination'
+import { availableLanguages, buildListingMeta, countByType, filterInterviews, pickFeatured } from '../data/dissemination'
+import usePageMeta from '../utils/usePageMeta'
 import { COPY } from '../data/dissemination/copy'
 import { fadeRise } from '../utils/motion'
 
@@ -26,6 +27,7 @@ export default function Dissemination() {
   const { status, interviews, retry } = useInterviews()
   const { filters, setQuery, setType, setLang, clear } = useInterviewFilters()
   const reduce = useReducedMotion()
+  usePageMeta(buildListingMeta(COPY, { origin: window.location.origin }))
 
   const languages = useMemo(() => availableLanguages(interviews), [interviews])
   const counts = useMemo(() => countByType(interviews), [interviews])

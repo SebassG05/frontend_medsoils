@@ -14,7 +14,7 @@ export const COPY = {
     highlight: 'Dissemination',
     title: '& Interviews',
     intro: 'Conversations with the researchers and partners behind MEDSOILS Challenge — on video, audio and in writing.',
-    searchPlaceholder: 'Search interviews, people or institutions…',
+    searchPlaceholder: 'Search interviews or people…',
     searchLabel: 'Search interviews',
   },
 
@@ -98,7 +98,7 @@ export const COPY_ES = {
     highlight: 'Difusión',
     title: 'y entrevistas',
     intro: 'Conversaciones con los investigadores y socios de MEDSOILS Challenge, en vídeo, audio y texto.',
-    searchPlaceholder: 'Busca entrevistas, personas o instituciones…',
+    searchPlaceholder: 'Busca entrevistas o personas…',
     searchLabel: 'Buscar entrevistas',
   },
   filters: {

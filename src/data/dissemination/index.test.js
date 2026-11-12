@@ -3,7 +3,7 @@ process.env.TZ = 'America/Bogota'
 import { describe, it, expect } from 'vitest'
 import {
   loadInterviews, parseFilters, filterInterviews, pickFeatured, countByType, availableLanguages,
-  getBySlug, related, formatDate, formatDuration, readingMinutes, layoutIds,
+  getBySlug, related, formatDate, formatDuration, readingMinutes, layoutIds, buildInterviewMeta,
 } from './index'
 
 const person = (name, institution, role = 'Researcher') => ({ name, role, institution })
@@ -110,5 +110,39 @@ describe('loadInterviews', () => {
     const list = await loadInterviews(new URLSearchParams('demo=interviews&n=12'))
     const dates = list.map(i => i.date)
     expect(dates).toEqual([...dates].sort().reverse())
+  })
+})
+
+describe('buildInterviewMeta', () => {
+  const origin = 'https://medsoil-challenge.eu'
+  const video = item('soils-running-out', {
+    title: 'Why soils run out', summary: 'Soil loss explained.', duration: 760, date: '2026-10-14',
+    mediaUrl: 'https://youtu.be/dQw4w9WgXcQ', interviewee: person('Dr. Elena Martín', 'Universidad de Sevilla'),
+  })
+  const text = item('field-trip', { type: 'text', summary: 'A field trip.', transcript: [{ speaker: 'interviewer', text: 'Q?' }] })
+
+  it('describes a video interview as a VideoObject', () => {
+    const meta = buildInterviewMeta(video, { origin })
+    expect(meta.type).toBe('video.other')
+    expect(meta.url).toBe('https://medsoil-challenge.eu/dissemination/soils-running-out')
+    expect(meta.description).toBe('Soil loss explained.')
+    expect(meta.image).toBe('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg')
+    expect(meta.jsonLd['@type']).toBe('VideoObject')
+    expect(meta.jsonLd.embedUrl).toBe('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ')
+    expect(meta.jsonLd.duration).toBe('PT12M40S')
+    expect(meta.jsonLd.uploadDate).toBe('2026-10-14')
+  })
+
+  it('describes a text interview as an Article', () => {
+    const meta = buildInterviewMeta(text, { origin, fallbackImage: 'https://x/logo.png' })
+    expect(meta.type).toBe('article')
+    expect(meta.jsonLd['@type']).toBe('Article')
+    expect(meta.image).toBe('https://x/logo.png')
+  })
+
+  it('resolves a self-hosted cover against the media base', () => {
+    const withCover = { ...text, cover: { ...text.cover, src: 'interviews/trip' } }
+    expect(buildInterviewMeta(withCover, { origin, mediaBase: 'https://media.example.org' }).image)
+      .toBe('https://media.example.org/interviews/trip-1600.jpg')
   })
 })
