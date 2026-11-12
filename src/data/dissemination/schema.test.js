@@ -23,6 +23,10 @@ describe('validateInterviews', () => {
     expect(() => validateInterviews([base, audio, text])).not.toThrow()
   })
 
+  it('accepts a description given as paragraphs', () => {
+    expect(() => validateInterviews([{ ...base, description: ['One.', 'Two.'] }])).not.toThrow()
+  })
+
   it.each([
     ['missing cover.alt', [{ ...base, cover: { color: '#000' } }], 'cover.alt is required'],
     ['duplicate slug', [base, { ...base }], 'duplicate slug'],
@@ -31,6 +35,7 @@ describe('validateInterviews', () => {
     ['non-YouTube video', [{ ...base, mediaUrl: 'https://vimeo.com/1' }], 'mediaUrl must be a YouTube link'],
     ['text without transcript', [{ ...text, transcript: undefined }], 'transcript is required for text'],
     ['bad slug', [{ ...base, slug: 'Hello World' }], 'slug must be kebab-case'],
+    ['description as one string', [{ ...base, description: 'Not a list.' }], 'description must be a list of paragraphs'],
   ])('rejects %s', (_, list, message) => {
     expect(() => validateInterviews(list)).toThrow(message)
   })
