@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Headphones, Play } from 'lucide-react'
@@ -17,6 +18,8 @@ import useInterviewHref from '../../hooks/useInterviewHref'
 export default function FeaturedInterview({ interview }) {
   const href = useInterviewHref(interview.slug)
   const reduce = useReducedMotion()
+  const titleId = useId()
+  const metaId = useId()
   const duration = durationLabel(interview)
   const PlayIcon = interview.type === 'audio' ? Headphones : Play
   const meta = [formatDate(interview.date), duration, languageName(interview.language)].filter(Boolean)
@@ -24,7 +27,8 @@ export default function FeaturedInterview({ interview }) {
   return (
     <Link
       to={href}
-      aria-label={interview.title}
+      aria-labelledby={titleId}
+      aria-describedby={metaId}
       className="group grid overflow-hidden rounded-[2rem] bg-white shadow-card outline-none transition-shadow duration-[var(--motion-base)] pointer-fine:hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-4 lg:grid-cols-12"
     >
       <motion.div
@@ -61,7 +65,7 @@ export default function FeaturedInterview({ interview }) {
         <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-orange-700">
           {COPY.featured.eyebrow(interview.type)}
         </p>
-        <h2 className="font-headline text-[30px] sm:text-[38px] font-bold leading-[1.12] tracking-[-0.02em] text-gray-900 text-balance">
+        <h2 id={titleId} className="font-headline text-[30px] sm:text-[38px] font-bold leading-[1.12] tracking-[-0.02em] text-gray-900 text-balance">
           {interview.title}
         </h2>
         {interview.quote && (
@@ -71,7 +75,7 @@ export default function FeaturedInterview({ interview }) {
         )}
         <div className="flex items-center gap-3.5">
           <Avatar person={interview.interviewee} size={52} />
-          <p className="min-w-0 leading-snug">
+          <p id={metaId} className="min-w-0 leading-snug">
             <span className="block font-semibold text-gray-900">{interview.interviewee.name}</span>
             <span className="block text-sm text-gray-600 [overflow-wrap:anywhere]">{roleLine(interview.interviewee)}</span>
           </p>

@@ -43,7 +43,7 @@ export default function EmptyState({ variant = 'empty', query = '', onClear }) {
   }
 
   return (
-    <section aria-labelledby="empty-heading" role="status" className="mx-auto flex max-w-3xl flex-col items-center px-4 pt-6 pb-28 sm:pb-36 text-center">
+    <section aria-labelledby="empty-heading" className="mx-auto flex max-w-3xl flex-col items-center px-4 pt-6 pb-28 sm:pb-36 text-center">
       <div aria-hidden="true" className="relative mx-auto mb-10 h-40 w-full max-w-[22rem] sm:mb-12 sm:h-64 sm:max-w-[35rem]">
         <GhostCard icon={Headphones} className="left-[2%] top-[22%] rotate-6 opacity-75" />
         <GhostCard icon={FileText} className="right-[2%] top-[22%] -rotate-6 opacity-75" />

@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
@@ -19,6 +20,8 @@ const CARD_SIZES = '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw'
 export default function InterviewCard({ interview, headingLevel = 3 }) {
   const href = useInterviewHref(interview.slug)
   const reduce = useReducedMotion()
+  const titleId = useId()
+  const metaId = useId()
   const Heading = `h${headingLevel}`
   const Icon = TYPE_ICON[interview.type]
   const duration = durationLabel(interview)
@@ -26,7 +29,8 @@ export default function InterviewCard({ interview, headingLevel = 3 }) {
   return (
     <Link
       to={href}
-      aria-label={interview.title}
+      aria-labelledby={titleId}
+      aria-describedby={metaId}
       className="group flex h-full flex-col rounded-[var(--radius-card)] bg-white shadow-card outline-none transition-[translate,scale,box-shadow] duration-[var(--motion-base)] ease-out-expo active:scale-[0.985] pointer-fine:hover:-translate-y-0.5 pointer-fine:hover:shadow-card-hover motion-reduce:transition-none motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-4"
     >
       {/* Shared element: grows into the player on the detail page. */}
@@ -50,12 +54,13 @@ export default function InterviewCard({ interview, headingLevel = 3 }) {
       </motion.div>
 
       <div className="flex flex-1 flex-col gap-3.5 px-6 pt-5 pb-6">
-        <Heading className="font-headline text-[21px] font-semibold leading-[1.25] tracking-[-0.01em] text-gray-900 line-clamp-3">
+        <Heading id={titleId} className="font-headline text-[21px] font-semibold leading-[1.25] tracking-[-0.01em] text-gray-900 line-clamp-3">
           {interview.title}
         </Heading>
         <div className="flex items-start gap-3">
           <Avatar person={interview.interviewee} size={40} />
-          <p className="min-w-0 text-sm leading-snug">
+          <p id={metaId} className="min-w-0 text-sm leading-snug">
+            <span className="sr-only">{COPY.types[interview.type]} · </span>
             <span className="block font-semibold text-gray-900 [overflow-wrap:anywhere]">{interview.interviewee.name}</span>
             <span className="block text-gray-600 [overflow-wrap:anywhere]">{roleLine(interview.interviewee)}</span>
           </p>
