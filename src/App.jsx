@@ -19,6 +19,7 @@ import ResourcesSection from './pages/ResourcesSection'
 import { isResourcesSectionPath } from './utils/collectionRoutes'
 import { isDisseminationSectionPath } from './utils/disseminationRoutes'
 import ChunkErrorBoundary from './components/ui/ChunkErrorBoundary'
+import InterviewSkeleton from './components/dissemination/InterviewSkeleton'
 import AddVideoResource from './pages/AddVideoResource'
 import AddPdfResource from './pages/AddPdfResource'
 import Reviews from './pages/Reviews'
@@ -93,7 +94,7 @@ function App() {
                 element={
                   <ForceResetGuard>
                     <ChunkErrorBoundary>
-                      <Suspense fallback={<div className="min-h-screen" />}>
+                      <Suspense fallback={<div className="min-h-screen pt-48"><InterviewSkeleton count={6} featured /></div>}>
                         <DisseminationSection />
                       </Suspense>
                     </ChunkErrorBoundary>
