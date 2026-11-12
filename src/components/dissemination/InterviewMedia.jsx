@@ -25,9 +25,11 @@ export default function InterviewMedia({ interview }) {
       layoutCrossfade={false}
       transition={layoutTransition(reduce)}
       style={{ borderRadius: 24 }}
-      className="relative aspect-video overflow-hidden shadow-card"
+      className={`relative overflow-hidden shadow-card ${interview.type === 'text' ? 'aspect-[21/9]' : 'aspect-video'}`}
     >
-      <InterviewCover interview={interview} size="maxres" priority sizes="(min-width: 1024px) 1024px, 100vw" className="absolute inset-0" />
+      <motion.div layout transition={layoutTransition(reduce)} className="absolute inset-0">
+        <InterviewCover interview={interview} size="maxres" priority sizes="(min-width: 1024px) 1024px, 100vw" className="absolute inset-0" />
+      </motion.div>
     </motion.div>
   )
 

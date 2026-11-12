@@ -107,6 +107,14 @@ export function formatDuration(seconds) {
   return h ? `${h}:${String(m).padStart(2, '0')}:${ss}` : `${m}:${ss}`
 }
 
+/** 760 → '13 min', 3725 → '1 h 2 min': a length, so it can't be misread as a time of day. */
+export function formatMinutes(seconds) {
+  const total = Math.max(1, Math.round(seconds / 60))
+  const h = Math.floor(total / 60)
+  const m = total % 60
+  return h ? `${h} h${m ? ` ${m} min` : ''}` : `${m} min`
+}
+
 /** Reading time at 220 words per minute, at least 1 minute. */
 export function readingMinutes(transcript = []) {
   const words = transcript.reduce((n, t) => n + t.text.trim().split(/\s+/).filter(Boolean).length, 0)

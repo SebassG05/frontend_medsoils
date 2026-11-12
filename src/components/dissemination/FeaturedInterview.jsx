@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Headphones, Play } from 'lucide-react'
 import InterviewCover from './InterviewCover'
 import Avatar from './Avatar'
-import { durationLabel, languageName, roleLine } from './meta'
+import { durationLabel, languageName, lengthLabel, roleLine } from './meta'
 import { formatDate, layoutIds } from '../../data/dissemination'
 import { layoutTransition } from '../../utils/motion'
 import { COPY } from '../../data/dissemination/copy'
@@ -22,7 +22,7 @@ export default function FeaturedInterview({ interview }) {
   const metaId = useId()
   const duration = durationLabel(interview)
   const PlayIcon = interview.type === 'audio' ? Headphones : Play
-  const meta = [formatDate(interview.date), duration, languageName(interview.language)].filter(Boolean)
+  const meta = [formatDate(interview.date), lengthLabel(interview), languageName(interview.language)].filter(Boolean)
 
   return (
     <Link

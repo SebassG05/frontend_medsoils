@@ -3,7 +3,7 @@ process.env.TZ = 'America/Bogota'
 import { describe, it, expect } from 'vitest'
 import {
   loadInterviews, parseFilters, filterInterviews, pickFeatured, countByType, availableLanguages,
-  getBySlug, related, formatDate, formatDuration, readingMinutes, layoutIds, buildInterviewMeta,
+  getBySlug, related, formatDate, formatDuration, readingMinutes, layoutIds, buildInterviewMeta, formatMinutes,
 } from './index'
 
 const person = (name, institution, role = 'Researcher') => ({ name, role, institution })
@@ -145,4 +145,11 @@ describe('buildInterviewMeta', () => {
     expect(buildInterviewMeta(withCover, { origin, mediaBase: 'https://media.example.org' }).image)
       .toBe('https://media.example.org/interviews/trip-1600.jpg')
   })
+})
+
+it('formatMinutes reads as a length, not a clock time', () => {
+  expect(formatMinutes(760)).toBe('13 min')
+  expect(formatMinutes(20)).toBe('1 min')
+  expect(formatMinutes(3725)).toBe('1 h 2 min')
+  expect(formatMinutes(3600)).toBe('1 h')
 })

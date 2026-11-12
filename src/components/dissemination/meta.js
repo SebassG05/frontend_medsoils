@@ -1,5 +1,5 @@
 import { FileText, Headphones, Play } from 'lucide-react'
-import { formatDuration, readingMinutes } from '../../data/dissemination'
+import { formatDuration, formatMinutes, readingMinutes } from '../../data/dissemination'
 import { COPY } from '../../data/dissemination/copy'
 
 export const TYPE_ICON = { video: Play, audio: Headphones, text: FileText }
@@ -8,6 +8,12 @@ export const TYPE_ICON = { video: Play, audio: Headphones, text: FileText }
 export function durationLabel(interview) {
   if (interview.type === 'text') return interview.transcript?.length ? COPY.card.readTime(readingMinutes(interview.transcript)) : null
   return interview.duration ? formatDuration(interview.duration) : null
+}
+
+/** For meta lines next to a date: '13 min' / '6 min read' (the cover badge keeps '12:40'). */
+export function lengthLabel(interview) {
+  if (interview.type === 'text') return durationLabel(interview)
+  return interview.duration ? formatMinutes(interview.duration) : null
 }
 
 let names

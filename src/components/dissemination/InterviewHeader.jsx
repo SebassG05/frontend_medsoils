@@ -1,12 +1,12 @@
 import Avatar from './Avatar'
-import { TYPE_ICON, durationLabel, languageName, roleLine } from './meta'
+import { TYPE_ICON, languageName, lengthLabel, roleLine } from './meta'
 import { formatDate } from '../../data/dissemination'
 import { COPY } from '../../data/dissemination/copy'
 
 /** Title, interviewee and meta line of an interview (above the player). */
 export default function InterviewHeader({ interview }) {
   const Icon = TYPE_ICON[interview.type]
-  const duration = durationLabel(interview)
+  const duration = lengthLabel(interview)
   const person = interview.interviewee
 
   return (
@@ -33,11 +33,11 @@ export default function InterviewHeader({ interview }) {
         </p>
       </div>
       {interview.tags?.length > 0 && (
-        <ul role="list" className="flex flex-wrap gap-2">
-          {interview.tags.map(tag => (
-            <li key={tag} className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">{tag}</li>
-          ))}
-        </ul>
+        // Plain text, not pills: pills read as clickable filters, and these aren't.
+        <p className="text-sm text-gray-600 [overflow-wrap:anywhere]">
+          <span className="font-semibold text-gray-700">{COPY.detail.topics}: </span>
+          {interview.tags.join(' · ')}
+        </p>
       )}
     </header>
   )

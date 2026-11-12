@@ -41,7 +41,10 @@ export default function Dissemination() {
   return (
     <div className="min-h-screen bg-white">
       <PageHero eyebrow={COPY.hero.eyebrow} highlight={COPY.hero.highlight} title={COPY.hero.title} intro={COPY.hero.intro}>
-        <SearchField value={filters.q} onChange={setQuery} placeholder={COPY.hero.searchPlaceholder} label={COPY.hero.searchLabel} />
+        {/* Nothing to search yet → no search box (it would fail silently). */}
+        {!(status === 'ready' && interviews.length === 0) && (
+          <SearchField value={filters.q} onChange={setQuery} placeholder={COPY.hero.searchPlaceholder} label={COPY.hero.searchLabel} />
+        )}
       </PageHero>
 
       {status === 'loading' && <div className="pt-4 pb-24"><InterviewSkeleton count={6} featured /></div>}
