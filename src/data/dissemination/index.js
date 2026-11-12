@@ -77,6 +77,11 @@ export function countByType(list) {
   return counts
 }
 
+/** Formats that have at least one interview, in display order. */
+export function formatsWithResults(counts) {
+  return TYPES.filter(type => counts[type] > 0)
+}
+
 export function availableLanguages(list) {
   return [...new Set(list.map(it => it.language))]
 }

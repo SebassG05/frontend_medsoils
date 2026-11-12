@@ -3,8 +3,10 @@ process.env.TZ = 'America/Bogota'
 import { describe, it, expect } from 'vitest'
 import {
   loadInterviews, parseFilters, filterInterviews, pickFeatured, countByType, availableLanguages,
-  getBySlug, related, formatDate, formatDuration, readingMinutes, layoutIds, buildInterviewMeta, formatMinutes,
+  getBySlug, related, formatDate, formatDuration, readingMinutes, layoutIds, buildInterviewMeta, formatMinutes, formatsWithResults,
 } from './index'
+import { INTERVIEWS } from './interviews'
+import { validateInterviews } from './schema'
 
 const person = (name, institution, role = 'Researcher') => ({ name, role, institution })
 const item = (slug, over = {}) => ({
@@ -103,8 +105,10 @@ describe('loadInterviews', () => {
   it('defaults to 12 fixtures when n is missing or invalid', async () => {
     expect(await loadInterviews(new URLSearchParams('demo=interviews&n=99'))).toHaveLength(12)
   })
-  it('returns the real (empty) list without demo', async () => {
-    expect(await loadInterviews(new URLSearchParams(''))).toEqual([])
+  it('returns the real list (every entry valid) without demo', async () => {
+    const list = await loadInterviews(new URLSearchParams(''))
+    expect(list.map(i => i.slug).sort()).toEqual(INTERVIEWS.map(i => i.slug).sort())
+    expect(() => validateInterviews(INTERVIEWS)).not.toThrow()
   })
   it('returns fixtures newest first', async () => {
     const list = await loadInterviews(new URLSearchParams('demo=interviews&n=12'))
@@ -168,4 +172,9 @@ describe('review fixes', () => {
   it('formatDate returns the raw value instead of throwing on an invalid date', () => {
     expect(formatDate('2026-1-5')).toBe('2026-1-5')
   })
+})
+
+it('formatsWithResults lists only formats that have interviews', () => {
+  expect(formatsWithResults({ all: 2, video: 2, audio: 0, text: 0 })).toEqual(['video'])
+  expect(formatsWithResults({ all: 5, video: 2, audio: 0, text: 3 })).toEqual(['video', 'text'])
 })

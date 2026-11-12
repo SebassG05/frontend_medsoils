@@ -2,13 +2,16 @@ import { ChevronDown, Globe } from 'lucide-react'
 import FilterChips from '../shared/FilterChips'
 import { languageName } from './meta'
 import { COPY } from '../../data/dissemination/copy'
+import { formatsWithResults } from '../../data/dissemination'
 
 /**
  * Type chips, optional language select (only with ≥ 2 languages) and the
  * result count, announced politely to screen readers when it changes.
  */
 export default function InterviewFilters({ filters, counts, languages, resultCount, onTypeChange, onLangChange }) {
-  const options = ['all', 'video', 'audio', 'text'].map(value => ({
+  // Only formats that exist; with a single format there is nothing to choose.
+  const formats = formatsWithResults(counts)
+  const options = ['all', ...formats].map(value => ({
     value,
     label: COPY.filters[value],
     count: counts[value],
@@ -17,13 +20,15 @@ export default function InterviewFilters({ filters, counts, languages, resultCou
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <FilterChips
-        label={COPY.filters.label}
-        options={options}
-        value={filters.type ?? 'all'}
-        onChange={v => onTypeChange(v === 'all' ? null : v)}
-        scrollOnMobile
-      />
+      {formats.length > 1 ? (
+        <FilterChips
+          label={COPY.filters.label}
+          options={options}
+          value={filters.type ?? 'all'}
+          onChange={v => onTypeChange(v === 'all' ? null : v)}
+          scrollOnMobile
+        />
+      ) : <span />}
       <div className="flex items-center justify-between gap-4 sm:justify-end">
         {languages.length > 1 && (
           <label className="relative inline-flex items-center">
