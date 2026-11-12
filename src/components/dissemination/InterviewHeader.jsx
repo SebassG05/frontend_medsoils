@@ -19,11 +19,11 @@ export default function InterviewHeader({ interview }) {
         {interview.title}
       </h1>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-start gap-3.5">
           <Avatar person={person} size={56} />
           <p className="min-w-0 leading-snug">
-            <span className="block font-semibold text-gray-900">{person.name}</span>
-            <span className="block text-sm text-gray-600 [overflow-wrap:anywhere]">{roleLine(person)}</span>
+            <span dir="auto" className="block font-semibold text-gray-900">{person.name}</span>
+            <span dir="auto" className="block text-sm text-gray-600 [overflow-wrap:anywhere]">{roleLine(person)}</span>
           </p>
         </div>
         <p className="text-sm text-gray-600">

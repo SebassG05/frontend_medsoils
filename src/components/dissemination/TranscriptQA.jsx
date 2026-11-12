@@ -12,12 +12,12 @@ export default function TranscriptQA({ transcript, interviewee, collapsible = fa
     <div className="space-y-6">
       {transcript.map((turn, i) =>
         turn.speaker === 'interviewer' ? (
-          <p key={i} className="font-headline text-xl font-semibold leading-snug text-gray-900 text-pretty">
+          <p key={i} className="whitespace-pre-line font-headline text-xl font-semibold leading-snug text-gray-900 text-pretty">
             <span className="sr-only">{COPY.detail.interviewer}: </span>
             {turn.text}
           </p>
         ) : (
-          <p key={i} className="border-l-2 border-orange-300 pl-5 text-[17px] leading-relaxed text-gray-700 text-pretty">
+          <p key={i} className="whitespace-pre-line border-l-2 border-orange-300 pl-5 text-[17px] leading-relaxed text-gray-700 text-pretty">
             <span className="sr-only">{interviewee.name}: </span>
             {turn.text}
           </p>

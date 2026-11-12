@@ -1,4 +1,5 @@
-import MediaImage from '../collections/MediaImage'
+import { useState } from 'react'
+import { imageSources } from '../../utils/media'
 
 const initials = name =>
   name
@@ -12,15 +13,24 @@ const initials = name =>
 /** Interviewee photo, or their initials when there is none. Decorative next to the name. */
 export default function Avatar({ person, size = 40 }) {
   const box = { width: size, height: size }
-  if (person.photo) {
+  const [failed, setFailed] = useState(false)
+  if (person.photo && !failed) {
+    const { webp, fallback } = imageSources(person.photo.src)
     return (
-      <span className="block shrink-0 overflow-hidden rounded-full" style={box}>
-        <MediaImage
-          media={{ type: 'photo', src: person.photo.src, alt: '', color: '#e7d7c5', width: size, height: size }}
-          alt=""
-          sizes={`${size}px`}
-          className="h-full w-full"
-        />
+      <span className="block shrink-0 overflow-hidden rounded-full bg-orange-100" style={box}>
+        <picture className="block h-full w-full">
+          <source type="image/webp" srcSet={webp} sizes={`${size}px`} />
+          <img
+            src={fallback}
+            alt=""
+            width={size}
+            height={size}
+            loading="lazy"
+            decoding="async"
+            onError={() => setFailed(true)}
+            className="block h-full w-full object-cover"
+          />
+        </picture>
       </span>
     )
   }

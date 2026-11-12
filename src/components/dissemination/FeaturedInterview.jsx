@@ -73,11 +73,11 @@ export default function FeaturedInterview({ interview }) {
             “{interview.quote}”
           </blockquote>
         )}
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-start gap-3.5">
           <Avatar person={interview.interviewee} size={52} />
           <p id={metaId} className="min-w-0 leading-snug">
-            <span className="block font-semibold text-gray-900">{interview.interviewee.name}</span>
-            <span className="block text-sm text-gray-600 [overflow-wrap:anywhere]">{roleLine(interview.interviewee)}</span>
+            <span dir="auto" className="block font-semibold text-gray-900">{interview.interviewee.name}</span>
+            <span dir="auto" className="block text-sm text-gray-600 [overflow-wrap:anywhere]">{roleLine(interview.interviewee)}</span>
           </p>
         </div>
         <p className="text-sm text-gray-600">{meta.join('  ·  ')}</p>

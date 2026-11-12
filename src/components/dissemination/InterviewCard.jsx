@@ -61,8 +61,8 @@ export default function InterviewCard({ interview, headingLevel = 3 }) {
           <Avatar person={interview.interviewee} size={40} />
           <p id={metaId} className="min-w-0 text-sm leading-snug">
             <span className="sr-only">{COPY.types[interview.type]} · </span>
-            <span className="block font-semibold text-gray-900 [overflow-wrap:anywhere]">{interview.interviewee.name}</span>
-            <span className="block text-gray-600 [overflow-wrap:anywhere]">{roleLine(interview.interviewee)}</span>
+            <span dir="auto" className="block font-semibold text-gray-900 [overflow-wrap:anywhere]">{interview.interviewee.name}</span>
+            <span dir="auto" className="block text-gray-600 [overflow-wrap:anywhere]">{roleLine(interview.interviewee)}</span>
           </p>
         </div>
         <div className="mt-auto flex items-center justify-between gap-4 pt-1">

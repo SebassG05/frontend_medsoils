@@ -8,7 +8,7 @@ export const TYPES = ['video', 'audio', 'text']
 const byDateDesc = (a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)
 
 /**
- * The interviews to show, newest first. In development, `?demo=interviews&n=1|4|12`
+ * The interviews to show, newest first. In development, `?demo=interviews&n=0|1|4|12|50|worst`
  * swaps in fictional fixtures so the design can be judged with content; the
  * whole branch is compiled away in production builds.
  * @param {URLSearchParams} params
@@ -22,6 +22,10 @@ export async function loadInterviews(params) {
         1: () => import('./__fixtures__/interviews-1.js'),
         4: () => import('./__fixtures__/interviews-4.js'),
         12: () => import('./__fixtures__/interviews-12.js'),
+        // break-ui states: empty, a long list, worst-case values
+        0: () => import('./__fixtures__/interviews-0.js'),
+        50: () => import('./__fixtures__/interviews-50.js'),
+        worst: () => import('./__fixtures__/interviews-worst.js'),
       }
       list = (await (fixtures[params.get('n')] ?? fixtures[12])()).default
     }
