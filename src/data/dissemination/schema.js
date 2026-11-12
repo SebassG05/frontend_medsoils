@@ -31,6 +31,7 @@ import { parseYouTubeId } from '../../utils/youtube.js'
  * @property {string} language            ISO 639-1, e.g. 'en', 'es', 'tr'
  * @property {Cover} cover
  * @property {string} summary             Used for the card, meta description and sharing.
+ * @property {string[]} [description]     Longer text for the interview page, one string per paragraph. Without it the page shows the summary.
  * @property {string} [quote]
  * @property {string} [mediaUrl]          Video: YouTube link. Audio: YouTube link or direct audio file URL.
  * @property {{ src: string, srclang: string, label: string }[]} [captions]  Only for self-hosted audio.
@@ -62,6 +63,9 @@ function problemsOf(it) {
   if (!it.cover || !isText(it.cover.alt)) p.push('cover.alt is required')
   if (!it.cover || !isText(it.cover.color)) p.push('cover.color is required')
   if (!isText(it.summary)) p.push('summary is required')
+  if (it.description != null && !(Array.isArray(it.description) && it.description.length && it.description.every(isText))) {
+    p.push('description must be a list of paragraphs (strings)')
+  }
   if (it.type === 'video' && !parseYouTubeId(it.mediaUrl)) p.push('mediaUrl must be a YouTube link')
   if (it.type === 'audio' && !parseYouTubeId(it.mediaUrl) && !isUrl(it.mediaUrl)) p.push('mediaUrl must be a YouTube link or an audio file URL')
   if (it.type === 'text' && !(Array.isArray(it.transcript) && it.transcript.length)) p.push('transcript is required for text')

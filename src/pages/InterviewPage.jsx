@@ -57,7 +57,11 @@ export default function InterviewPage() {
           </div>
 
           <motion.div {...follow} className={`${READING} mt-12 space-y-10`}>
-            <p className="text-xl leading-relaxed text-gray-700 text-pretty">{interview.summary}</p>
+            <div className="space-y-5">
+              {(interview.description ?? [interview.summary]).map((paragraph, i) => (
+                <p key={i} className={`${i === 0 ? 'text-xl' : 'text-lg'} leading-relaxed text-gray-700 text-pretty`}>{paragraph}</p>
+              ))}
+            </div>
             {interview.quote && interview.type !== 'text' && (
               <blockquote className="border-l-[3px] border-orange-500 pl-5 font-headline text-2xl font-medium leading-snug text-gray-900 text-pretty">
                 “{interview.quote}”

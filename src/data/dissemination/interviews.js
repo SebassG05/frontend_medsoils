@@ -35,7 +35,11 @@ export const INTERVIEWS = [
       alt: 'Manuel Pulido sitting in a dry grass field during a MEDSOILS Challenge field session, with the University of Extremadura logo',
       color: '#6f6961',
     },
-    summary: 'Manuel Pulido, a geographer at the University of Extremadura whose research focuses on soil erosion and land degradation, explains why the MEDSOILS Challenge looks closely at what happens to soils in the Mediterranean basin. In Spanish, with English subtitles.',
+    summary: 'Manuel Pulido Fernández, geographer and professor, explains why the MEDSOILS Challenge focuses on the soils of the Mediterranean basin. Recorded during the project trip to Adıyaman. In Spanish, with English subtitles.',
+    description: [
+      'Manuel Pulido Fernández is a lecturer in the Department of Art and Territorial Sciences at the University of Extremadura, where he has taught physical geography since 2011. His research looks at soil erosion and land degradation: soil quality in Iberian dehesa rangelands, soil organic matter, and erosion rates in Mediterranean vineyards. He has also worked on European soil initiatives.',
+      'In this interview, recorded during the MEDSOILS Challenge trip to Adıyaman, he explains why the project looks so closely at the Mediterranean basin. Dry summers, scarce water and intensive land use make its soils especially vulnerable, which is why the region needs a new generation of soil experts. In Spanish, with English subtitles.',
+    ],
     quote: 'We focus closely on what happens in the Mediterranean basin.',
     mediaUrl: 'https://youtu.be/AsZJ_W1gvEs',
     tags: ['soil erosion', 'Mediterranean', 'Spain'],
