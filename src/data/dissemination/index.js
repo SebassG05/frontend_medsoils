@@ -44,7 +44,10 @@ export function parseFilters(params) {
   }
 }
 
+// Letters NFD can't split into base + accent (Turkish ı, Vietnamese đ, …) are mapped by hand.
+const UNDECOMPOSABLE = { ı: 'i', đ: 'd', ł: 'l', ø: 'o', æ: 'ae', œ: 'oe', ß: 'ss', þ: 'th' }
 const fold = s => (s ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
+  .replace(/[ıđłøæœßþ]/g, ch => UNDECOMPOSABLE[ch])
 const haystack = it => fold([
   it.title, it.summary, it.interviewee?.name, it.interviewee?.role, it.interviewee?.institution, ...(it.tags ?? []),
 ].join(' '))
@@ -96,7 +99,10 @@ export function related(list, slug, n = 3) {
 
 const DATE_FMT = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 /** '2026-10-14' → '14 Oct 2026', the same in every timezone. */
-export const formatDate = iso => DATE_FMT.format(new Date(`${iso}T00:00:00Z`))
+export function formatDate(iso) {
+  const date = new Date(`${iso}T00:00:00Z`)
+  return Number.isNaN(date.getTime()) ? String(iso) : DATE_FMT.format(date) // never throw during render
+}
 
 /** 760 → '12:40', 3725 → '1:02:05'. */
 export function formatDuration(seconds) {

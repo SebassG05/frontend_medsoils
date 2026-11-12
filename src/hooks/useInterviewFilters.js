@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { parseFilters } from '../data/dissemination'
+import { shouldFollowUrl } from './searchSync'
 
 const SEARCH_DEBOUNCE_MS = 250
 
@@ -16,9 +17,10 @@ export default function useInterviewFilters() {
   const [query, setQueryState] = useState(fromUrl.q)
   const pending = useRef(null)
 
-  // Back/Forward changes ?q= — follow it unless the user is mid-typing.
+  // Back/Forward changes ?q= — follow it, unless the user is mid-typing or the
+  // URL just holds the trimmed copy of what they typed ("soil " → q=soil).
   useEffect(() => {
-    if (!pending.current) setQueryState(fromUrl.q)
+    setQueryState(local => (shouldFollowUrl({ urlQ: fromUrl.q, localQ: local, pending: Boolean(pending.current) }) ? fromUrl.q : local))
   }, [fromUrl.q])
 
   useEffect(() => () => clearTimeout(pending.current), [])

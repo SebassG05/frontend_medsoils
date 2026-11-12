@@ -1,4 +1,4 @@
-import { parseYouTubeId } from '../../utils/youtube'
+import { parseYouTubeId } from '../../utils/youtube.js'
 
 /**
  * @typedef {'video' | 'audio' | 'text'} InterviewType

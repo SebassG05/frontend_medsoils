@@ -153,3 +153,19 @@ it('formatMinutes reads as a length, not a clock time', () => {
   expect(formatMinutes(3725)).toBe('1 h 2 min')
   expect(formatMinutes(3600)).toBe('1 h')
 })
+
+describe('review fixes', () => {
+  it('search folds letters without a decomposition (Turkish ı, Vietnamese đ)', () => {
+    const list = [
+      item('a', { interviewee: person('Ahmet Yılmaz', 'Adıyaman University') }),
+      item('b', { interviewee: person('Đặng Thị Ngọc Hân', 'VAAS') }),
+    ]
+    expect(filterInterviews(list, { q: 'yilmaz' }).map(i => i.slug)).toEqual(['a'])
+    expect(filterInterviews(list, { q: 'adiyaman' }).map(i => i.slug)).toEqual(['a'])
+    expect(filterInterviews(list, { q: 'dang' }).map(i => i.slug)).toEqual(['b'])
+  })
+
+  it('formatDate returns the raw value instead of throwing on an invalid date', () => {
+    expect(formatDate('2026-1-5')).toBe('2026-1-5')
+  })
+})
