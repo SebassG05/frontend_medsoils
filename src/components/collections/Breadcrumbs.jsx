@@ -3,9 +3,9 @@ import { ChevronRight } from 'lucide-react'
 import { COPY } from '../../data/collections/copy'
 
 /** items: [{ label, to }] — the last item is the current page and is not a link. */
-export default function Breadcrumbs({ items }) {
+export default function Breadcrumbs({ items, label = COPY.breadcrumbs.label }) {
   return (
-    <nav aria-label={COPY.breadcrumbs.label}>
+    <nav aria-label={label}>
       <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-gray-600">
         {items.map((item, i) => {
           const last = i === items.length - 1
