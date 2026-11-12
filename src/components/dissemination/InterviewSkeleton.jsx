@@ -4,7 +4,7 @@ const BLOCK = 'bg-gray-100 animate-pulse motion-reduce:animate-none'
 
 function CardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-[var(--radius-card)] bg-white shadow-[var(--shadow-card)]">
+    <div className="overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card">
       <div className={`aspect-video ${BLOCK}`} />
       <div className="space-y-4 px-6 pt-5 pb-6">
         <div className="space-y-2">
@@ -29,7 +29,7 @@ export default function InterviewSkeleton({ count = 6, featured = false }) {
   return (
     <div aria-busy="true" aria-label={COPY.loading} role="status" className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-12">
       {featured && (
-        <div className="mb-14 grid overflow-hidden rounded-[2rem] bg-white shadow-[var(--shadow-card)] lg:grid-cols-12">
+        <div className="mb-14 grid overflow-hidden rounded-[2rem] bg-white shadow-card lg:grid-cols-12">
           <div className={`aspect-video lg:col-span-7 lg:aspect-auto lg:min-h-[28rem] ${BLOCK}`} />
           <div className="space-y-5 p-8 lg:col-span-5 lg:p-12">
             <div className={`h-3 w-1/3 rounded ${BLOCK}`} />

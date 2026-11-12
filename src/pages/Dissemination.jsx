@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import Footer from '../components/layout/Footer'
 import PageHero from '../components/shared/PageHero'
 import SearchField from '../components/shared/SearchField'
@@ -12,6 +13,7 @@ import useInterviews from '../hooks/useInterviews'
 import useInterviewFilters from '../hooks/useInterviewFilters'
 import { availableLanguages, countByType, filterInterviews, pickFeatured } from '../data/dissemination'
 import { COPY } from '../data/dissemination/copy'
+import { fadeRise } from '../utils/motion'
 
 const CONTAINER = 'mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-12'
 
@@ -23,6 +25,7 @@ const CONTAINER = 'mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-12'
 export default function Dissemination() {
   const { status, interviews, retry } = useInterviews()
   const { filters, setQuery, setType, setLang, clear } = useInterviewFilters()
+  const reduce = useReducedMotion()
 
   const languages = useMemo(() => availableLanguages(interviews), [interviews])
   const counts = useMemo(() => countByType(interviews), [interviews])
@@ -48,9 +51,15 @@ export default function Dissemination() {
       {status === 'ready' && interviews.length > 0 && (
         <div className="pb-28">
           {featured && (
-            <section aria-label={COPY.featured.eyebrow(featured.type)} className={`${CONTAINER} pt-4`}>
+            <motion.section
+              variants={fadeRise(reduce, 0.24)}
+              initial="hidden"
+              animate="show"
+              aria-label={COPY.featured.eyebrow(featured.type)}
+              className={`${CONTAINER} pt-4`}
+            >
               <FeaturedInterview interview={featured} />
-            </section>
+            </motion.section>
           )}
 
           {(showToolbar || filtering) && (

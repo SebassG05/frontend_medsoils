@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Headphones, Play } from 'lucide-react'
 import InterviewCover from './InterviewCover'
 import { youtubeEmbedUrl } from '../../utils/youtube'
+import { layoutIds } from '../../data/dissemination'
+import { layoutTransition } from '../../utils/motion'
 import { COPY } from '../../data/dissemination/copy'
 
 let preconnected = false
@@ -26,6 +29,7 @@ export default function YouTubeFacade({ videoId, interview, audio = false }) {
   const [playing, setPlaying] = useState(false)
   const frame = useRef(null)
   const Icon = audio ? Headphones : Play
+  const reduce = useReducedMotion()
 
   useEffect(() => {
     if (playing) frame.current?.focus()
@@ -33,7 +37,14 @@ export default function YouTubeFacade({ videoId, interview, audio = false }) {
 
   return (
     <div>
-      <div className="relative aspect-video overflow-hidden rounded-[var(--radius-card)] bg-gray-900 shadow-[var(--shadow-card)]">
+      {/* Shared element: the card or featured cover grows into this box. */}
+      <motion.div
+        layoutId={layoutIds.cover(interview.slug)}
+        layoutCrossfade={false}
+        transition={layoutTransition(reduce)}
+        style={{ borderRadius: 24 }}
+        className="relative aspect-video overflow-hidden bg-gray-900 shadow-card"
+      >
         {playing ? (
           <iframe
             ref={frame}
@@ -69,7 +80,7 @@ export default function YouTubeFacade({ videoId, interview, audio = false }) {
             </span>
           </button>
         )}
-      </div>
+      </motion.div>
       <p className="mt-2.5 text-xs text-gray-600">{COPY.player.notice}</p>
     </div>
   )

@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+import { motion, useReducedMotion } from 'framer-motion'
 import Footer from '../components/layout/Footer'
 import SkyBand from '../components/collections/SkyBand'
 import Breadcrumbs from '../components/collections/Breadcrumbs'
@@ -14,6 +15,7 @@ import useInterviews from '../hooks/useInterviews'
 import { getBySlug, related } from '../data/dissemination'
 import { DISSEMINATION_PATH } from '../utils/disseminationRoutes'
 import { COPY } from '../data/dissemination/copy'
+import { AFTER_MORPH, fadeRise } from '../utils/motion'
 
 const NARROW = 'mx-auto max-w-5xl px-4 sm:px-6'
 const READING = 'mx-auto max-w-3xl px-4 sm:px-6'
@@ -23,6 +25,9 @@ export default function InterviewPage() {
   const { slug } = useParams()
   const { status, interviews, retry } = useInterviews()
   const interview = status === 'ready' ? getBySlug(interviews, slug) : null
+  const reduce = useReducedMotion()
+  // Everything except the player waits for the cover morph to lead.
+  const follow = { variants: fadeRise(reduce, AFTER_MORPH), initial: 'hidden', animate: 'show' }
 
   let content
   if (status === 'loading') content = <div className="pt-8 pb-24"><InterviewSkeleton count={3} /></div>
@@ -38,11 +43,11 @@ export default function InterviewPage() {
       <>
         <article className="pb-20">
           <div className={`${NARROW} space-y-10`}>
-            <InterviewHeader interview={interview} />
+            <motion.div {...follow}><InterviewHeader interview={interview} /></motion.div>
             <InterviewMedia interview={interview} />
           </div>
 
-          <div className={`${READING} mt-12 space-y-10`}>
+          <motion.div {...follow} className={`${READING} mt-12 space-y-10`}>
             <p className="text-xl leading-relaxed text-gray-700 text-pretty">{interview.summary}</p>
             {interview.quote && interview.type !== 'text' && (
               <blockquote className="border-l-[3px] border-orange-500 pl-5 font-headline text-2xl font-medium leading-snug text-gray-900 text-pretty">
@@ -57,7 +62,7 @@ export default function InterviewPage() {
             <div className="border-t border-gray-100 pt-8">
               <ShareActions title={interview.title} />
             </div>
-          </div>
+          </motion.div>
         </article>
 
         <div className="border-t border-gray-100 pt-16 pb-28">

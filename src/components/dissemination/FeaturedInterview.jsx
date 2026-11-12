@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Headphones, Play } from 'lucide-react'
 import InterviewCover from './InterviewCover'
 import Avatar from './Avatar'
 import { durationLabel, languageName, roleLine } from './meta'
-import { formatDate } from '../../data/dissemination'
+import { formatDate, layoutIds } from '../../data/dissemination'
+import { layoutTransition } from '../../utils/motion'
 import { COPY } from '../../data/dissemination/copy'
 import useInterviewHref from '../../hooks/useInterviewHref'
 
@@ -14,6 +16,7 @@ import useInterviewHref from '../../hooks/useInterviewHref'
  */
 export default function FeaturedInterview({ interview }) {
   const href = useInterviewHref(interview.slug)
+  const reduce = useReducedMotion()
   const duration = durationLabel(interview)
   const PlayIcon = interview.type === 'audio' ? Headphones : Play
   const meta = [formatDate(interview.date), duration, languageName(interview.language)].filter(Boolean)
@@ -22,25 +25,37 @@ export default function FeaturedInterview({ interview }) {
     <Link
       to={href}
       aria-label={interview.title}
-      className="group grid overflow-hidden rounded-[2rem] bg-white shadow-[var(--shadow-card)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-4 lg:grid-cols-12"
+      className="group grid overflow-hidden rounded-[2rem] bg-white shadow-card outline-none transition-shadow duration-[var(--motion-base)] pointer-fine:hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-4 lg:grid-cols-12"
     >
-      <div className="relative aspect-video lg:col-span-7 lg:aspect-auto lg:min-h-[30rem]">
-        <InterviewCover
-          interview={interview}
-          size="maxres"
-          priority
-          sizes="(min-width: 1024px) 58vw, 100vw"
-          className="absolute inset-0"
-        />
+      <motion.div
+        layoutId={layoutIds.cover(interview.slug)}
+        layoutCrossfade={false}
+        transition={layoutTransition(reduce)}
+        className="relative z-10 aspect-video overflow-hidden lg:col-span-7 lg:aspect-auto lg:min-h-[30rem]"
+      >
+        {/* layout: keeps the photo undistorted while the box changes shape (featured → 16:9 player) */}
+        <motion.div layout transition={layoutTransition(reduce)} className="absolute inset-0">
+          <InterviewCover
+            interview={interview}
+            size="maxres"
+            priority
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            className="absolute inset-0"
+            imgClassName="scale-100 transition-transform duration-[var(--motion-cover)] ease-out-expo pointer-fine:group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          />
+        </motion.div>
         {interview.type !== 'text' && (
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex size-16 sm:size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 shadow-lg">
-            <PlayIcon className="size-6 sm:size-7 translate-x-[2px] fill-orange-500 text-orange-500" strokeWidth={interview.type === 'audio' ? 2 : 0} />
+            <PlayIcon
+              className={`size-6 sm:size-7 text-orange-600 ${interview.type === 'audio' ? '' : 'translate-x-[2px] fill-orange-600'}`}
+              strokeWidth={interview.type === 'audio' ? 2 : 0}
+            />
           </span>
         )}
         {duration && interview.type !== 'text' && (
           <span className="absolute bottom-5 right-5 rounded-md bg-black/70 px-2.5 py-1 text-[13px] font-semibold tabular-nums text-white">{duration}</span>
         )}
-      </div>
+      </motion.div>
 
       <div className="flex flex-col gap-5 p-7 sm:p-10 lg:col-span-5 lg:p-12">
         <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-orange-700">

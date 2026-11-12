@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import InterviewCover from './InterviewCover'
 import Avatar from './Avatar'
 import { TYPE_ICON, durationLabel, roleLine } from './meta'
-import { formatDate } from '../../data/dissemination'
+import { formatDate, layoutIds } from '../../data/dissemination'
+import { layoutTransition } from '../../utils/motion'
 import { COPY } from '../../data/dissemination/copy'
 import useInterviewHref from '../../hooks/useInterviewHref'
 
@@ -16,6 +18,7 @@ const CARD_SIZES = '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw'
  */
 export default function InterviewCard({ interview, headingLevel = 3 }) {
   const href = useInterviewHref(interview.slug)
+  const reduce = useReducedMotion()
   const Heading = `h${headingLevel}`
   const Icon = TYPE_ICON[interview.type]
   const duration = durationLabel(interview)
@@ -24,10 +27,17 @@ export default function InterviewCard({ interview, headingLevel = 3 }) {
     <Link
       to={href}
       aria-label={interview.title}
-      className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-white shadow-[var(--shadow-card)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-4"
+      className="group flex h-full flex-col rounded-[var(--radius-card)] bg-white shadow-card outline-none transition-[translate,scale,box-shadow] duration-[var(--motion-base)] ease-out-expo active:scale-[0.985] pointer-fine:hover:-translate-y-0.5 pointer-fine:hover:shadow-card-hover motion-reduce:transition-none motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-4"
     >
-      <div className="relative aspect-video">
-        <InterviewCover interview={interview} sizes={CARD_SIZES} className="absolute inset-0" />
+      {/* Shared element: grows into the player on the detail page. */}
+      <motion.div
+        layoutId={layoutIds.cover(interview.slug)}
+        layoutCrossfade={false}
+        transition={layoutTransition(reduce)}
+        style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
+        className="relative z-10 aspect-video overflow-hidden"
+      >
+        <InterviewCover interview={interview} sizes={CARD_SIZES} className="absolute inset-0" imgClassName="scale-100 transition-transform duration-[var(--motion-cover)] ease-out-expo pointer-fine:group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
         <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 py-1 pl-2.5 pr-3 text-xs font-semibold text-gray-900">
           <Icon size={13} aria-hidden="true" className="text-orange-600" strokeWidth={2.4} />
           {COPY.types[interview.type]}
@@ -37,7 +47,7 @@ export default function InterviewCard({ interview, headingLevel = 3 }) {
             {duration}
           </span>
         )}
-      </div>
+      </motion.div>
 
       <div className="flex flex-1 flex-col gap-3.5 px-6 pt-5 pb-6">
         <Heading className="font-headline text-[21px] font-semibold leading-[1.25] tracking-[-0.01em] text-gray-900 line-clamp-3">
