@@ -19,8 +19,9 @@ import { DISSEMINATION_PATH } from '../utils/disseminationRoutes'
 import { COPY } from '../data/dissemination/copy'
 import { AFTER_MORPH, fadeRise } from '../utils/motion'
 
-const NARROW = 'mx-auto max-w-5xl px-4 sm:px-6'
-const READING = 'mx-auto max-w-3xl px-4 sm:px-6'
+const NARROW = 'mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'
+// Same width as the player so the text lines up with its edges.
+const READING = NARROW
 
 /** /dissemination/:slug — one interview. */
 export default function InterviewPage() {
@@ -57,9 +58,10 @@ export default function InterviewPage() {
           </div>
 
           <motion.div {...follow} className={`${READING} mt-12 space-y-10`}>
-            <div className="space-y-5">
+            {/* lang="en" lets the browser hyphenate, so justified lines don't open wide gaps. */}
+            <div lang="en" className="space-y-6">
               {(interview.description ?? [interview.summary]).map((paragraph, i) => (
-                <p key={i} className={`${i === 0 ? 'text-xl' : 'text-lg'} leading-relaxed text-gray-700 text-pretty`}>{paragraph}</p>
+                <p key={i} className={`${i === 0 ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl'} leading-relaxed text-gray-700 text-justify hyphens-auto`}>{paragraph}</p>
               ))}
             </div>
             {interview.quote && interview.type !== 'text' && (

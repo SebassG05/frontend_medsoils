@@ -15,18 +15,18 @@ export default function InterviewHeader({ interview }) {
         <Icon size={15} aria-hidden="true" strokeWidth={2.4} />
         {COPY.types[interview.type]}
       </p>
-      <h1 className="font-headline text-[34px] sm:text-5xl font-bold leading-[1.08] tracking-[-0.025em] text-gray-900 text-balance">
+      <h1 className="font-headline text-[40px] sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-[-0.03em] text-gray-900 text-balance">
         {interview.title}
       </h1>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-3.5">
-          <Avatar person={person} size={56} />
+        <div className="flex items-start gap-4">
+          <Avatar person={person} size={64} />
           <p className="min-w-0 leading-snug">
-            <span dir="auto" className="block font-semibold text-gray-900">{person.name}</span>
-            <span dir="auto" className="block text-sm text-gray-600 [overflow-wrap:anywhere]">{roleLine(person)}</span>
+            <span dir="auto" className="block text-lg font-semibold text-gray-900">{person.name}</span>
+            <span dir="auto" className="block text-base text-gray-600 [overflow-wrap:anywhere]">{roleLine(person)}</span>
           </p>
         </div>
-        <p className="text-sm text-gray-600">
+        <p className="text-base text-gray-600">
           <time dateTime={interview.date}>{formatDate(interview.date)}</time>
           {duration && <> · {duration}</>}
           {' · '}{languageName(interview.language)}
@@ -34,7 +34,7 @@ export default function InterviewHeader({ interview }) {
       </div>
       {interview.tags?.length > 0 && (
         // Plain text, not pills: pills read as clickable filters, and these aren't.
-        <p className="text-sm text-gray-600 [overflow-wrap:anywhere]">
+        <p className="text-base text-gray-600 [overflow-wrap:anywhere]">
           <span className="font-semibold text-gray-700">{COPY.detail.topics}: </span>
           {interview.tags.join(' · ')}
         </p>
