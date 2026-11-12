@@ -40,7 +40,6 @@ export const INTERVIEWS = [
       'Manuel Pulido Fernández is a lecturer in the Department of Art and Territorial Sciences at the University of Extremadura, where he has taught physical geography since 2011. His research looks at soil erosion and land degradation: soil quality in Iberian dehesa rangelands, soil organic matter, and erosion rates in Mediterranean vineyards. He has also worked on European soil initiatives.',
       'In this interview, recorded during the MEDSOILS Challenge trip to Adıyaman, he explains why the project looks so closely at the Mediterranean basin. Dry summers, scarce water and intensive land use make its soils especially vulnerable, which is why the region needs a new generation of soil experts. In Spanish, with English subtitles.',
     ],
-    quote: 'We focus closely on what happens in the Mediterranean basin.',
     mediaUrl: 'https://youtu.be/AsZJ_W1gvEs',
     tags: ['soil erosion', 'Mediterranean', 'Spain'],
     featured: true,
