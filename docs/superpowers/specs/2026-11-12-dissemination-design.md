@@ -94,7 +94,7 @@ Propios (`src/components/dissemination/`):
 - `InterviewFilters`: chips de tipo, select de idioma (solo si hay ≥ 2 idiomas) y contador con `aria-live="polite"`.
 - `EmptyState`: tarjetas fantasma (decorativas, `aria-hidden`), h2, texto y enlaces a Resources y Blog. Versión "sin resultados" con botón "Clear filters".
 - `InterviewSkeleton`: misma forma que la tarjeta.
-- Detalle: `InterviewHeader` (CoverHeader + metadatos), `YouTubeFacade`, `AudioPlayer` (`<audio controls preload="none">` nativo con pistas `<track>`; si `mediaUrl` es de YouTube, la fachada con badge de audio), `TranscriptQA` (preguntas y respuestas diferenciadas; plegable con `<details>` salvo en texto), `ShareActions` (copiar enlace + `navigator.share` si existe) y `RelatedInterviews`.
+- Detalle: `InterviewHeader` (la caja del reproductor o portada lleva el mismo `layoutId` que la portada de la tarjeta, así la tarjeta crece hasta el reproductor; título y metadatos debajo, no encima de la imagen), `YouTubeFacade`, `AudioPlayer` (`<audio controls preload="none">` nativo con pistas `<track>`; si `mediaUrl` es de YouTube, la fachada con badge de audio), `TranscriptQA` (preguntas y respuestas diferenciadas; plegable con `<details>` salvo en texto), `ShareActions` (copiar enlace + `navigator.share` si existe) y `RelatedInterviews`.
 
 Páginas: `Dissemination.jsx` (listado) e `InterviewPage.jsx` (detalle; slug inexistente → `NotFoundPanel` reutilizado).
 
