@@ -3,9 +3,10 @@
  * Add a new trip by creating `<slug>.js` next to this file and listing it here.
  */
 import adiyaman from './adiyaman.js'
+import caceres from './caceres.js'
 import { isMediaConfigured, isRemote, thumbnailUrl } from '../../utils/media.js'
 
-export const COLLECTIONS = [adiyaman]
+export const COLLECTIONS = [adiyaman, caceres]
 
 /** Slugs that would shadow existing /resources/* routes. */
 const RESERVED_SLUGS = new Set(['add'])

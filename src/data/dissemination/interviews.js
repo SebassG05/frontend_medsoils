@@ -61,7 +61,7 @@ export const INTERVIEWS = [
       alt: 'A lecturer and students reviewing field notes in a meadow on the Adıyaman University campus',
       color: '#72695d',
     },
-    summary: 'Erhan Akça, soil scientist and professor at Adıyaman University, talks about the MEDSOILS Challenge field work in Adıyaman and how students from different countries share their views on soil. In Turkish, with English subtitles.',
+    summary: 'Erhan Akça on the MEDSOILS Challenge approach',
     description: [
       'Erhan Akça is a professor at Adıyaman University, based at its School of Technical Sciences. A soil scientist, he studies how land use changes the soils of semi-arid south-eastern Türkiye: what happens to soils when rainfed fields are converted to irrigated farming, how different land uses alter soil properties across Adıyaman Province, and how altitude affects soil organic carbon in a semi-arid Mediterranean climate. He co-edited The Soils of Turkey (Springer, 2017), and has also worked on soil mapping in the Çukurova region and on soils as markers at ancient settlement mounds in the Middle East.',
       'In this interview, recorded during the MEDSOILS Challenge field work hosted in Adıyaman, he talks about the visit and how students from different countries exchange knowledge and bring their different views on soil. In Turkish, with English subtitles.',

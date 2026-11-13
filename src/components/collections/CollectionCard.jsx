@@ -24,7 +24,12 @@ export function MetaChips({ stats, tone = 'onImage' }) {
     tone === 'onImage'
       ? 'bg-white/16 text-white ring-1 ring-inset ring-white/20'
       : 'bg-gray-100 text-gray-700'
-  const items = [COPY.counts.days(stats.days), COPY.counts.photos(stats.photos), COPY.counts.videos(stats.videos)]
+  const items = [
+    stats.days > 0 && COPY.counts.days(stats.days),
+    stats.photos > 0 && COPY.counts.photos(stats.photos),
+    stats.videos > 0 && COPY.counts.videos(stats.videos),
+  ].filter(Boolean)
+  if (items.length === 0) return null
   return (
     <ul className="flex flex-wrap gap-2">
       {items.map(text => (
@@ -61,7 +66,7 @@ export default function CollectionCard({ collection, returning = false }) {
           layoutCrossfade={false}
           transition={layoutTransition(reduce)}
           style={{ borderRadius: 24 }}
-          className="relative z-10 aspect-[4/5] sm:aspect-[16/11] overflow-hidden shadow-card
+          className="relative z-10 aspect-[4/5] sm:aspect-[16/11] overflow-hidden bg-[#7a5a40] shadow-card
             transition-shadow duration-[var(--motion-base)] pointer-fine:group-hover:shadow-card-hover"
         >
           {cover && (
@@ -88,9 +93,11 @@ export default function CollectionCard({ collection, returning = false }) {
               {collection.title}
             </h3>
             <p className="mt-1 text-[15px] text-white/85">{subtitle}</p>
-            <div className="mt-4">
-              <MetaChips stats={stats} />
-            </div>
+            {stats.days > 0 && (
+              <div className="mt-4">
+                <MetaChips stats={stats} />
+              </div>
+            )}
           </div>
           <span
             aria-hidden="true"
