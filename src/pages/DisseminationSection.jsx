@@ -1,13 +1,9 @@
-import { lazy, Suspense } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, LayoutGroup, MotionConfig, motion, useReducedMotion } from 'framer-motion'
 import Dissemination from './Dissemination'
 import InterviewPage from './InterviewPage'
 import { DURATION, EASE } from '../utils/motion'
 import useSectionScroll from '../hooks/useSectionScroll'
-
-// Dev-only dataset switcher (break-ui); never part of the production bundle.
-const DemoDataToggle = import.meta.env.DEV ? lazy(() => import('../components/dissemination/DemoDataToggle')) : null
 
 /**
  * /dissemination and /dissemination/:slug. Same structure as ResourcesSection:
@@ -39,7 +35,6 @@ export default function DisseminationSection() {
           </AnimatePresence>
         </div>
       </LayoutGroup>
-      {DemoDataToggle && <Suspense fallback={null}><DemoDataToggle /></Suspense>}
     </MotionConfig>
   )
 }

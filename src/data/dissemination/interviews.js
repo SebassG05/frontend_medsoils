@@ -46,7 +46,7 @@ export const INTERVIEWS = [
   },
   {
     slug: 'erhan-akca-students-views-on-soil',
-    title: 'Erhan Akça on students sharing their views on soil',
+    title: 'Erhan Akça on the MEDSOILS Challenge approach',
     type: 'video',
     interviewee: {
       name: 'Erhan Akça',
