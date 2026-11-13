@@ -16,11 +16,29 @@ const adiyaman = {
   slug: 'adiyaman',
   title: 'Visit to Adıyaman',
   place: 'Adıyaman, Türkiye',
-  // Extend `end` when more days are added.
-  dates: { start: '2026-11-02', end: '2026-11-05' },
-  // PENDING: confirm wording with the team.
+  // Whole week, arrivals to departures (the photo days are 2–5 November).
+  dates: { start: '2026-11-01', end: '2026-11-06' },
+  // Summary on the collection page: headline, intro, then the days without
+  // photos (`before` above the day cards, `after` below), then `closing`.
+  headline: 'Learning from the Land: MEDSOIL’s Week in Türkiye',
   description:
-    'Photos and videos from the MEDSOILS Challenge visit to Adıyaman, in south-eastern Türkiye.',
+    'Project partners, teaching staff and Master’s students came together in Adıyaman for MEDSOIL’s Project Steering Committee Meeting and Master’s Fieldwork Week. The programme combined soil exploration, practical exercises and opportunities to exchange knowledge. Follow our journey through this daily diary, illustrated with photos and videos from the week.',
+  before: [
+    {
+      date: '2026-11-01',
+      heading: 'Arrivals and a warm welcome',
+      text: 'The week began with arrivals and registration in Adıyaman. Project partners attended the Steering Committee meeting, while the evening welcome dinner brought together partners, teachers and students ahead of the fieldwork programme.',
+    },
+  ],
+  after: [
+    {
+      date: '2026-11-06',
+      heading: 'Farewell to Adıyaman',
+      text: 'The week concluded with departures and transfers to the airport, following several days of shared fieldwork, discussion and practical learning.',
+    },
+  ],
+  closing:
+    'Thank you to our local hosts, teaching staff, project partners and students for their contributions to the week. Browse the accompanying photos and videos to discover the soils, landscapes and shared moments of MEDSOIL in Türkiye.',
   partner: { name: 'Adiyaman University', slug: 'adiyaman' },
   // Cover for the Field trips card and the collection header. Either a full
   // media object (as here) or a reference to a day's media: { day: 'dia-1', media: '<id>' }.
@@ -42,8 +60,9 @@ const adiyaman = {
     {
       slug: 'dia-1',
       number: 1,
-      title: 'Photos & videos',
+      title: 'The first soil discoveries',
       date: '2026-11-02',
+      summary: 'Following a morning briefing, participants headed into the field to explore two soil profiles. The visits provided an opportunity to examine soil characteristics directly, discuss observations with teachers and connect classroom knowledge with real examples. Exploring the profiles together also encouraged students to compare interpretations and learn from one another.',
       // First id = cover of the day (day card mosaic lead + day header).
       mosaic: ['akyoz3', 'gku3ar', 'os5esb', 'ufd7gd'],
       // Chronological, as shot.
@@ -107,8 +126,9 @@ const adiyaman = {
     {
       slug: 'dia-2',
       number: 2,
-      title: 'Photos',
+      title: 'Exploring Çelikhan',
       date: '2026-11-03',
+      summary: 'The second fieldwork day took the group to Çelikhan, with visits in both the morning and afternoon. The excursion included a peatland near Çelikhan, adding a different landscape to the week’s learning experience. Field observations prompted discussions about the relationships between soils, water and the surrounding environment.',
       // First id = cover of the day (day card mosaic lead + day header).
       mosaic: ['ogrr2z', 'ribdco', 'jqstn0', 'tbj1kk'],
       // Chronological, as shot.
@@ -170,8 +190,9 @@ const adiyaman = {
     {
       slug: 'dia-3',
       number: 3,
-      title: 'Photos',
+      title: 'Building field experience',
       date: '2026-11-04',
+      summary: 'Back in the Adıyaman area, participants continued their practical training with two further soil-profile visits. Another full day outdoors offered opportunities to consolidate observation skills, compare the soils encountered during the week and discuss how soil properties vary across landscapes.',
       // First id = cover of the day (day card mosaic lead + day header).
       mosaic: ['wsf9k9', 'degjum', 'cxy4bq', 'pmvkpa'],
       // Chronological, as shot.
@@ -303,8 +324,9 @@ const adiyaman = {
     {
       slug: 'dia-4',
       number: 4,
-      title: 'Photos & videos',
+      title: 'Bringing the learning together',
       date: '2026-11-05',
+      summary: 'The programme moved indoors for a test assessing students’ understanding of Module 1, followed by practical exercises using laptops. These activities complemented the field visits and helped bring together the week’s learning. In the afternoon, a visit to Adıyaman provided an opportunity to discover the host city and spend time together beyond the training sessions.',
       // First id = cover of the day (day card mosaic lead + day header).
       mosaic: ['bxxaea', 'idzjk0', 'jgvcl9', 'vzxagy'],
       // Chronological, as shot.
@@ -364,7 +386,8 @@ const adiyaman = {
     /*
      * Adding Day 5:
      * {
-     *   slug: 'dia-5', number: 5, title: 'Photos & videos', date: '2026-11-06',
+     *   slug: 'dia-5', number: 5, title: 'Short diary heading', date: '2026-11-06',
+     *   summary: 'One paragraph about the day, shown above its gallery.',
      *   mosaic: ['<id>', '<id>', '<id>', '<id>'],   // optional; first = cover of the day
      *   media: [
      *     photo(`${IMG}/v…/PXL_…_abc123.jpg`, 8160, 4590, '#7a6d63', 'What the photo shows'),

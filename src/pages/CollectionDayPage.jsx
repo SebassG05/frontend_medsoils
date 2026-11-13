@@ -79,6 +79,9 @@ export default function CollectionDayPage() {
         variants={fadeRise(reduce, AFTER_MORPH)} initial="hidden" animate="show"
         className={`${container} pt-8 sm:pt-10 pb-20`}
       >
+        {day.summary && (
+          <p className="mb-10 text-justify text-[19px] leading-relaxed text-gray-700">{day.summary}</p>
+        )}
         <MediaGallery.Root media={media} status={status} onRetry={retry}>
           <MediaGallery.Toolbar />
           <div className="mt-6">

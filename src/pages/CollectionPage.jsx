@@ -9,13 +9,29 @@ import NotFoundPanel from '../components/collections/NotFoundPanel'
 import CoverHeader from '../components/collections/CoverHeader'
 import DayCard from '../components/collections/DayCard'
 import { CARD_COVER_SIZES, MetaChips } from '../components/collections/CollectionCard'
-import { collectionCover, collectionStats, formatDates, getCollection, layoutIds } from '../data/collections'
+import { collectionCover, collectionStats, formatDates, formatWeekday, getCollection, layoutIds } from '../data/collections'
 import { COPY } from '../data/collections/copy'
 import { RESOURCES_PATH } from '../utils/collectionRoutes'
 import { AFTER_MORPH, fadeRise, revealOnce, staggerChildren } from '../utils/motion'
 import usePageTitle from '../utils/usePageTitle'
 
 const container = 'max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12'
+
+/** Diary days without photos (e.g. arrivals, departures). */
+function DiaryNotes({ entries }) {
+  if (!entries?.length) return null
+  return (
+    <div className="mt-8 space-y-6">
+      {entries.map(e => (
+        <div key={e.date} className="border-l-2 border-orange-200 pl-5">
+          <p className="text-[15px] font-semibold text-orange-700">{formatWeekday(e.date)}</p>
+          <h3 className="font-headline text-[20px] font-bold leading-snug tracking-[-0.01em] text-gray-900">{e.heading}</h3>
+          <p className="mt-1.5 text-justify text-[17px] leading-relaxed text-gray-700">{e.text}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function CollectionPage() {
   const { collectionSlug } = useParams()
@@ -67,9 +83,13 @@ export default function CollectionPage() {
       <section className={`${container} pt-10 sm:pt-12`}>
         <motion.div
           variants={fadeRise(reduce, AFTER_MORPH)} initial="hidden" animate="show"
-          className="max-w-3xl"
         >
-          <p className="text-[19px] leading-relaxed text-gray-700">{collection.description}</p>
+          {collection.headline && (
+            <h2 className="mb-4 font-headline text-[28px] sm:text-[32px] font-bold leading-tight tracking-[-0.02em] text-gray-900">
+              {collection.headline}
+            </h2>
+          )}
+          <p className="text-justify text-[19px] leading-relaxed text-gray-700">{collection.description}</p>
           {collection.partner && (
             <Link
               to={`/partners/${collection.partner.slug}`}
@@ -80,10 +100,11 @@ export default function CollectionPage() {
               <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-[var(--motion-base)] pointer-fine:group-hover:translate-x-0.5" />
             </Link>
           )}
+          <DiaryNotes entries={collection.before} />
         </motion.div>
       </section>
 
-      <section aria-labelledby="days-heading" className={`${container} pt-10 pb-20`}>
+      <section aria-labelledby="days-heading" className={`${container} pt-10 ${collection.after?.length || collection.closing ? 'pb-10' : 'pb-20'}`}>
         <h2 id="days-heading" className="font-headline text-[28px] font-bold tracking-[-0.02em] text-gray-900">
           {COPY.collection.daysHeading}
         </h2>
@@ -94,6 +115,17 @@ export default function CollectionPage() {
           {collection.days.map(day => <DayCard key={day.slug} collection={collection} day={day} returning={daysInitial === false} />)}
         </motion.ul>
       </section>
+
+      {(collection.after?.length > 0 || collection.closing) && (
+        <section className={`${container} pb-20`}>
+          <div>
+            <DiaryNotes entries={collection.after} />
+            {collection.closing && (
+              <p className="mt-8 text-justify text-[19px] leading-relaxed text-gray-700">{collection.closing}</p>
+            )}
+          </div>
+        </section>
+      )}
 
       <Footer />
     </div>

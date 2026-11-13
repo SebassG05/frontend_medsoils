@@ -77,6 +77,11 @@ export function formatDates(dates) {
 
 export const formatDay = iso => (iso ? dateFmt.format(new Date(`${iso}T12:00:00`)) : null)
 
+const weekdayFmt = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
+
+/** "Sunday, 1 November" — for diary entries. */
+export const formatWeekday = iso => (iso ? weekdayFmt.format(new Date(`${iso}T12:00:00`)) : null)
+
 /** A field-trip photo/video shaped like an API resource, for ResourceCard. */
 function toResource(c, d, m) {
   return {
